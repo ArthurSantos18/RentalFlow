@@ -22,7 +22,6 @@ public static class LiteBusExtension
 
             liteBus.AddQueries(module =>
             {
-                
                 module.RegisterFromAssembly(typeof(GetApplicantsQuery).Assembly);
             });
         });

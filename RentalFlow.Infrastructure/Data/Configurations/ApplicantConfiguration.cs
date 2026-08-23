@@ -19,6 +19,9 @@ public class ApplicantConfiguration : IEntityTypeConfiguration<ApplicantEntity>
             .IsRequired()
             .HasMaxLength(11);
 
+        builder.HasIndex(a => a.Cpf)
+            .IsUnique();
+
         builder.Property(a => a.Email)
             .IsRequired()
             .HasMaxLength(100);

@@ -4,7 +4,7 @@ using RentalFlow.Application.Interfaces.Repositories;
 using RentalFlow.Infrastructure.Data;
 using RentalFlow.Infrastructure.Repositories;
 
-namespace RentalFlow.Infrastructure;
+namespace RentalFlow.Infrastructure.Extensions;
 
 public static class DatabaseExtension
 {

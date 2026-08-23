@@ -8,11 +8,12 @@ public sealed class ApplicantEntity
     public string FullName { get; private set; } = string.Empty;
     public string Cpf { get; private set; } = string.Empty;
     public string Email { get; private set; } = string.Empty;
-    public string Phone { get; private set; } = string.Empty;
+    public string? Phone { get; private set; }
     public decimal MonthlyIncome { get; private set; }
+    public bool IsActive { get; private set; }
     public List<RentalApplicationEntity> Applications { get; private set; } = [];
 
-    public ApplicantEntity(Guid id, string fullName, string cpf, string email, string phone, decimal monthlyIncome, List<RentalApplicationEntity> applications)
+    public ApplicantEntity(Guid id, string fullName, string cpf, string email, string? phone, decimal monthlyIncome, bool isActive, List<RentalApplicationEntity> applications)
     {
         Id = id;
         FullName = fullName;
@@ -20,17 +21,19 @@ public sealed class ApplicantEntity
         Email = email;
         Phone = phone;
         MonthlyIncome = monthlyIncome;
-        Applications = applications ?? new List<RentalApplicationEntity>();
+        IsActive = isActive;
+        Applications = applications ?? [];
     }
 
     public static ApplicantEntity Empty { get; } = new ApplicantEntity
     {
-        Id = Guid.NewGuid(),
+        Id = Guid.Empty,
         FullName = string.Empty,
         Cpf = string.Empty,
         Email = string.Empty,
-        Phone = string.Empty,
+        Phone = null,
         MonthlyIncome = 0.0m,
+        IsActive = false,
         Applications = []
     };
 
@@ -60,7 +63,7 @@ public sealed class ApplicantEntity
         return this;
     }
 
-    public ApplicantEntity SetPhone(string phone)
+    public ApplicantEntity SetPhone(string? phone)
     {
         Phone = phone;
         return this;
@@ -69,6 +72,12 @@ public sealed class ApplicantEntity
     public ApplicantEntity SetMonthlyIncome(decimal monthlyIncome)
     {
         MonthlyIncome = monthlyIncome;
+        return this;
+    }
+
+    public ApplicantEntity SetIsActive(bool isActive)
+    {
+        IsActive = isActive;
         return this;
     }
 
@@ -98,6 +107,7 @@ public sealed class ApplicantEntity
         Email = Email,
         Phone = Phone,
         MonthlyIncome = MonthlyIncome,
+        IsActive = IsActive,
         Applications = Applications
     };
 }

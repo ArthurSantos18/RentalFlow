@@ -8,8 +8,9 @@ public sealed class ApplicantBuilder
     public string FullName { get; set; } = string.Empty;
     public string Cpf { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
-    public string Phone { get; set; } = string.Empty;
+    public string? Phone { get; set; }
     public decimal MonthlyIncome { get; set; }
+    public bool IsActive { get; set; }
     public List<RentalApplicationEntity> Applications { get; set; } = [];
 
     public static ApplicantBuilder Create() => new();
@@ -22,9 +23,11 @@ public sealed class ApplicantBuilder
 
     public ApplicantBuilder WithEmail(string email) { Email = email; return this; }
 
-    public ApplicantBuilder WithPhone(string phone) { Phone = phone; return this; }
+    public ApplicantBuilder WithPhone(string? phone) { Phone = phone; return this; }
 
     public ApplicantBuilder WithMonthlyIncome(decimal monthlyIncome) { MonthlyIncome = monthlyIncome; return this; }
+
+    public ApplicantBuilder WithActive(bool isActive) { IsActive = isActive; return this; }
 
     public ApplicantBuilder WithApplications(List<RentalApplicationEntity> applications) { Applications = applications; return this; }
 
@@ -43,6 +46,7 @@ public sealed class ApplicantBuilder
             Email,
             Phone,
             MonthlyIncome,
+            IsActive,
             Applications
         );
     }

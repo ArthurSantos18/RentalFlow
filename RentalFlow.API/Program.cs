@@ -1,6 +1,6 @@
-using RentalFlow.Infrastructure;
 using RentalFlow.Crosscutting.Extensions;
 using Scalar.AspNetCore;
+using RentalFlow.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -31,7 +31,7 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
         return await _dbSet.ToListAsync(cancellationToken);
     }
 
-    public async Task<T?> GetByIdAsync(int id, CancellationToken cancellationToken)
+    public async Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return await _dbSet.FindAsync(id, cancellationToken);
     }
