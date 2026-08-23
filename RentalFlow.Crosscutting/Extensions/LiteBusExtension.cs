@@ -1,5 +1,6 @@
 ﻿using LiteBus.Commands;
 using LiteBus.Extensions.Microsoft.DependencyInjection;
+using LiteBus.Messaging;
 using LiteBus.Queries;
 using Microsoft.Extensions.DependencyInjection;
 using RentalFlow.Application.UseCases.Commands.Applicant;
@@ -13,6 +14,7 @@ public static class LiteBusExtension
     {
         services.AddLiteBus(liteBus =>
         {
+            liteBus.AddMessaging(_ => { } );
             liteBus.AddCommands(module =>
             {
                 module.RegisterFromAssembly(typeof(AddApplicantCommand).Assembly);
