@@ -5,6 +5,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="12.1.1" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageReference Include="LiteBus.Commands.Extensions.Microsoft.DependencyInjection" Version="6.0.2" />
     <PackageReference Include="LiteBus.Extensions.Microsoft.DependencyInjection" Version="6.0.2" />
     <PackageReference Include="LiteBus.Messaging.Extensions.Microsoft.DependencyInjection" Version="6.0.2" />
