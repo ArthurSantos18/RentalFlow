@@ -20,24 +20,14 @@ public static class ApplicantMapper
             .Build();
     }
 
-    public static ApplicantEntity ApplyUpdates(this ApplicantEntity oldApplicant, UpdateApplicantRequest request)
+    public static ApplicantUpdate ToDomain(this UpdateApplicantRequest request)
     {
-        if (!string.IsNullOrEmpty(request.FullName))
-            oldApplicant.SetFullName(request.FullName);
-
-        if (!string.IsNullOrEmpty(request.Cpf))
-            oldApplicant.SetCpf(request.Cpf);
-
-        if (!string.IsNullOrEmpty(request.Email))
-            oldApplicant.SetEmail(request.Email);
-
-        if (!string.IsNullOrEmpty(request.Phone))
-            oldApplicant.SetPhone(request.Phone);
-
-        if (request.MonthlyIncome.HasValue)
-            oldApplicant.SetMonthlyIncome(request.MonthlyIncome.Value);
-
-        return oldApplicant;
+        return new ApplicantUpdate(
+            request.FullName,
+            request.Cpf,
+            request.Email,
+            request.Phone,
+            request.MonthlyIncome);
     }
 
     public static GetApplicantResponse ToResponse(this ApplicantEntity applicant)

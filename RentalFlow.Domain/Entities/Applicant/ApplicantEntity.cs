@@ -99,6 +99,24 @@ public sealed class ApplicantEntity
         return this;
     }
 
+    public void Update(ApplicantUpdate update)
+    {
+        if (!string.IsNullOrEmpty(update.FullName))
+            SetFullName(update.FullName);
+
+        if (!string.IsNullOrEmpty(update.Cpf))
+            SetCpf(update.Cpf);
+
+        if (!string.IsNullOrEmpty(update.Email))
+            SetEmail(update.Email);
+
+        if (!string.IsNullOrEmpty(update.Phone))
+            SetPhone(update.Phone);
+
+        if (update.MonthlyIncome.HasValue)
+            SetMonthlyIncome(update.MonthlyIncome.Value);
+    }
+
     public ApplicantBuilder ToBuilder() => new()
     {
         Id = Id,
