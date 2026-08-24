@@ -1,55 +1,58 @@
-﻿namespace RentalFlow.Domain.Helpers;
+﻿using System.Text.RegularExpressions;
 
-public static class CpfValidator
+namespace RentalFlow.Domain.Helpers;
+
+public static partial class CpfValidator
 {
-    public static bool IsValid(string cpf)
+    [GeneratedRegex(@"^\d{11}$|^\d{3}\.\d{3}\.\d{3}-\d{2}$")]
+    private static partial Regex CpfFormatRegex();
+
+    public static bool IsValid(string? cpf)
     {
-        if (string.IsNullOrWhiteSpace(cpf) || cpf.Length != 11)
+        if (string.IsNullOrWhiteSpace(cpf) || !CpfFormatRegex().IsMatch(cpf))
         {
             return false;
         }
 
-        cpf = new string(cpf.Where(char.IsDigit).ToArray());
+        var numericCpf = Normalize(cpf);
 
-        if (cpf.Length != 11 || cpf.Distinct().Count() == 1)
+        if (numericCpf.Distinct().Count() == 1)
         {
             return false;
         }
 
-        if (cpf.Distinct().Count() == 1)
+        var firstCheckDigit = CalculateCheckDigit(numericCpf, 9);
+        if (firstCheckDigit != (numericCpf[9] - '0'))
         {
             return false;
         }
 
-        int[] firstMultiplicator = [10, 9, 8, 7, 6, 5, 4, 3, 2];
-        int[] secondMultiplicator = [11, 10, 9, 8, 7, 6, 5, 4, 3, 2];
-
-        string tempCpf = cpf[..9];
-        int sum = 0;
-
-        for (int i = 0; i < 9; i++)
-        {
-            sum += int.Parse(tempCpf[i].ToString()) * firstMultiplicator[i];
-        }
-
-
-        int remainder = sum % 11;
-        int digit = remainder < 2 ? 0 : 11 - remainder;
-
-        if (digit != int.Parse(cpf[9].ToString()))
+        var secondCheckDigit = CalculateCheckDigit(numericCpf, 10);
+        if (secondCheckDigit != (numericCpf[10] - '0'))
         {
             return false;
         }
 
-        tempCpf += digit;
-        sum = 0;
+        return true;
+    }
 
-        for (int i = 0; i < 10; i++)
-            sum += int.Parse(tempCpf[i].ToString()) * secondMultiplicator[i];
+    private static int CalculateCheckDigit(string cpf, int length)
+    {
+        var sum = 0;
 
-        remainder = sum % 11;
-        digit = remainder < 2 ? 0 : 11 - remainder;
+        for (int i = 0; i < length; i++)
+        {
+            var weight = length + 1 - i;
+            sum += (cpf[i] - '0') * weight;
+        }
 
-        return remainder == int.Parse(cpf[10].ToString());
+        var remainder = sum % 11;
+
+        return remainder < 2 ? 0 : 11 - remainder;
+    }
+
+    public static string Normalize(string cpf)
+    {
+        return cpf.Replace(".", "").Replace("-", "");
     }
 }

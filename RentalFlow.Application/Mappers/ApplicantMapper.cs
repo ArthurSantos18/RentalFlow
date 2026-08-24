@@ -1,7 +1,6 @@
 ﻿using RentalFlow.Application.Requests;
 using RentalFlow.Application.Responses;
 using RentalFlow.Domain.Entities.Applicant;
-using System.Security.Cryptography;
 
 namespace RentalFlow.Application.Mappers;
 

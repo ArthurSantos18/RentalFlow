@@ -10,7 +10,6 @@ public sealed class GetApplicantByCpfRequestValidator : AbstractValidator<GetApp
     {
         RuleFor(x => x.Cpf)
             .NotEmpty().WithMessage("CPF is required for search.")
-            .Length(11).WithMessage("CPF must have exactly 11 digits.")
             .Must(CpfValidator.IsValid).WithMessage("Invalid CPF.");
     }
 }

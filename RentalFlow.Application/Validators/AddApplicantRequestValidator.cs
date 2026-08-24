@@ -15,7 +15,6 @@ public sealed class AddApplicantRequestValidator : AbstractValidator<AddApplican
 
         RuleFor(x => x.Cpf)
             .NotEmpty().WithMessage("CPF is required.")
-            .Length(11).WithMessage("CPF must have exactly 11 digits.")
             .Must(CpfValidator.IsValid).WithMessage("Invalid CPF.");
 
         RuleFor(x => x.Email)

@@ -14,7 +14,6 @@ public sealed class UpdateApplicantRequestValidator : AbstractValidator<UpdateAp
             .When(x => x.FullName is not null);
 
         RuleFor(x => x.Cpf)
-            .Length(11).WithMessage("CPF must have exactly 11 digits.")
             .Must(CpfValidator.IsValid).WithMessage("Invalid CPF.")
             .When(x => x.Cpf is not null);
 
