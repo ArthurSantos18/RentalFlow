@@ -4,4 +4,5 @@
   <Project Path="RentalFlow.Crosscutting/RentalFlow.Crosscutting.csproj" Id="bf44467c-19c2-478f-b678-09e78110015d" />
   <Project Path="RentalFlow.Domain/RentalFlow.Domain.csproj" Id="322f4e1a-a5b3-44e3-a724-a8b6b281443e" />
   <Project Path="RentalFlow.Infrastructure/RentalFlow.Infrastructure.csproj" Id="53183fda-c896-4f2c-aa1f-98b134a7ef42" />
+  <Project Path="RentalFlow.Tests/RentalFlow.Tests.csproj" Id="b95a8756-3db8-4346-bbb4-ee50316a2dd2" />
 </Solution>
