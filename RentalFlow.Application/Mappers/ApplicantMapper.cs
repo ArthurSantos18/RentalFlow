@@ -1,4 +1,4 @@
-﻿using RentalFlow.Application.Requests;
+﻿using RentalFlow.Application.Requests.Applicant;
 using RentalFlow.Application.Responses;
 using RentalFlow.Domain.Entities.Applicant;
 
@@ -19,7 +19,7 @@ public static class ApplicantMapper
             .Build();
     }
 
-    public static ApplicantUpdate ToDomain(this UpdateApplicantRequest request)
+    public static ApplicantUpdate ToUpdateDomain(this UpdateApplicantRequest request)
     {
         return new ApplicantUpdate(
             request.FullName,
@@ -38,7 +38,8 @@ public static class ApplicantMapper
             Cpf = applicant.Cpf,
             Email = applicant.Email,
             Phone = applicant.Phone,
-            MonthlyIncome = applicant.MonthlyIncome
+            MonthlyIncome = applicant.MonthlyIncome,
+            IsActive = applicant.IsActive
         };
     }
 

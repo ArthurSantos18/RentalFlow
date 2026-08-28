@@ -2,20 +2,20 @@
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using RentalFlow.API.Helpers;
-using RentalFlow.Application.Requests.Applicant;
-using RentalFlow.Application.UseCases.Commands.Applicant;
-using RentalFlow.Application.UseCases.Queries.Applicant;
+using RentalFlow.Application.Requests.Property;
+using RentalFlow.Application.UseCases.Commands.Property;
+using RentalFlow.Application.UseCases.Queries.Property;
 
 namespace RentalFlow.API.Controllers;
 
-[Route("api/applicant")]
+[Route("api/property")]
 [ApiController]
-public sealed class ApplicantController(ICommandMediator _commandMediator, IQueryMediator _queryMediator) : ControllerBase
+public sealed class PropertyController(ICommandMediator _commandMediator, IQueryMediator _queryMediator) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetAllApplicantAsync(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAllProperties(CancellationToken cancellationToken)
     {
-        var query = new GetApplicantsQuery();
+        var query = new GetPropertiesQuery();
         var result = await _queryMediator.QueryAsync(query, cancellationToken);
 
         return result.IsSuccess
@@ -23,10 +23,10 @@ public sealed class ApplicantController(ICommandMediator _commandMediator, IQuer
             : ApiResponseHelper.HandleError(result.Error);
     }
 
-    [HttpGet("cpf")]
-    public async Task<IActionResult> GetApplicantByCpfAsync([FromQuery] GetApplicantByCpfRequest request, CancellationToken cancellationToken)
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetPropertyByIdAsync([FromQuery] GetPropertyByIdRequest request, CancellationToken cancellationToken)
     {
-        var query = new GetApplicantByCpfQuery(request);
+        var query = new GetPropertyByIdQuery(request);
         var result = await _queryMediator.QueryAsync(query, cancellationToken);
 
         return result.IsSuccess
@@ -35,9 +35,9 @@ public sealed class ApplicantController(ICommandMediator _commandMediator, IQuer
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddApplicantAsync([FromBody] AddApplicantRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> AddPropertyAsync([FromBody] AddPropertyRequest request, CancellationToken cancellationToken)
     {
-        var command = new AddApplicantCommand(request);
+        var command = new AddPropertyCommand(request);
         var result = await _commandMediator.SendAsync(command, cancellationToken);
 
         return result.IsSuccess
@@ -46,9 +46,9 @@ public sealed class ApplicantController(ICommandMediator _commandMediator, IQuer
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> DeleteApplicantAsync([FromRoute] Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> DeletePropertyAsync([FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        var command = new DeleteApplicantCommand(id);
+        var command = new DeletePropertyCommand(id);
         var result = await _commandMediator.SendAsync(command, cancellationToken);
 
         return result.IsSuccess
@@ -57,9 +57,9 @@ public sealed class ApplicantController(ICommandMediator _commandMediator, IQuer
     }
 
     [HttpPatch("{id:guid}")]
-    public async Task<IActionResult> UpdateApplicantAsync([FromRoute] Guid id, [FromBody] UpdateApplicantRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateApplicantAsync([FromRoute] Guid id, [FromBody] UpdatePropertyRequest request, CancellationToken cancellationToken)
     {
-        var command = new UpdateApplicantCommand(id, request);
+        var command = new UpdatePropertyCommand(id, request);
         var result = await _commandMediator.SendAsync(command, cancellationToken);
 
         return result.IsSuccess
@@ -67,4 +67,3 @@ public sealed class ApplicantController(ICommandMediator _commandMediator, IQuer
             : ApiResponseHelper.HandleError(result.Error);
     }
 }
-

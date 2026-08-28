@@ -1,6 +1,6 @@
 ﻿namespace RentalFlow.Domain.Entities.Applicant;
 
-public sealed record ApplicantUpdate(
+public record ApplicantUpdate(
     string? FullName,
     string? Cpf,
     string? Email,

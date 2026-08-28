@@ -2,8 +2,8 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using RentalFlow.Application.UseCases.Queries.Applicant;
-using RentalFlow.Application.Requests;
-using RentalFlow.Application.Validators;
+using RentalFlow.Application.Validators.Applicant;
+using RentalFlow.Application.Requests.Applicant;
 
 namespace RentalFlow.Crosscutting.Extensions;
 

@@ -1,9 +1,9 @@
 ﻿using AutoFixture;
 using FluentValidation.TestHelper;
-using RentalFlow.Application.Requests;
-using RentalFlow.Application.Validators;
+using RentalFlow.Application.Requests.Applicant;
+using RentalFlow.Application.Validators.Applicant;
 
-namespace RentalFlow.Tests.Application.Validators;
+namespace RentalFlow.Tests.Application.Validators.Applicant;
 
 public sealed class GetApplicantByCpfRequestValidatorTests
 {
@@ -17,7 +17,9 @@ public sealed class GetApplicantByCpfRequestValidatorTests
     public void Validate_Cpf_ShouldHaveError(string cpf, string expectedMessage)
     {
         // Arrange
-        var request = _fixture.Build<GetApplicantByCpfRequest>().With(r => r.Cpf, cpf).Create();
+        var request = _fixture.Build<GetApplicantByCpfRequest>()
+            .With(r => r.Cpf, cpf)
+            .Create();
 
         // Act
         var result = _validator.TestValidate(request);
@@ -30,7 +32,9 @@ public sealed class GetApplicantByCpfRequestValidatorTests
     public void Validate_ValidCpf_ShouldNotHaveError()
     {
         // Arrnge
-        var request = _fixture.Build<GetApplicantByCpfRequest>().With(r => r.Cpf, "52998224725").Create();
+        var request = _fixture.Build<GetApplicantByCpfRequest>()
+            .With(r => r.Cpf, "52998224725")
+            .Create();
 
         // Act
         var result = _validator.TestValidate(request);
@@ -38,4 +42,5 @@ public sealed class GetApplicantByCpfRequestValidatorTests
         //Assert
         result.ShouldNotHaveValidationErrorFor(x => x.Cpf);
     }
+
 }

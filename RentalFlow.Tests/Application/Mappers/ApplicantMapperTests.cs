@@ -1,7 +1,7 @@
 ﻿using AutoFixture;
 using FluentAssertions;
 using RentalFlow.Application.Mappers;
-using RentalFlow.Application.Requests;
+using RentalFlow.Application.Requests.Applicant;
 using RentalFlow.Domain.Entities.Applicant;
 
 namespace RentalFlow.Tests.Application.Mappers;
@@ -44,7 +44,7 @@ public sealed class ApplicantMapperTests
             .Create();
 
         // Act
-        var update = request.ToDomain();
+        var update = request.ToUpdateDomain();
 
         // Assert
         update.Should().NotBeNull();
@@ -80,6 +80,7 @@ public sealed class ApplicantMapperTests
         response.Email.Should().Be(entity.Email);
         response.Phone.Should().Be(entity.Phone);
         response.MonthlyIncome.Should().Be(entity.MonthlyIncome);
+        response.IsActive.Should().Be(entity.IsActive);
     }
 
     [Fact]

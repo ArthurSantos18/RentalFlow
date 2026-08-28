@@ -1,33 +1,44 @@
 ﻿using RentalFlow.Domain.Entities.RentalApplication;
+using RentalFlow.Domain.ValueObject;
 
 namespace RentalFlow.Domain.Entities.Property;
 
 public class PropertyEntity
 {
     public Guid Id { get; private set; } = Guid.NewGuid();
-    public string Address { get; private set; } = string.Empty;
+    public Address Address { get; private set; } = Address.Empty;
     public decimal RentPrice { get; private set; }
     public int Bedrooms { get; private set; }
     public bool IsAvailable { get; private set; } = true;
+    public bool IsActive { get; private set; }
     public List<RentalApplicationEntity> Applications { get; private set; } = [];
 
-    public PropertyEntity(Guid id, string address, decimal rentPrice, int bedrooms, bool isAvailable, List<RentalApplicationEntity> applications)
+    public PropertyEntity(
+        Guid id,
+        Address address,
+        decimal rentPrice,
+        int bedrooms,
+        bool isAvailable,
+        bool isActive,
+        List<RentalApplicationEntity> applications)
     {
         Id = id;
         Address = address;
         RentPrice = rentPrice;
         Bedrooms = bedrooms;
         IsAvailable = isAvailable;
+        IsActive = isActive;
         Applications = applications ?? [];
     }
 
     public static PropertyEntity Empty { get; } = new PropertyEntity
     {
         Id = Guid.NewGuid(),
-        Address = string.Empty,
+        Address = Address.Empty,
         RentPrice = 0.0m,
         Bedrooms = 0,
         IsAvailable = true,
+        IsActive = false,
         Applications = []
     };
 
@@ -39,7 +50,7 @@ public class PropertyEntity
         return this;
     }
 
-    public PropertyEntity SetAddress(string address) 
+    public PropertyEntity SetAddress(Address address) 
     { 
         Address = address; 
         return this;
@@ -63,6 +74,12 @@ public class PropertyEntity
         return this;
     }
 
+    public PropertyEntity SetIsActive(bool isActive)
+    {
+        IsActive = isActive;
+        return this;
+    }
+
     public PropertyEntity SetApplications(List<RentalApplicationEntity> applications)
     {
         Applications = applications ?? [];
@@ -74,10 +91,39 @@ public class PropertyEntity
         Applications.Add(application);
         return this;
     }
+
     public PropertyEntity RemoveApplication(RentalApplicationEntity application)
     {
         Applications.Remove(application);
         return this;
+    }
+
+    public void Update(PropertyUpdate update)
+    {
+        if (update.Address != null)
+        {
+            SetAddress(update.Address);
+        }
+
+        if (update.RentPrice.HasValue)
+        {
+            SetRentPrice(update.RentPrice.Value);
+        }
+
+        if (update.Bedroom.HasValue)
+        {
+            SetBedrooms(update.Bedroom.Value);
+        }
+
+        if (update.IsAvailable.HasValue)
+        {
+            SetIsAvailable(update.IsAvailable.Value);
+        }
+
+        if (update.IsActive.HasValue)
+        {
+            SetIsActive(update.IsActive.Value);
+        }
     }
 
     public PropertyBuilder ToBuilder() => new()
@@ -87,6 +133,7 @@ public class PropertyEntity
         RentPrice = RentPrice,
         Bedrooms = Bedrooms,
         IsAvailable = IsAvailable,
+        IsActive = IsActive,
         Applications = Applications
     };
 }

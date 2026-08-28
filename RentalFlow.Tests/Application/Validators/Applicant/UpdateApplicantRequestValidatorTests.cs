@@ -1,9 +1,9 @@
 ﻿using AutoFixture;
 using FluentValidation.TestHelper;
-using RentalFlow.Application.Requests;
-using RentalFlow.Application.Validators;
+using RentalFlow.Application.Requests.Applicant;
+using RentalFlow.Application.Validators.Applicant;
 
-namespace RentalFlow.Tests.Application.Validators;
+namespace RentalFlow.Tests.Application.Validators.Applicant;
 
 public sealed class UpdateApplicantRequestValidatorTests
 {
@@ -14,7 +14,9 @@ public sealed class UpdateApplicantRequestValidatorTests
     public void Validate_FullName_ShouldHaveError_WhenTooShort()
     {
         // Arrange
-        var request = _fixture.Build<UpdateApplicantRequest>().With(r => r.FullName, "Ab").Create();
+        var request = _fixture.Build<UpdateApplicantRequest>()
+            .With(r => r.FullName, "Ab")
+            .Create();
 
         // Act
         var result = _validator.TestValidate(request);
@@ -27,7 +29,9 @@ public sealed class UpdateApplicantRequestValidatorTests
     public void Validate_Cpf_ShouldHaveError_WhenInvalid()
     {
         // Arrange
-        var request = _fixture.Build<UpdateApplicantRequest>().With(r => r.Cpf, "11111111111").Create();
+        var request = _fixture.Build<UpdateApplicantRequest>()
+            .With(r => r.Cpf, "11111111111")
+            .Create();
 
         // Act
         var result = _validator.TestValidate(request);
@@ -40,7 +44,10 @@ public sealed class UpdateApplicantRequestValidatorTests
     public void Validate_Email_ShouldHaveError_WhenInvalidFormat()
     {
         // Arrange
-        var request = _fixture.Build<UpdateApplicantRequest>().With(r => r.Email, "invalid").Create();
+
+        var request = _fixture.Build<UpdateApplicantRequest>()
+            .With(r => r.Email, "invalid")
+            .Create();
 
         // Act
         var result = _validator.TestValidate(request);
@@ -53,7 +60,9 @@ public sealed class UpdateApplicantRequestValidatorTests
     public void Validate_Phone_ShouldHaveError_WhenTooShort()
     {
         // Arrange
-        var request = _fixture.Build<UpdateApplicantRequest>().With(r => r.Phone, "1234567").Create();
+        var request = _fixture.Build<UpdateApplicantRequest>()
+            .With(r => r.Phone, "1234567")
+            .Create();
 
         // Act
         var result = _validator.TestValidate(request);
@@ -66,7 +75,9 @@ public sealed class UpdateApplicantRequestValidatorTests
     public void Validate_MonthlyIncome_ShouldHaveError_WhenZero()
     {
         // Arrange
-        var request = _fixture.Build<UpdateApplicantRequest>().With(r => r.MonthlyIncome, 0).Create();
+        var request = _fixture.Build<UpdateApplicantRequest>()
+            .With(r => r.MonthlyIncome, 0)
+            .Create();
 
         // Act
         var result = _validator.TestValidate(request);

@@ -8,4 +8,5 @@ public record GetApplicantResponse
     public string Email { get; init; } = string.Empty;
     public string? Phone { get; init; }
     public decimal MonthlyIncome { get; init; }
+    public bool IsActive { get; init; }
 }

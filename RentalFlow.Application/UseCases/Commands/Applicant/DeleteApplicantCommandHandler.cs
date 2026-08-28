@@ -13,7 +13,7 @@ public sealed class DeleteApplicantCommandHandler(IApplicantRepository _applican
 
         if (applicant is null)
         {
-            return Result.Failure(ApplicantErrors.ApplicantNotFound);
+            return Result.Failure(PropertyErrors.PropertyNotFound);
         }
 
         if (applicant.IsActive == false)

@@ -1,4 +1,4 @@
-﻿namespace RentalFlow.Application.Requests;
+﻿namespace RentalFlow.Application.Requests.Applicant;
 
 public record AddApplicantRequest
 {

@@ -2,7 +2,7 @@
 using FluentAssertions;
 using Moq;
 using RentalFlow.Application.Interfaces.Repositories;
-using RentalFlow.Application.Requests;
+using RentalFlow.Application.Requests.Applicant;
 using RentalFlow.Application.UseCases.Commands.Applicant;
 using RentalFlow.Domain.Entities.Applicant;
 using RentalFlow.Domain.Errors;

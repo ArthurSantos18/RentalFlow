@@ -8,7 +8,7 @@ namespace RentalFlow.Application.UseCases.Commands.Applicant;
 
 public sealed class UpdateApplicantCommandHandler(IApplicantRepository _applicantRepository) : ICommandHandler<UpdateApplicantCommand, Result>
 {
-    public async Task<Result> HandleAsync(UpdateApplicantCommand command, CancellationToken cancellationToken = default)
+    public async Task<Result> HandleAsync(UpdateApplicantCommand command, CancellationToken cancellationToken)
     {
         var applicant = await _applicantRepository.GetByIdAsync(command.Id, cancellationToken);
 
@@ -17,7 +17,7 @@ public sealed class UpdateApplicantCommandHandler(IApplicantRepository _applican
             return Result.Failure(ApplicantErrors.ApplicantNotFound);
         }
 
-        var update = command.Request.ToDomain();
+        var update = command.Request.ToUpdateDomain();
 
         applicant.Update(update);
 

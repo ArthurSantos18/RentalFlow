@@ -13,7 +13,15 @@ public sealed class ApplicantEntity
     public bool IsActive { get; private set; }
     public List<RentalApplicationEntity> Applications { get; private set; } = [];
 
-    public ApplicantEntity(Guid id, string fullName, string cpf, string email, string? phone, decimal monthlyIncome, bool isActive, List<RentalApplicationEntity> applications)
+    public ApplicantEntity(
+        Guid id,
+        string fullName,
+        string cpf,
+        string email,
+        string? phone,
+        decimal monthlyIncome,
+        bool isActive,
+        List<RentalApplicationEntity> applications)
     {
         Id = id;
         FullName = fullName;

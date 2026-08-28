@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
-using RentalFlow.Application.Requests;
+using RentalFlow.Application.Requests.Applicant;
 using RentalFlow.Domain.Helpers;
 
-namespace RentalFlow.Application.Validators;
+namespace RentalFlow.Application.Validators.Applicant;
 
 public sealed class AddApplicantRequestValidator : AbstractValidator<AddApplicantRequest>
 {

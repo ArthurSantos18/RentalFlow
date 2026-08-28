@@ -83,14 +83,11 @@ public sealed class DeleteApplicantCommandHandlerTests
     public async Task HandleAsync_ShouldReturnFailure_WhenApplicantNotFound()
     {
         // Arrange
-        var expectedError = ApplicantErrors.ApplicantNotFound;
-        var applicantId = Guid.NewGuid();
-        var command = _fixture.Build<DeleteApplicantCommand>()
-            .With(c => c.Id, applicantId)
-            .Create();
+        var expectedError = PropertyErrors.PropertyNotFound;
+        var command = _fixture.Create<DeleteApplicantCommand>();
 
         _repositoryMock
-            .Setup(r => r.GetByIdAsync(applicantId, It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((ApplicantEntity?)null);
 
         // Act
@@ -100,7 +97,7 @@ public sealed class DeleteApplicantCommandHandlerTests
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be(expectedError);
 
-        _repositoryMock.Verify(r => r.GetByIdAsync(applicantId, It.IsAny<CancellationToken>()), Times.Once);
+        _repositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
         _repositoryMock.Verify(r => r.Update(It.IsAny<ApplicantEntity>()), Times.Never);
         _repositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
 

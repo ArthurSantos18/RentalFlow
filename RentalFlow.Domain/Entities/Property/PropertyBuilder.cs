@@ -1,14 +1,16 @@
 ﻿using RentalFlow.Domain.Entities.RentalApplication;
+using RentalFlow.Domain.ValueObject;
 
 namespace RentalFlow.Domain.Entities.Property;
 
 public sealed class PropertyBuilder
 {
     public Guid Id { get; set; } = Guid.NewGuid();
-    public string Address { get; set; } = string.Empty;
+    public Address Address { get; set; } = Address.Empty;
     public decimal RentPrice { get; set; }
     public int Bedrooms { get; set; }
     public bool IsAvailable { get; set; } = true;
+    public bool IsActive { get; set; }
     public List<RentalApplicationEntity> Applications { get; set; } = [];
 
     public static PropertyBuilder Create() => new();
@@ -19,7 +21,7 @@ public sealed class PropertyBuilder
         return this;
     }
 
-    public PropertyBuilder WithAddress(string address) 
+    public PropertyBuilder WithAddress(Address address) 
     { 
         Address = address;
         return this;
@@ -43,6 +45,12 @@ public sealed class PropertyBuilder
         return this;
     }
 
+    public PropertyBuilder WithIsActive(bool isActive)
+    {
+        IsActive = isActive;
+        return this;
+    }
+
     public PropertyBuilder WithApplications(List<RentalApplicationEntity> applications)
     {
         Applications = applications ?? [];
@@ -63,6 +71,7 @@ public sealed class PropertyBuilder
             RentPrice,
             Bedrooms,
             IsAvailable,
+            IsActive,
             Applications
         );
     }

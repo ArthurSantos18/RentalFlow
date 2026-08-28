@@ -1,5 +1,5 @@
 ﻿using LiteBus.Queries.Abstractions;
-using RentalFlow.Application.Requests;
+using RentalFlow.Application.Requests.Applicant;
 using RentalFlow.Application.Responses;
 using RentalFlow.Domain.Patterns.Result;
 
