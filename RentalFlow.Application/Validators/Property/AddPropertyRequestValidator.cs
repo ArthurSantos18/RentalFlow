@@ -45,7 +45,7 @@ public sealed class AddPropertyRequestValidator : AbstractValidator<AddPropertyR
         RuleFor(x => x.Bedrooms)
             .GreaterThan(0).WithMessage("Bedrooms must be greater than zero.");
 
-        RuleFor(x => x.IsAvaiable)
+        RuleFor(x => x.IsAvailable)
             .NotNull().WithMessage("IsAvailable is required.");
     }
 }

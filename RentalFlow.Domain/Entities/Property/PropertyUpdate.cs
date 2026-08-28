@@ -5,6 +5,6 @@ namespace RentalFlow.Domain.Entities.Property;
 public record PropertyUpdate(
     Address? Address,
     decimal? RentPrice,
-    int? Bedroom,
+    int? Bedrooms,
     bool? IsAvailable,
     bool? IsActive);

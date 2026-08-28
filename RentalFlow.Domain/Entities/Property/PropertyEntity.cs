@@ -110,9 +110,9 @@ public class PropertyEntity
             SetRentPrice(update.RentPrice.Value);
         }
 
-        if (update.Bedroom.HasValue)
+        if (update.Bedrooms.HasValue)
         {
-            SetBedrooms(update.Bedroom.Value);
+            SetBedrooms(update.Bedrooms.Value);
         }
 
         if (update.IsAvailable.HasValue)

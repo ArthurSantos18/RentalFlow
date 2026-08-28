@@ -13,7 +13,7 @@ public static class PropertyMapper
             .WithAddress(request.Address)
             .WithBedrooms(request.Bedrooms)
             .WithRentPrice(request.RentPrice)
-            .WithIsAvailable(request.IsAvaiable)
+            .WithIsAvailable(request.IsAvailable)
             .WithIsActive(true)
             .Build();
     }
