@@ -11,7 +11,7 @@ public sealed class GetPropertyByIdQueryHandler(IPropertyRepository _propertyRep
 {
     public async Task<Result<GetPropertyResponse>> HandleAsync(GetPropertyByIdQuery query, CancellationToken cancellationToken = default)
     {
-        var property = await _propertyRepository.GetByIdAsync(query.Request.Id, cancellationToken);
+        var property = await _propertyRepository.GetByIdAsync(query.Id, cancellationToken);
 
         if (property == null)
         {

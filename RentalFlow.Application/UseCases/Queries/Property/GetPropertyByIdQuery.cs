@@ -5,4 +5,4 @@ using RentalFlow.Domain.Patterns.Result;
 
 namespace RentalFlow.Application.UseCases.Queries.Property;
 
-public record GetPropertyByIdQuery(GetPropertyByIdRequest Request) : IQuery<Result<GetPropertyResponse>>;
+public record GetPropertyByIdQuery(Guid Id) : IQuery<Result<GetPropertyResponse>>;

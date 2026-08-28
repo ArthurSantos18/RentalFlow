@@ -11,9 +11,35 @@ public class PropertyConfiguration : IEntityTypeConfiguration<PropertyEntity>
         builder.ToTable("Properties");
         builder.HasKey(p => p.Id);
 
-        builder.Property(p => p.Address)
-            .IsRequired()
-            .HasMaxLength(200);
+        builder.ComplexProperty(p => p.Address, address =>
+        {
+            address.Property(p => p.Street)
+                .HasMaxLength(200)
+                .IsRequired();
+
+            address.Property(p => p.Number)
+                .HasMaxLength(20)
+                .IsRequired();
+
+            address.Property(p => p.Complement)
+                .HasMaxLength(200);
+
+            address.Property(p => p.Neighborhood)
+                .HasMaxLength(100)
+                .IsRequired();
+
+            address.Property(p => p.City)
+                .HasMaxLength(100)
+                .IsRequired();
+
+            address.Property(p => p.State)
+                .HasMaxLength(2)
+                .IsRequired();
+
+            address.Property(p => p.ZipCode)
+                .HasMaxLength(8)
+                .IsRequired();
+        });
 
         builder.Property(p => p.RentPrice)
             .HasColumnType("decimal(18,2)")

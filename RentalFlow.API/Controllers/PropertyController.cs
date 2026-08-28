@@ -24,9 +24,9 @@ public sealed class PropertyController(ICommandMediator _commandMediator, IQuery
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetPropertyByIdAsync([FromQuery] GetPropertyByIdRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetPropertyByIdAsync([FromQuery] Guid id, CancellationToken cancellationToken)
     {
-        var query = new GetPropertyByIdQuery(request);
+        var query = new GetPropertyByIdQuery(id);
         var result = await _queryMediator.QueryAsync(query, cancellationToken);
 
         return result.IsSuccess
