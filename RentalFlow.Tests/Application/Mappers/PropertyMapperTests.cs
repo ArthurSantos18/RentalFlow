@@ -3,6 +3,7 @@ using FluentAssertions;
 using RentalFlow.Application.Mappers;
 using RentalFlow.Application.Requests.Property;
 using RentalFlow.Domain.Entities.Property;
+using RentalFlow.Domain.Patterns.PagedResult;
 using RentalFlow.Domain.ValueObject;
 
 namespace RentalFlow.Tests.Application.Mappers;
@@ -16,20 +17,20 @@ public sealed class PropertyMapperTests
     {
         // Arrange
         var address = new Address(
-            street: "Rua das Flores",
-            number: "123",
-            complement: "Apto 101",
-            neighborhood: "Centro",
-            city: "São Paulo",
-            state: "SP",
-            zipCode: "01234567"
+            street: _fixture.Create<string>(),
+            number: _fixture.Create<string>(),
+            complement: _fixture.Create<string>(),
+            neighborhood: _fixture.Create<string>(),
+            city: _fixture.Create<string>(),
+            state: _fixture.Create<string>(),
+            zipCode: _fixture.Create<string>()
         );
 
         var request = _fixture.Build<AddPropertyRequest>()
             .With(r => r.Address, address)
-            .With(r => r.RentPrice, 2500.00m)
-            .With(r => r.Bedrooms, 2)
-            .With(r => r.IsAvailable, true)
+            .With(r => r.RentPrice, _fixture.Create<decimal>())
+            .With(r => r.Bedrooms, _fixture.Create<int>())
+            .With(r => r.IsAvailable, _fixture.Create<bool>())
             .Create();
 
         // Act
@@ -51,21 +52,21 @@ public sealed class PropertyMapperTests
     {
         // Arrange
         var address = new Address(
-            street: "Rua Nova",
-            number: "456",
-            complement: null!,
-            neighborhood: "Jardim",
-            city: "Rio de Janeiro",
-            state: "RJ",
-            zipCode: "87654321"
+            street: _fixture.Create<string>(),
+            number: _fixture.Create<string>(),
+            complement: _fixture.Create<string>(),
+            neighborhood: _fixture.Create<string>(),
+            city: _fixture.Create<string>(),
+            state: _fixture.Create<string>(),
+            zipCode: _fixture.Create<string>()
         );
 
         var request = _fixture.Build<UpdatePropertyRequest>()
             .With(r => r.Address, address)
-            .With(r => r.RentPrice, 3000.00m)
-            .With(r => r.Bedrooms, 3)
-            .With(r => r.IsAvailable, false)
-            .With(r => r.IsActive, true)
+            .With(r => r.RentPrice, _fixture.Create<decimal>())
+            .With(r => r.Bedrooms, _fixture.Create<int>())
+            .With(r => r.IsAvailable, _fixture.Create<bool>())
+            .With(r => r.IsActive, _fixture.Create<bool>())
             .Create();
 
         // Act
@@ -84,7 +85,7 @@ public sealed class PropertyMapperTests
     public void ToUpdateDomain_ShouldHandleNullValues()
     {
         // Arrange
-        var request = new UpdatePropertyRequest(); // Todos os campos null
+        var request = new UpdatePropertyRequest();
 
         // Act
         var update = request.ToUpdateDomain();
@@ -103,22 +104,22 @@ public sealed class PropertyMapperTests
     {
         // Arrange
         var address = new Address(
-            street: "Avenida Principal",
-            number: "789",
-            complement: "Casa 2",
-            neighborhood: "Vila Nova",
-            city: "Curitiba",
-            state: "PR",
-            zipCode: "87654321"
+            street: _fixture.Create<string>(),
+            number: _fixture.Create<string>(),
+            complement: _fixture.Create<string>(),
+            neighborhood: _fixture.Create<string>(),
+            city: _fixture.Create<string>(),
+            state: _fixture.Create<string>(),
+            zipCode: _fixture.Create<string>()
         );
 
         var entity = new PropertyBuilder()
             .WithId(_fixture.Create<Guid>())
             .WithAddress(address)
-            .WithRentPrice(2000.00m)
-            .WithBedrooms(3)
-            .WithIsAvailable(true)
-            .WithIsActive(true)
+            .WithRentPrice(_fixture.Create<decimal>())
+            .WithBedrooms(_fixture.Create<int>())
+            .WithIsAvailable(_fixture.Create<bool>())
+            .WithIsActive(_fixture.Create<bool>())
             .Build();
 
         // Act
@@ -135,55 +136,57 @@ public sealed class PropertyMapperTests
     }
 
     [Fact]
-    public void ToResponse_ShouldMapListOfEntitiesToResponses()
+    public void ToResponse_ShouldMapPagedResultToPagedResultResponse()
     {
-        // Arrange
         var address1 = new Address(
-            street: "Rua das Flores",
-            number: "123",
-            complement: null!,
-            neighborhood: "Centro",
-            city: "São Paulo",
-            state: "SP",
-            zipCode: "01234567"
+            street: _fixture.Create<string>(),
+            number: _fixture.Create<string>(),
+            complement: _fixture.Create<string>(),
+            neighborhood: _fixture.Create<string>(),
+            city: _fixture.Create<string>(),
+            state: _fixture.Create<string>(),
+            zipCode: _fixture.Create<string>()
         );
-
         var address2 = new Address(
-            street: "Avenida Principal",
-            number: "456",
-            complement: "Apto 202",
-            neighborhood: "Jardim",
-            city: "Rio de Janeiro",
-            state: "RJ",
-            zipCode: "87654321"
+            street: _fixture.Create<string>(),
+            number: _fixture.Create<string>(),
+            complement: _fixture.Create<string>(),
+            neighborhood: _fixture.Create<string>(),
+            city: _fixture.Create<string>(),
+            state: _fixture.Create<string>(),
+            zipCode: _fixture.Create<string>()
         );
 
-        var entities = new List<PropertyEntity>
-        {
-            new PropertyBuilder()
-                .WithId(_fixture.Create<Guid>())
-                .WithAddress(address1)
-                .WithRentPrice(2500.00m)
-                .WithBedrooms(2)
-                .WithIsAvailable(true)
-                .WithIsActive(true)
-                .Build(),
+        var entity1 = new PropertyBuilder()
+            .WithId(Guid.NewGuid())
+            .WithAddress(address1)
+            .WithRentPrice(_fixture.Create<decimal>())
+            .WithBedrooms(_fixture.Create<int>())
+            .WithIsAvailable(_fixture.Create<bool>())
+            .WithIsActive(_fixture.Create<bool>())
+            .Build();
 
-            new PropertyBuilder()
-                .WithId(_fixture.Create<Guid>())
-                .WithAddress(address2)
-                .WithRentPrice(3200.00m)
-                .WithBedrooms(3)
-                .WithIsAvailable(false)
-                .WithIsActive(true)
-                .Build()
-        };
+        var entity2 = new PropertyBuilder()
+            .WithId(Guid.NewGuid())
+            .WithAddress(address2)
+            .WithRentPrice(_fixture.Create<decimal>())
+            .WithBedrooms(_fixture.Create<int>())
+            .WithIsAvailable(_fixture.Create<bool>())
+            .WithIsActive(_fixture.Create<bool>())
+            .Build();
+
+        var entities = new List<PropertyEntity> { entity1, entity2 };
+        var pagedResult = new PagedResult<PropertyEntity>(entities, totalResults: 10, page: 2, pageSize: 2);
 
         // Act
-        var responses = entities.ToResponse();
+        var response = pagedResult.ToResponse();
 
         // Assert
-        responses.Should().NotBeNull();
-        responses.Should().HaveCount(entities.Count);
+        response.Should().NotBeNull();
+        response.Page.Should().Be(pagedResult.Page);
+        response.PageSize.Should().Be(pagedResult.PageSize);
+        response.TotalResults.Should().Be(pagedResult.TotalResults);
+        response.Results.Should().HaveCount(entities.Count);
+        response.Results.Should().BeEquivalentTo(entities.Select(e => e.ToResponse()));
     }
 }

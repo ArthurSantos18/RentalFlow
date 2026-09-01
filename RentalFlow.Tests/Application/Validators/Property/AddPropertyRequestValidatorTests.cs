@@ -59,7 +59,8 @@ public sealed class AddPropertyRequestValidatorTests
     [InlineData("", "ZipCode is required.")]
     [InlineData("1234567", "ZipCode must have exactly 8 digits.")]
     [InlineData("123456789", "ZipCode must have exactly 8 digits.")]
-    [InlineData("ABCDEFGH", "ZipCode must contain only numbers.")]
+    [InlineData("ABCDEFGH", "ZipCode must be in the format XXXXX-XXX or XXXXXXXX.")]
+    [InlineData("12345-67", "ZipCode must be in the format XXXXX-XXX or XXXXXXXX.")]
     public void Validate_ZipCode_ShouldHaveError(string zipCode, string expectedError)
     {
         // Arrange

@@ -2,6 +2,7 @@
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using RentalFlow.API.Helpers;
+using RentalFlow.Application.Requests;
 using RentalFlow.Application.Requests.Property;
 using RentalFlow.Application.UseCases.Commands.Property;
 using RentalFlow.Application.UseCases.Queries.Property;
@@ -13,20 +14,9 @@ namespace RentalFlow.API.Controllers;
 public sealed class PropertyController(ICommandMediator _commandMediator, IQueryMediator _queryMediator) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetAllProperties(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetProperties([FromQuery] GetPropertiesRequest request, CancellationToken cancellationToken)
     {
-        var query = new GetPropertiesQuery();
-        var result = await _queryMediator.QueryAsync(query, cancellationToken);
-
-        return result.IsSuccess
-            ? Ok(result.Value)
-            : ApiResponseHelper.HandleError(result.Error);
-    }
-
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetPropertyByIdAsync([FromQuery] Guid id, CancellationToken cancellationToken)
-    {
-        var query = new GetPropertyByIdQuery(id);
+        var query = new GetPropertiesQuery(request);
         var result = await _queryMediator.QueryAsync(query, cancellationToken);
 
         return result.IsSuccess

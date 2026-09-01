@@ -8,44 +8,63 @@ public sealed class AddPropertyRequestValidator : AbstractValidator<AddPropertyR
     public AddPropertyRequestValidator()
     {
         RuleFor(x => x.Address)
-            .NotNull().WithMessage("Address is required.");
+            .NotNull()
+            .WithMessage("Address is required.");
 
         RuleFor(x => x.Address.Street)
-            .NotEmpty().WithMessage("Street is required.")
-            .MaximumLength(100).WithMessage("Street must not exceed 100 characters.");
+            .NotEmpty()
+            .WithMessage("Street is required.")
+            .MaximumLength(100)
+            .WithMessage("Street must not exceed 100 characters.");
 
         RuleFor(x => x.Address.Number)
-            .NotEmpty().WithMessage("Number is required.")
-            .MaximumLength(10).WithMessage("Number must not exceed 10 characters.");
+            .NotEmpty()
+            .WithMessage("Number is required.")
+            .MaximumLength(10)
+            .WithMessage("Number must not exceed 10 characters.");
 
         RuleFor(x => x.Address.Neighborhood)
-            .NotEmpty().WithMessage("Neighborhood is required.")
-            .MaximumLength(50).WithMessage("Neighborhood must not exceed 50 characters.");
+            .NotEmpty()
+            .WithMessage("Neighborhood is required.")
+            .MaximumLength(50)
+            .WithMessage("Neighborhood must not exceed 50 characters.");
 
         RuleFor(x => x.Address.City)
-            .NotEmpty().WithMessage("City is required.")
-            .MaximumLength(50).WithMessage("City must not exceed 50 characters.");
+            .NotEmpty()
+            .WithMessage("City is required.")
+            .MaximumLength(50)
+            .WithMessage("City must not exceed 50 characters.");
 
         RuleFor(x => x.Address.State)
-            .NotEmpty().WithMessage("State is required.")
-            .Length(2).WithMessage("State must be a 2-letter code (e.g., BA).")
-            .Must(state => state.All(char.IsLetter)).WithMessage("State must contain only letters.");
+            .NotEmpty()
+            .WithMessage("State is required.")
+            .Length(2)
+            .WithMessage("State must be a 2-letter code (e.g., BA).")
+            .Must(state => state.All(char.IsLetter))
+            .WithMessage("State must contain only letters.");
 
         RuleFor(x => x.Address.ZipCode)
-            .NotEmpty().WithMessage("ZipCode is required.")
-            .Length(8).WithMessage("ZipCode must have exactly 8 digits.")
-            .Matches("^[0-9]+$").WithMessage("ZipCode must contain only numbers.");
+            .NotEmpty()
+            .WithMessage("ZipCode is required.")
+            .Length(8)
+            .WithMessage("ZipCode must have exactly 8 digits.")
+            .Matches(@"^\d{5}-?\d{3}$")
+            .WithMessage("ZipCode must be in the format XXXXX-XXX or XXXXXXXX.");
 
         RuleFor(x => x.RentPrice)
-                   .GreaterThan(0).WithMessage("Rent price must be greater than zero.");
+            .GreaterThan(0)
+            .WithMessage("Rent price must be greater than zero.");
 
         RuleFor(x => x.RentPrice)
-            .GreaterThan(0).WithMessage("Rent price must be greater than zero.");
+            .GreaterThan(0)
+            .WithMessage("Rent price must be greater than zero.");
 
         RuleFor(x => x.Bedrooms)
-            .GreaterThan(0).WithMessage("Bedrooms must be greater than zero.");
+            .GreaterThan(0)
+            .WithMessage("Bedrooms must be greater than zero.");
 
         RuleFor(x => x.IsAvailable)
-            .NotNull().WithMessage("IsAvailable is required.");
+            .NotNull()
+            .WithMessage("IsAvailable is required.");
     }
 }

@@ -1,6 +1,7 @@
 ﻿using RentalFlow.Application.Requests.Property;
 using RentalFlow.Application.Responses;
 using RentalFlow.Domain.Entities.Property;
+using RentalFlow.Domain.Patterns.PagedResult;
 
 namespace RentalFlow.Application.Mappers;
 
@@ -41,8 +42,14 @@ public static class PropertyMapper
         };
     }
 
-    public static IEnumerable<GetPropertyResponse> ToResponse(this IEnumerable<PropertyEntity> properties)
+    public static PagedResult<GetPropertyResponse> ToResponse(this PagedResult<PropertyEntity> pagedResult)
     {
-        return properties.Select(p => p.ToResponse());
+        return new PagedResult<GetPropertyResponse>
+        {
+            Page = pagedResult.Page,
+            PageSize = pagedResult.PageSize,
+            TotalResults = pagedResult.TotalResults,
+            Results = pagedResult.Results.Select(p => p.ToResponse())
+        };
     }
 }
