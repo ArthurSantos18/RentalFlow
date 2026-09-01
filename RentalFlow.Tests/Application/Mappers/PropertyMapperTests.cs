@@ -66,7 +66,6 @@ public sealed class PropertyMapperTests
             .With(r => r.RentPrice, _fixture.Create<decimal>())
             .With(r => r.Bedrooms, _fixture.Create<int>())
             .With(r => r.IsAvailable, _fixture.Create<bool>())
-            .With(r => r.IsActive, _fixture.Create<bool>())
             .Create();
 
         // Act
@@ -78,7 +77,6 @@ public sealed class PropertyMapperTests
         update.RentPrice.Should().Be(request.RentPrice);
         update.Bedrooms.Should().Be(request.Bedrooms);
         update.IsAvailable.Should().Be(request.IsAvailable);
-        update.IsActive.Should().Be(request.IsActive);
     }
 
     [Fact]
@@ -96,7 +94,6 @@ public sealed class PropertyMapperTests
         update.RentPrice.Should().BeNull();
         update.Bedrooms.Should().BeNull();
         update.IsAvailable.Should().BeNull();
-        update.IsActive.Should().BeNull();
     }
 
     [Fact]

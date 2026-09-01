@@ -25,8 +25,7 @@ public static class PropertyMapper
             request.Address,
             request.RentPrice,
             request.Bedrooms,
-            request.IsAvailable,
-            request.IsActive);
+            request.IsAvailable);
     }
 
     public static GetPropertyResponse ToResponse(this PropertyEntity property)

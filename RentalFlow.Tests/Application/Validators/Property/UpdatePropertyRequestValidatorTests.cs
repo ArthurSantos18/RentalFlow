@@ -108,21 +108,6 @@ public sealed class UpdatePropertyRequestValidatorTests
     }
 
     [Fact]
-    public void Validate_IsActive_ShouldHaveError_WhenNull()
-    {
-        // Arrange
-        var request = _fixture.Build<UpdatePropertyRequest>()
-            .Without(r => r.IsActive)
-            .Create();
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.IsActive);
-    }
-
-    [Fact]
     public void Validate_ShouldNotHaveErrors_WhenAllFieldsAreValid()
     {
         // Arrange
@@ -140,7 +125,6 @@ public sealed class UpdatePropertyRequestValidatorTests
             .With(r => r.RentPrice, 2500.00m)
             .With(r => r.Bedrooms, 2)
             .With(r => r.IsAvailable, true)
-            .With(r => r.IsActive, true)
             .Create();
 
         // Act

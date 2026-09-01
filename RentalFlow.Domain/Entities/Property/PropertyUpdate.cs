@@ -6,5 +6,4 @@ public record PropertyUpdate(
     Address? Address,
     decimal? RentPrice,
     int? Bedrooms,
-    bool? IsAvailable,
-    bool? IsActive);
+    bool? IsAvailable);

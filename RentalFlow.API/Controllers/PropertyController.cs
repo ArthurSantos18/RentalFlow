@@ -2,7 +2,6 @@
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using RentalFlow.API.Helpers;
-using RentalFlow.Application.Requests;
 using RentalFlow.Application.Requests.Property;
 using RentalFlow.Application.UseCases.Commands.Property;
 using RentalFlow.Application.UseCases.Queries.Property;

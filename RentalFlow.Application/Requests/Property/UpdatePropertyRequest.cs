@@ -8,5 +8,4 @@ public record UpdatePropertyRequest
     public decimal? RentPrice { get; init; }
     public int? Bedrooms { get; init; }
     public bool? IsAvailable { get; init; }
-    public bool? IsActive { get; init; }
 }

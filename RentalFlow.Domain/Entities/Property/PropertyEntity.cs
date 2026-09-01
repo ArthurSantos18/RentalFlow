@@ -119,11 +119,6 @@ public class PropertyEntity
         {
             SetIsAvailable(update.IsAvailable.Value);
         }
-
-        if (update.IsActive.HasValue)
-        {
-            SetIsActive(update.IsActive.Value);
-        }
     }
 
     public PropertyBuilder ToBuilder() => new()
