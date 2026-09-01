@@ -13,20 +13,9 @@ namespace RentalFlow.API.Controllers;
 public sealed class ApplicantController(ICommandMediator _commandMediator, IQueryMediator _queryMediator) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetAllApplicantAsync(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetApplicantsAsync([FromQuery] GetApplicantRequest request, CancellationToken cancellationToken)
     {
-        var query = new GetApplicantsQuery();
-        var result = await _queryMediator.QueryAsync(query, cancellationToken);
-
-        return result.IsSuccess
-            ? Ok(result.Value)
-            : ApiResponseHelper.HandleError(result.Error);
-    }
-
-    [HttpGet("cpf")]
-    public async Task<IActionResult> GetApplicantByCpfAsync([FromQuery] GetApplicantByCpfRequest request, CancellationToken cancellationToken)
-    {
-        var query = new GetApplicantByCpfQuery(request);
+        var query = new GetApplicantsQuery(request);
         var result = await _queryMediator.QueryAsync(query, cancellationToken);
 
         return result.IsSuccess

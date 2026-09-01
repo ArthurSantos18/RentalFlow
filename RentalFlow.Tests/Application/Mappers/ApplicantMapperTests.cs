@@ -3,6 +3,7 @@ using FluentAssertions;
 using RentalFlow.Application.Mappers;
 using RentalFlow.Application.Requests.Applicant;
 using RentalFlow.Domain.Entities.Applicant;
+using RentalFlow.Domain.Patterns.PagedResult;
 
 namespace RentalFlow.Tests.Application.Mappers;
 
@@ -84,37 +85,41 @@ public sealed class ApplicantMapperTests
     }
 
     [Fact]
-    public void ToResponse_ShouldMapListOfEntitiesToResponses()
+    public void ToResponse_ShouldMapPagedResultToPagedResultResponse()
     {
         // Arrange
-        var entities = new List<ApplicantEntity>
-        {
-            new ApplicantBuilder()
-                .WithId(_fixture.Create<Guid>())
-                .WithFullName(_fixture.Create<string>())
-                .WithCpf("52998224725")
-                .WithEmail(_fixture.Create<string>())
-                .WithPhone(_fixture.Create<string>())
-                .WithMonthlyIncome(_fixture.Create<decimal>())
-                .WithActive(true)
-                .Build(),
+        var entity1 = new ApplicantBuilder()
+            .WithId(Guid.NewGuid())
+            .WithFullName(_fixture.Create<string>())
+            .WithCpf(_fixture.Create<string>().Substring(0, 11))
+            .WithEmail(_fixture.Create<string>() + "@test.com")
+            .WithPhone(_fixture.Create<string>().Substring(0, 11))
+            .WithMonthlyIncome(_fixture.Create<decimal>())
+            .WithActive(_fixture.Create<bool>())
+            .Build();
 
-            new ApplicantBuilder()
-                .WithId(_fixture.Create<Guid>())
-                .WithFullName(_fixture.Create<string>())
-                .WithCpf("92281813037")
-                .WithEmail(_fixture.Create<string>())
-                .WithPhone(_fixture.Create<string>())
-                .WithMonthlyIncome(_fixture.Create<decimal>())
-                .WithActive(true)
-                .Build()
-        };
+        var entity2 = new ApplicantBuilder()
+            .WithId(Guid.NewGuid())
+            .WithFullName(_fixture.Create<string>())
+            .WithCpf(_fixture.Create<string>().Substring(0, 11))
+            .WithEmail(_fixture.Create<string>() + "@test.com")
+            .WithPhone(_fixture.Create<string>().Substring(0, 11))
+            .WithMonthlyIncome(_fixture.Create<decimal>())
+            .WithActive(_fixture.Create<bool>())
+            .Build();
+
+        var entities = new List<ApplicantEntity> { entity1, entity2 };
+        var pagedResult = new PagedResult<ApplicantEntity>(entities, totalResults: 10, page: 2, pageSize: 2);
 
         // Act
-        var responses = entities.ToResponse();
+        var response = pagedResult.ToResponse();
 
         // Assert
-        responses.Should().NotBeNull();
-        responses.Should().HaveCount(entities.Count);
+        response.Should().NotBeNull();
+        response.Page.Should().Be(pagedResult.Page);
+        response.PageSize.Should().Be(pagedResult.PageSize);
+        response.TotalResults.Should().Be(pagedResult.TotalResults);
+        response.Results.Should().HaveCount(entities.Count);
+        response.Results.Should().BeEquivalentTo(entities.Select(e => e.ToResponse()));
     }
 }
