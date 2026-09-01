@@ -2,8 +2,9 @@
 
 public enum RentalStatus
 {
-    Draft = 0,
-    Pending = 1,
-    Approved = 2,
-    Rejected = 3
+    None = 0,
+    Draft = 1,
+    Pending = 2,
+    Approved = 3,
+    Rejected = 4
 }

@@ -1,4 +1,5 @@
 ﻿using RentalFlow.Domain.Entities.RentalApplication;
+using RentalFlow.Domain.Enums;
 
 namespace RentalFlow.Domain.Entities.Operator;
 
@@ -7,15 +8,17 @@ public sealed class OperatorEntity
     public Guid Id { get; private set; } = Guid.NewGuid();
     public string Name { get; private set; } = string.Empty;
     public string Email { get; private set; } = string.Empty;
-    public string Role { get; private set; } = string.Empty;
+    public OperatorRole Role { get; private set; }
+    public bool IsActive { get; private set; }
     public List<RentalApplicationEntity> Applications { get; private set; } = [];
 
-    public OperatorEntity(Guid id, string name, string email, string role, List<RentalApplicationEntity> applications)
+    public OperatorEntity(Guid id, string name, string email, OperatorRole role, bool isActive, List<RentalApplicationEntity> applications)
     {
         Id = id;
         Name = name;
         Email = email;
         Role = role;
+        IsActive = isActive;
         Applications = applications ?? [];
     }
 
@@ -25,7 +28,8 @@ public sealed class OperatorEntity
         Name = string.Empty,
         Email = string.Empty,
         Applications = [],
-        Role = string.Empty
+        IsActive = false,
+        Role = OperatorRole.None,
     };
 
     private OperatorEntity() { }
@@ -48,9 +52,15 @@ public sealed class OperatorEntity
         return this;
     }
 
-    public OperatorEntity SetRole(string role)
+    public OperatorEntity SetRole(OperatorRole role)
     {
         Role = role;
+        return this;
+    }
+
+    public OperatorEntity SetIsActive(bool isActive)
+    {
+        IsActive = isActive;
         return this;
     }
 
@@ -72,12 +82,31 @@ public sealed class OperatorEntity
         return this;
     }
 
+    public void Update(OperatorUpdate update)
+    {
+        if (update.Name is not null)
+        {
+            SetName(update.Name);
+        }
+            
+        if (update.Email is not null)
+        {
+            SetEmail(update.Email);
+        }
+            
+        if (update.Role.HasValue)
+        {
+            SetRole(update.Role.Value);
+        }
+    }
+
     public OperatorBuilder ToBuilder() => new()
     {
         Id = Id,
         Name = Name,
         Email = Email,
         Role = Role,
+        IsActive = IsActive,
         Applications = Applications
     };
 }

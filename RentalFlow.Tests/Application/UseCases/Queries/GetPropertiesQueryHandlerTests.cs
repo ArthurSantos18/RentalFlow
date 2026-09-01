@@ -25,7 +25,7 @@ public sealed class GetPropertiesQueryHandlerTests
     public async Task HandleAsync_ShouldReturnSuccess_WhenPropertiesExist()
     {
         // Arrange
-        var request = _fixture.Create<GetPropertiesRequest>();
+        var request = _fixture.Create<GetPropertyRequest>();
         var query = _fixture.Build<GetPropertiesQuery>()
             .With(q => q.Request, request)
             .Create();

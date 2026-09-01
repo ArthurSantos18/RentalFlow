@@ -2,20 +2,20 @@
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using RentalFlow.API.Helpers;
-using RentalFlow.Application.Requests.Property;
-using RentalFlow.Application.UseCases.Commands.Property;
-using RentalFlow.Application.UseCases.Queries.Property;
+using RentalFlow.Application.Requests.Operator;
+using RentalFlow.Application.UseCases.Commands.Operator;
 
 namespace RentalFlow.API.Controllers;
 
-[Route("api/property")]
+[Route("api/operator")]
 [ApiController]
-public sealed class PropertyController(ICommandMediator _commandMediator, IQueryMediator _queryMediator) : ControllerBase
+
+public sealed class OperatorController(ICommandMediator _commandMediator, IQueryMediator _queryMediator) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetProperties([FromQuery] GetPropertyRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetOperatorsAsync([FromQuery] GetOperatorRequest request, CancellationToken cancellationToken)
     {
-        var query = new GetPropertiesQuery(request);
+        var query = new GetOperatorsQuery(request);
         var result = await _queryMediator.QueryAsync(query, cancellationToken);
 
         return result.IsSuccess
@@ -24,9 +24,9 @@ public sealed class PropertyController(ICommandMediator _commandMediator, IQuery
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddPropertyAsync([FromBody] AddPropertyRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> AddOperatorAsync([FromBody] AddOperatorRequest request, CancellationToken cancellationToken)
     {
-        var command = new AddPropertyCommand(request);
+        var command = new AddOperatorCommand(request);
         var result = await _commandMediator.SendAsync(command, cancellationToken);
 
         return result.IsSuccess
@@ -35,9 +35,9 @@ public sealed class PropertyController(ICommandMediator _commandMediator, IQuery
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> DeletePropertyAsync([FromRoute] Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> DeleteOperatorAsync([FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        var command = new DeletePropertyCommand(id);
+        var command = new DeleteOperatorCommand(id);
         var result = await _commandMediator.SendAsync(command, cancellationToken);
 
         return result.IsSuccess
@@ -46,9 +46,9 @@ public sealed class PropertyController(ICommandMediator _commandMediator, IQuery
     }
 
     [HttpPatch("{id:guid}")]
-    public async Task<IActionResult> UpdateApplicantAsync([FromRoute] Guid id, [FromBody] UpdatePropertyRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateOperatorAsync([FromRoute] Guid id, [FromBody] UpdateOperatorRequest request, CancellationToken cancellationToken)
     {
-        var command = new UpdatePropertyCommand(id, request);
+        var command = new UpdateOperatorCommand(id, request);
         var result = await _commandMediator.SendAsync(command, cancellationToken);
 
         return result.IsSuccess

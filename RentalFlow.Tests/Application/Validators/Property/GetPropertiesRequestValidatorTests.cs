@@ -16,7 +16,7 @@ public sealed class GetPropertiesRequestValidatorTests
     public void Validate_MinRentPrice_ShouldHaveError_WhenNegative(decimal minRentPrice, string expectedError)
     {
         // Arrange
-        var request = _fixture.Build<GetPropertiesRequest>()
+        var request = _fixture.Build<GetPropertyRequest>()
             .With(r => r.MinRentPrice, minRentPrice)
             .Create();
 
@@ -33,7 +33,7 @@ public sealed class GetPropertiesRequestValidatorTests
     public void Validate_MaxRentPrice_ShouldHaveError_WhenNegative(decimal maxRentPrice, string expectedError)
     {
         // Arrange
-        var request = _fixture.Build<GetPropertiesRequest>()
+        var request = _fixture.Build<GetPropertyRequest>()
             .With(r => r.MaxRentPrice, maxRentPrice)
             .Create();
 
@@ -48,7 +48,7 @@ public sealed class GetPropertiesRequestValidatorTests
     public void Validate_MinRentPriceGreaterThanMaxRentPrice_ShouldHaveError()
     {
         // Arrange
-        var request = _fixture.Build<GetPropertiesRequest>()
+        var request = _fixture.Build<GetPropertyRequest>()
             .With(r => r.MinRentPrice, 5000)
             .With(r => r.MaxRentPrice, 1000)
             .Create();
@@ -64,7 +64,7 @@ public sealed class GetPropertiesRequestValidatorTests
     public void Validate_MinRentPriceLessThanMaxRentPrice_ShouldNotHaveError()
     {
         // Arrange
-        var request = _fixture.Build<GetPropertiesRequest>()
+        var request = _fixture.Build<GetPropertyRequest>()
             .With(r => r.MinBedrooms, 1)
             .With(r => r.MaxBedrooms, 3)
             .With(r => r.MinRentPrice, 1000m)
@@ -84,7 +84,7 @@ public sealed class GetPropertiesRequestValidatorTests
     public void Validate_MinBedrooms_ShouldHaveError_WhenNegative(int minBedrooms, string expectedError)
     {
         // Arrange
-        var request = _fixture.Build<GetPropertiesRequest>()
+        var request = _fixture.Build<GetPropertyRequest>()
             .With(r => r.MinBedrooms, minBedrooms)
             .Create();
 
@@ -101,7 +101,7 @@ public sealed class GetPropertiesRequestValidatorTests
     public void Validate_MaxBedrooms_ShouldHaveError_WhenNegative(int maxBedrooms, string expectedError)
     {
         // Arrange
-        var request = _fixture.Build<GetPropertiesRequest>()
+        var request = _fixture.Build<GetPropertyRequest>()
             .With(r => r.MaxBedrooms, maxBedrooms)
             .Create();
 
@@ -116,7 +116,7 @@ public sealed class GetPropertiesRequestValidatorTests
     public void Validate_MinBedroomsGreaterThanMaxBedrooms_ShouldHaveError()
     {
         // Arrange
-        var request = _fixture.Build<GetPropertiesRequest>()
+        var request = _fixture.Build<GetPropertyRequest>()
             .With(r => r.MinBedrooms, 5)
             .With(r => r.MaxBedrooms, 2)
             .Create();
@@ -131,7 +131,7 @@ public sealed class GetPropertiesRequestValidatorTests
     [Fact]
     public void Validate_MinBedroomsLessThanMaxBedrooms_ShouldNotHaveError()
     {
-        var request = _fixture.Build<GetPropertiesRequest>()
+        var request = _fixture.Build<GetPropertyRequest>()
             .With(r => r.MinBedrooms, 1)
             .With(r => r.MaxBedrooms, 3)
             .With(r => r.MinRentPrice, 1000m)
@@ -154,7 +154,7 @@ public sealed class GetPropertiesRequestValidatorTests
     public void Validate_ZipCodes_ShouldHaveError_WhenInvalidFormat(string zipCode, string expectedError)
     {
         // Arrange
-        var request = _fixture.Build<GetPropertiesRequest>()
+        var request = _fixture.Build<GetPropertyRequest>()
             .With(r => r.ZipCodes, [zipCode])
             .Create();
 
@@ -171,7 +171,7 @@ public sealed class GetPropertiesRequestValidatorTests
     public void Validate_ZipCodes_ShouldNotHaveError_WhenValidFormat(string zipCode)
     {
         // Arrange
-        var request = _fixture.Build<GetPropertiesRequest>()
+        var request = _fixture.Build<GetPropertyRequest>()
             .With(r => r.ZipCodes, [zipCode])
             .Create();
 
@@ -186,7 +186,7 @@ public sealed class GetPropertiesRequestValidatorTests
     public void Validate_ShouldNotHaveErrors_WhenAllFieldsAreValid()
     {
         // Arrange
-        var request = _fixture.Build<GetPropertiesRequest>()
+        var request = _fixture.Build<GetPropertyRequest>()
             .With(r => r.MinRentPrice, 1000)
             .With(r => r.MaxRentPrice, 5000)
             .With(r => r.MinBedrooms, 2)
@@ -205,7 +205,7 @@ public sealed class GetPropertiesRequestValidatorTests
     public void Validate_ShouldNotHaveErrors_WhenFieldsAreNull()
     {
         // Arrange
-        var request = new GetPropertiesRequest();
+        var request = new GetPropertyRequest();
 
         // Act
         var result = _validator.TestValidate(request);

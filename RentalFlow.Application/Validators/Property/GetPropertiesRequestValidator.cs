@@ -3,7 +3,7 @@ using RentalFlow.Application.Requests.Property;
 
 namespace RentalFlow.Application.Validators.Property;
 
-public sealed class GetPropertiesRequestValidator : AbstractValidator<GetPropertiesRequest>
+public sealed class GetPropertiesRequestValidator : AbstractValidator<GetPropertyRequest>
 {
     public GetPropertiesRequestValidator()
     {

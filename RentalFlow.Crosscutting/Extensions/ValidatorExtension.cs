@@ -19,7 +19,7 @@ public static class ValidatorExtension
         services.AddScoped<IValidator<UpdateApplicantRequest>, UpdateApplicantRequestValidator>();
         services.AddScoped<IValidator<AddApplicantRequest>, AddApplicantRequestValidator>();
 
-        services.AddScoped<IValidator<GetPropertiesRequest>, GetPropertiesRequestValidator>();
+        services.AddScoped<IValidator<GetPropertyRequest>, GetPropertiesRequestValidator>();
         services.AddScoped<IValidator<UpdatePropertyRequest>, UpdatePropertyRequestValidator>();
         services.AddScoped<IValidator<AddPropertyRequest>, AddPropertyRequestValidator>();
 

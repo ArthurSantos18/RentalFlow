@@ -9,7 +9,7 @@ namespace RentalFlow.Infrastructure.Repositories;
 
 public sealed class PropertyRepository(AppDbContext context) : BaseRepository<PropertyEntity>(context), IPropertyRepository
 {
-    public async Task<PagedResult<PropertyEntity>> GetPropertiesAsync(GetPropertiesRequest request, CancellationToken cancellationToken)
+    public async Task<PagedResult<PropertyEntity>> GetPropertiesAsync(GetPropertyRequest request, CancellationToken cancellationToken)
     {
         var query = _context.Properties.AsNoTracking().AsQueryable();
 

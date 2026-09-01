@@ -63,10 +63,5 @@ public sealed class UpdatePropertyRequestValidator : AbstractValidator<UpdatePro
             .NotNull()
             .WithMessage("Availability status is required.")
             .When(x => x.IsAvailable.HasValue);
-
-        RuleFor(x => x.IsActive)
-            .NotNull()
-            .WithMessage("Active status is required.")
-            .When(x => x.IsActive.HasValue);
     }
 }

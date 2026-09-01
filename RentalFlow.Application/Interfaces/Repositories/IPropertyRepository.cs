@@ -6,5 +6,5 @@ namespace RentalFlow.Application.Interfaces.Repositories;
 
 public interface IPropertyRepository : IBaseRepository<PropertyEntity>
 {
-    Task<PagedResult<PropertyEntity>> GetPropertiesAsync(GetPropertiesRequest request, CancellationToken cancellationToken);
+    Task<PagedResult<PropertyEntity>> GetPropertiesAsync(GetPropertyRequest request, CancellationToken cancellationToken);
 }
