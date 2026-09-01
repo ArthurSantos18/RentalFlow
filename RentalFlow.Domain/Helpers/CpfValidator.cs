@@ -53,6 +53,6 @@ public static partial class CpfValidator
 
     public static string Normalize(string cpf)
     {
-        return cpf.Replace(".", "").Replace("-", "");
+        return new string([.. cpf.Where(char.IsDigit)]);
     }
 }

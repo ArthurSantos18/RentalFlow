@@ -2,10 +2,7 @@
 
 public record GetApplicantRequest
 {
-    public GetApplicantRequest()
-    {
-        PageFilter = new PageFilterRequest { Page = 1, PageSize = 60 };
-    }
+    public GetApplicantRequest() => PageFilter = new PageFilterRequest { Page = 1, PageSize = 60 };
 
     public PageFilterRequest PageFilter { get; set; }
     public IEnumerable<Guid>? Ids { get; set; }

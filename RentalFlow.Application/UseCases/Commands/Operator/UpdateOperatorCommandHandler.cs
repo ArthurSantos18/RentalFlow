@@ -6,7 +6,7 @@ using RentalFlow.Domain.Patterns.Result;
 
 namespace RentalFlow.Application.UseCases.Commands.Operator;
 
-internal class UpdateOperatorCommandHandler(IOperatorRepository _operatorRepository) : ICommandHandler<UpdateOperatorCommand, Result>
+public sealed class UpdateOperatorCommandHandler(IOperatorRepository _operatorRepository) : ICommandHandler<UpdateOperatorCommand, Result>
 {
     public async Task<Result> HandleAsync(UpdateOperatorCommand command, CancellationToken cancellationToken)
     {

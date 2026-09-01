@@ -2,10 +2,7 @@
 
 public class GetPropertyRequest
 {
-    public GetPropertyRequest()
-    {
-        PageFilter = new PageFilterRequest { Page = 1, PageSize = 60 };
-    }
+    public GetPropertyRequest() => PageFilter = new PageFilterRequest { Page = 1, PageSize = 60 };
 
     public PageFilterRequest PageFilter { get; set; }
 

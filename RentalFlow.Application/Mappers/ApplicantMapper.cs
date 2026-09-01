@@ -1,6 +1,7 @@
 ﻿using RentalFlow.Application.Requests.Applicant;
 using RentalFlow.Application.Responses;
 using RentalFlow.Domain.Entities.Applicant;
+using RentalFlow.Domain.Helpers;
 using RentalFlow.Domain.Patterns.PagedResult;
 
 namespace RentalFlow.Application.Mappers;
@@ -12,7 +13,7 @@ public static class ApplicantMapper
         return new ApplicantBuilder()
             .WithId(Guid.NewGuid())
             .WithFullName(request.FullName)
-            .WithCpf(request.Cpf)
+            .WithCpf(CpfValidator.Normalize(request.Cpf))
             .WithEmail(request.Email)
             .WithPhone(request.Phone)
             .WithMonthlyIncome(request.MonthlyIncome)

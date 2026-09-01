@@ -1,5 +1,8 @@
-﻿namespace RentalFlow.Domain.Enums;
+﻿using System.Text.Json.Serialization;
 
+namespace RentalFlow.Domain.Enums;
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum RentalStatus
 {
     None = 0,
