@@ -3,7 +3,7 @@ using RentalFlow.Application.Requests.Operator;
 
 namespace RentalFlow.Application.Validators.Operator;
 
-public sealed class GetOperatorsRequestValidator : AbstractValidator<GetOperatorsRequest>
+public sealed class GetOperatorsRequestValidator : AbstractValidator<GetOperatorRequest>
 {
     public GetOperatorsRequestValidator()
     {

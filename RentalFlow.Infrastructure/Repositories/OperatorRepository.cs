@@ -10,7 +10,7 @@ namespace RentalFlow.Infrastructure.Repositories;
 
 public sealed class OperatorRepository(AppDbContext context) : BaseRepository<OperatorEntity>(context), IOperatorRepository
 {
-    public async Task<PagedResult<OperatorEntity>> GetOperatorsAsync(GetOperatorsRequest request, CancellationToken cancellationToken)
+    public async Task<PagedResult<OperatorEntity>> GetOperatorsAsync(GetOperatorRequest request, CancellationToken cancellationToken)
     {
         var query = _context.Operators.AsNoTracking().AsQueryable();
 

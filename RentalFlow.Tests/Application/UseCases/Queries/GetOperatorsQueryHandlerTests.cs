@@ -25,7 +25,7 @@ public sealed class GetOperatorsQueryHandlerTests
     public async Task HandleAsync_ShouldReturnSuccess_WhenOperatorsExist()
     {
         // Arrange
-        var request = _fixture.Create<GetOperatorsRequest>();
+        var request = _fixture.Create<GetOperatorRequest>();
         var query = _fixture.Build<GetOperatorsQuery>()
             .With(q => q.Request, request)
             .Create();

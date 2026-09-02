@@ -14,7 +14,7 @@ namespace RentalFlow.API.Controllers;
 public sealed class OperatorController(ICommandMediator _commandMediator, IQueryMediator _queryMediator) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetOperatorsAsync([FromQuery] GetOperatorsRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetOperatorsAsync([FromQuery] GetOperatorRequest request, CancellationToken cancellationToken)
     {
         var query = new GetOperatorsQuery(request);
         var result = await _queryMediator.QueryAsync(query, cancellationToken);

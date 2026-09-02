@@ -6,4 +6,4 @@ using RentalFlow.Domain.Patterns.Result;
 
 namespace RentalFlow.Application.UseCases.Queries.Operator;
 
-public record GetOperatorsQuery(GetOperatorsRequest Request) : IQuery<Result<PagedResult<GetOperatorResponse>>>;
+public record GetOperatorsQuery(GetOperatorRequest Request) : IQuery<Result<PagedResult<GetOperatorResponse>>>;

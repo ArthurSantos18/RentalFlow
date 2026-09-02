@@ -15,7 +15,7 @@ public sealed class GetOperatorsRequestValidatorTests
     public void Validate_Ids_ShouldHaveError_WhenEmpty()
     {
         // Arrange
-        var request = _fixture.Build<GetOperatorsRequest>()
+        var request = _fixture.Build<GetOperatorRequest>()
             .With(r => r.Ids, [Guid.Empty])
             .Create();
 
@@ -31,7 +31,7 @@ public sealed class GetOperatorsRequestValidatorTests
     public void Validate_Ids_ShouldNotHaveError_WhenValid()
     {
         // Arrange
-        var request = _fixture.Build<GetOperatorsRequest>()
+        var request = _fixture.Build<GetOperatorRequest>()
             .With(r => r.Ids, [Guid.NewGuid()])
             .Create();
 
@@ -47,7 +47,7 @@ public sealed class GetOperatorsRequestValidatorTests
     public void Validate_Names_ShouldHaveError_WhenEmpty(string name)
     {
         // Arrange
-        var request = _fixture.Build<GetOperatorsRequest>()
+        var request = _fixture.Build<GetOperatorRequest>()
             .With(r => r.Names, [name])
             .Create();
 
@@ -67,7 +67,7 @@ public sealed class GetOperatorsRequestValidatorTests
         string expectedError)
     {
         // Arrange
-        var request = _fixture.Build<GetOperatorsRequest>()
+        var request = _fixture.Build<GetOperatorRequest>()
             .With(r => r.Names, [name])
             .Create();
 
@@ -85,7 +85,7 @@ public sealed class GetOperatorsRequestValidatorTests
         // Arrange
         var name = new string('A', 101);
 
-        var request = _fixture.Build<GetOperatorsRequest>()
+        var request = _fixture.Build<GetOperatorRequest>()
             .With(r => r.Names, [name])
             .Create();
 
@@ -103,7 +103,7 @@ public sealed class GetOperatorsRequestValidatorTests
     public void Validate_Names_ShouldNotHaveError_WhenValid(string name)
     {
         // Arrange
-        var request = _fixture.Build<GetOperatorsRequest>()
+        var request = _fixture.Build<GetOperatorRequest>()
             .With(r => r.Names, [name])
             .Create();
 
@@ -119,7 +119,7 @@ public sealed class GetOperatorsRequestValidatorTests
     public void Validate_Emails_ShouldHaveError_WhenEmpty(string email)
     {
         // Arrange
-        var request = _fixture.Build<GetOperatorsRequest>()
+        var request = _fixture.Build<GetOperatorRequest>()
             .With(r => r.Emails, [email])
             .Create();
 
@@ -140,7 +140,7 @@ public sealed class GetOperatorsRequestValidatorTests
         string expectedError)
     {
         // Arrange
-        var request = _fixture.Build<GetOperatorsRequest>()
+        var request = _fixture.Build<GetOperatorRequest>()
             .With(r => r.Emails, [email])
             .Create();
 
@@ -158,7 +158,7 @@ public sealed class GetOperatorsRequestValidatorTests
         // Arrange
         var email = $"{new string('a', 90)}@example.com";
 
-        var request = _fixture.Build<GetOperatorsRequest>()
+        var request = _fixture.Build<GetOperatorRequest>()
             .With(r => r.Emails, [email])
             .Create();
 
@@ -176,7 +176,7 @@ public sealed class GetOperatorsRequestValidatorTests
     public void Validate_Emails_ShouldNotHaveError_WhenValidFormat(string email)
     {
         // Arrange
-        var request = _fixture.Build<GetOperatorsRequest>()
+        var request = _fixture.Build<GetOperatorRequest>()
             .With(r => r.Emails, [email])
             .Create();
 
@@ -191,7 +191,7 @@ public sealed class GetOperatorsRequestValidatorTests
     public void Validate_Role_ShouldHaveError_WhenInvalid()
     {
         // Arrange
-        var request = _fixture.Build<GetOperatorsRequest>()
+        var request = _fixture.Build<GetOperatorRequest>()
             .With(r => r.Role, (OperatorRole)999)
             .Create();
 
@@ -211,7 +211,7 @@ public sealed class GetOperatorsRequestValidatorTests
     public void Validate_Role_ShouldNotHaveError_WhenValid(OperatorRole role)
     {
         // Arrange
-        var request = _fixture.Build<GetOperatorsRequest>()
+        var request = _fixture.Build<GetOperatorRequest>()
             .With(r => r.Role, role)
             .Create();
 
@@ -226,7 +226,7 @@ public sealed class GetOperatorsRequestValidatorTests
     public void Validate_ApplicationIds_ShouldHaveError_WhenEmpty()
     {
         // Arrange
-        var request = _fixture.Build<GetOperatorsRequest>()
+        var request = _fixture.Build<GetOperatorRequest>()
             .With(r => r.ApplicationIds, [Guid.Empty])
             .Create();
 
@@ -242,7 +242,7 @@ public sealed class GetOperatorsRequestValidatorTests
     public void Validate_ApplicationIds_ShouldNotHaveError_WhenValid()
     {
         // Arrange
-        var request = _fixture.Build<GetOperatorsRequest>()
+        var request = _fixture.Build<GetOperatorRequest>()
             .With(r => r.ApplicationIds, [Guid.NewGuid()])
             .Create();
 
@@ -257,7 +257,7 @@ public sealed class GetOperatorsRequestValidatorTests
     public void Validate_ShouldNotHaveErrors_WhenAllFieldsAreValid()
     {
         // Arrange
-        var request = _fixture.Build<GetOperatorsRequest>()
+        var request = _fixture.Build<GetOperatorRequest>()
             .With(r => r.Ids, [Guid.NewGuid()])
             .With(r => r.Names, ["John Doe"])
             .With(r => r.Emails, ["john.doe@example.com"])
@@ -276,7 +276,7 @@ public sealed class GetOperatorsRequestValidatorTests
     public void Validate_ShouldNotHaveErrors_WhenFieldsAreNull()
     {
         // Arrange
-        var request = new GetOperatorsRequest();
+        var request = new GetOperatorRequest();
 
         // Act
         var result = _validator.TestValidate(request);
@@ -289,7 +289,7 @@ public sealed class GetOperatorsRequestValidatorTests
     public void Validate_ShouldHaveMultipleErrors_WhenMultipleFieldsInvalid()
     {
         // Arrange
-        var request = _fixture.Build<GetOperatorsRequest>()
+        var request = _fixture.Build<GetOperatorRequest>()
             .With(r => r.Ids, [Guid.Empty])
             .With(r => r.Names, ["Jo"])
             .With(r => r.Emails, ["invalid-email"])

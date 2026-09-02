@@ -7,6 +7,8 @@ using RentalFlow.Application.Requests.Applicant;
 using RentalFlow.Application.Requests;
 using RentalFlow.Application.Validators.Property;
 using RentalFlow.Application.Requests.Property;
+using RentalFlow.Application.Validators.Operator;
+using RentalFlow.Application.Requests.Operator;
 
 namespace RentalFlow.Crosscutting.Extensions;
 
@@ -15,6 +17,7 @@ public static class ValidatorExtension
     public static IServiceCollection AddValidators(this IServiceCollection services)
     {
         services.AddFluentValidationAutoValidation(x => x.DisableDataAnnotationsValidation = true);
+
         services.AddScoped<IValidator<GetApplicantRequest>, GetApplicantRequestValidator>();
         services.AddScoped<IValidator<UpdateApplicantRequest>, UpdateApplicantRequestValidator>();
         services.AddScoped<IValidator<AddApplicantRequest>, AddApplicantRequestValidator>();
@@ -23,6 +26,9 @@ public static class ValidatorExtension
         services.AddScoped<IValidator<UpdatePropertyRequest>, UpdatePropertyRequestValidator>();
         services.AddScoped<IValidator<AddPropertyRequest>, AddPropertyRequestValidator>();
 
+        services.AddScoped<IValidator<GetOperatorRequest>, GetOperatorsRequestValidator>();
+        services.AddScoped<IValidator<UpdateOperatorRequest>, UpdateOperatorRequestValidator>();
+        services.AddScoped<IValidator<AddOperatorRequest>, AddOperatorRequestValidator>();
 
         return services;
     }

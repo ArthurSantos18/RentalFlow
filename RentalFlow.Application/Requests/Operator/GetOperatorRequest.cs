@@ -2,9 +2,9 @@
 
 namespace RentalFlow.Application.Requests.Operator;
 
-public record GetOperatorsRequest
+public record GetOperatorRequest
 {
-    public GetOperatorsRequest() => PageFilter = new PageFilterRequest { Page = 1, PageSize = 60 };
+    public GetOperatorRequest() => PageFilter = new PageFilterRequest { Page = 1, PageSize = 60 };
 
     public PageFilterRequest PageFilter { get; set; }
     public IEnumerable<Guid>? Ids { get; set; }
