@@ -48,7 +48,7 @@ public sealed class PropertyMapperTests
     }
 
     [Fact]
-    public void ToUpdateDomain_ShouldMapAllFieldsCorrectly()
+    public void ToEntity_ShouldMapAllFieldsCorrectly_WhenExistingProvided()
     {
         // Arrange
         var address = new Address(
@@ -68,33 +68,29 @@ public sealed class PropertyMapperTests
             .With(r => r.IsAvailable, _fixture.Create<bool>())
             .Create();
 
-        // Act
-        var update = request.ToUpdateDomain();
-
-        // Assert
-        update.Should().NotBeNull();
-        update.Address.Should().Be(request.Address);
-        update.RentPrice.Should().Be(request.RentPrice);
-        update.Bedrooms.Should().Be(request.Bedrooms);
-        update.IsAvailable.Should().Be(request.IsAvailable);
-    }
-
-    [Fact]
-    public void ToUpdateDomain_ShouldHandleNullValues()
-    {
-        // Arrange
-        var request = new UpdatePropertyRequest();
+        var existing = new PropertyBuilder()
+            .WithId(_fixture.Create<Guid>())
+            .WithAddress(new Address("old","1","","nb","city","ST","12345678"))
+            .WithRentPrice(50m)
+            .WithBedrooms(1)
+            .WithIsAvailable(false)
+            .WithIsActive(true)
+            .Build();
 
         // Act
-        var update = request.ToUpdateDomain();
+        var entity = request.ToEntity(existing);
 
         // Assert
-        update.Should().NotBeNull();
-        update.Address.Should().BeNull();
-        update.RentPrice.Should().BeNull();
-        update.Bedrooms.Should().BeNull();
-        update.IsAvailable.Should().BeNull();
+        entity.Should().NotBeNull();
+        entity.Id.Should().Be(existing.Id);
+        entity.Address.Should().Be(request.Address ?? existing.Address);
+        entity.RentPrice.Should().Be(request.RentPrice ?? existing.RentPrice);
+        entity.Bedrooms.Should().Be(request.Bedrooms ?? existing.Bedrooms);
+        entity.IsAvailable.Should().Be(request.IsAvailable ?? existing.IsAvailable);
+        entity.IsActive.Should().Be(existing.IsActive);
     }
+
+
 
     [Fact]
     public void ToResponse_ShouldMapEntityToResponse()

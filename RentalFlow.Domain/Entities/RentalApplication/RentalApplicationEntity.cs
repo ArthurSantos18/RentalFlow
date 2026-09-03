@@ -102,27 +102,6 @@ public sealed class RentalApplicationEntity
         return this;
     }
 
-    public void Update(RentalApplicationUpdate update)
-    {
-        if (update.FinancedAmount.HasValue)
-            SetFinancedAmount(update.FinancedAmount.Value);
-
-        if (update.TotalAmount.HasValue)
-            SetTotalAmount(update.TotalAmount.Value);
-
-        if (update.Installments.HasValue)
-            SetInstallments(update.Installments.Value);
-
-        if (update.Status.HasValue)
-            SetStatus(update.Status.Value);
-
-        if (update.ContractDate.HasValue)
-            SetContractDate(update.ContractDate.Value);
-
-        if (update.IsActive.HasValue)
-            SetIsActive(update.IsActive.Value);
-    }
-
     public RentalApplicationBuilder ToBuilder() => new()
     {
         Id = Id,

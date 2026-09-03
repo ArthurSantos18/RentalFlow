@@ -82,24 +82,6 @@ public sealed class OperatorEntity
         return this;
     }
 
-    public void Update(OperatorUpdate update)
-    {
-        if (update.Name is not null)
-        {
-            SetName(update.Name);
-        }
-            
-        if (update.Email is not null)
-        {
-            SetEmail(update.Email);
-        }
-            
-        if (update.Role.HasValue && update.Role != OperatorRole.None)
-        {
-            SetRole(update.Role.Value);
-        }
-    }
-
     public OperatorBuilder ToBuilder() => new()
     {
         Id = Id,

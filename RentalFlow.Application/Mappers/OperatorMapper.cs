@@ -18,12 +18,16 @@ public static class OperatorMapper
             .Build();
     }
 
-    public static OperatorUpdate ToUpdateDomain(this UpdateOperatorRequest request)
+    public static OperatorEntity ToEntity(this UpdateOperatorRequest request, OperatorEntity entity)
     {
-        return new OperatorUpdate(
-            request.Name,
-            request.Email,
-            request.Role);
+        return new OperatorBuilder()
+            .WithId(entity.Id)
+            .WithName(request.Name ?? entity.Name)
+            .WithEmail(request.Email ?? entity.Email)
+            .WithRole(request.Role ?? entity.Role)
+            .WithIsActive(entity.IsActive)
+            .WithApplications(entity.Applications)
+            .Build();
     }
 
     public static GetOperatorResponse ToResponse(this OperatorEntity entity)

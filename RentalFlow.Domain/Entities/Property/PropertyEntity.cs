@@ -97,30 +97,6 @@ public class PropertyEntity
         Applications.Remove(application);
         return this;
     }
-
-    public void Update(PropertyUpdate update)
-    {
-        if (update.Address != null)
-        {
-            SetAddress(update.Address);
-        }
-
-        if (update.RentPrice.HasValue)
-        {
-            SetRentPrice(update.RentPrice.Value);
-        }
-
-        if (update.Bedrooms.HasValue)
-        {
-            SetBedrooms(update.Bedrooms.Value);
-        }
-
-        if (update.IsAvailable.HasValue)
-        {
-            SetIsAvailable(update.IsAvailable.Value);
-        }
-    }
-
     public PropertyBuilder ToBuilder() => new()
     {
         Id = Id,

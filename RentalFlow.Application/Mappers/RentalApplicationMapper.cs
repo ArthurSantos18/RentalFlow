@@ -26,16 +26,22 @@ public static class RentalApplicationMapper
             .Build();
     }
 
-    public static RentalApplicationUpdate ToUpdateDomain(this UpdateRentalApplicationRequest request)
+    public static RentalApplicationEntity ToEntity(this UpdateRentalApplicationRequest request, RentalApplicationEntity entity)
     {
-        return new RentalApplicationUpdate(
-            request.FinancedAmount,
-            request.TotalAmount,
-            request.Installments,
-            request.Status,
-            request.ContractDate,
-            request.IsActive
-        );
+        return RentalApplicationBuilder.Create()
+            .WithId(entity.Id)
+            .WithFinancedAmount(request.FinancedAmount ?? entity.FinancedAmount)
+            .WithTotalAmount(request.TotalAmount ?? entity.TotalAmount)
+            .WithInstallments(request.Installments ?? entity.Installments)
+            .WithContractDate(request.ContractDate ?? entity.ContractDate)
+            .WithStatus(request.Status ?? entity.Status)
+            .WithIsActive(request.IsActive ?? entity.IsActive)
+            .WithApplicant(entity.Applicant)
+            .WithProperty(entity.Property)
+            .WithOperator(entity.Operator)
+            .WithCreatedAt(entity.CreatedAt)
+            .WithProposalNumber(entity.ProposalNumber)
+            .Build();
     }
 
     public static GetRentalApplicationResponse ToResponse(this RentalApplicationEntity entity)

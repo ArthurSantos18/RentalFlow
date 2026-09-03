@@ -17,9 +17,7 @@ public sealed class UpdateRentalApplicationCommandHandler(IRentalApplicationRepo
             return Result.Failure(RentalApplicationErrors.RentalApplicationNotFound);
         }
 
-        var update = command.Request.ToUpdateDomain();
-
-        rentalApplication.Update(update);
+        rentalApplication = command.Request.ToEntity(rentalApplication);
 
         _rentalApplicationrepository.Update(rentalApplication);
 

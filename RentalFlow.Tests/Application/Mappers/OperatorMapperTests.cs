@@ -39,15 +39,22 @@ public sealed class OperatorMapperTests
         var request = _fixture.Build<UpdateOperatorRequest>()
             .With(r => r.Role, OperatorRole.Manager)
             .Create();
+        var existing = new OperatorBuilder()
+            .WithId(_fixture.Create<Guid>())
+            .WithName("Existing Name")
+            .WithEmail("existing@test.com")
+            .WithRole(OperatorRole.Broker)
+            .WithIsActive(true)
+            .Build();
 
         // Act
-        var update = request.ToUpdateDomain();
+        var entity = request.ToEntity(existing);
 
         // Assert
-        update.Should().NotBeNull();
-        update.Name.Should().Be(request.Name);
-        update.Email.Should().Be(request.Email);
-        update.Role.Should().Be(request.Role);
+        entity.Should().NotBeNull();
+        entity.Name.Should().Be(request.Name ?? existing.Name);
+        entity.Email.Should().Be(request.Email ?? existing.Email);
+        entity.Role.Should().Be(request.Role ?? existing.Role);
     }
 
     [Fact]

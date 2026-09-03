@@ -19,13 +19,17 @@ public static class PropertyMapper
             .Build();
     }
 
-    public static PropertyUpdate ToUpdateDomain(this UpdatePropertyRequest request)
+    public static PropertyEntity ToEntity(this UpdatePropertyRequest request, PropertyEntity entity)
     {
-        return new PropertyUpdate(
-            request.Address,
-            request.RentPrice,
-            request.Bedrooms,
-            request.IsAvailable);
+        return new PropertyBuilder()
+            .WithId(entity.Id)
+            .WithAddress(request.Address ?? entity.Address)
+            .WithBedrooms(request.Bedrooms ?? entity.Bedrooms)
+            .WithRentPrice(request.RentPrice ?? entity.RentPrice)
+            .WithIsAvailable(request.IsAvailable ?? entity.IsAvailable)
+            .WithIsActive(entity.IsActive)
+            .WithApplications(entity.Applications)
+            .Build();
     }
 
     public static GetPropertyResponse ToResponse(this PropertyEntity property)

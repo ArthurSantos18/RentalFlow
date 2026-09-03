@@ -46,17 +46,27 @@ public sealed class RentalApplicationMapperTests
         // Arrange
         var request = new UpdateRentalApplicationRequest();
 
+        var existing = new RentalApplicationBuilder()
+            .WithId(Guid.NewGuid())
+            .WithFinancedAmount(100m)
+            .WithTotalAmount(200m)
+            .WithInstallments(12)
+            .WithStatus(RentalFlow.Domain.Enums.RentalStatus.Draft)
+            .WithContractDate(DateTime.UtcNow)
+            .WithIsActive(true)
+            .Build();
+
         // Act
-        var update = request.ToUpdateDomain();
+        var entity = request.ToEntity(existing);
 
         // Assert
-        update.Should().NotBeNull();
-        update.FinancedAmount.Should().BeNull();
-        update.TotalAmount.Should().BeNull();
-        update.Installments.Should().BeNull();
-        update.Status.Should().BeNull();
-        update.ContractDate.Should().BeNull();
-        update.IsActive.Should().BeNull();
+        entity.Should().NotBeNull();
+        entity.FinancedAmount.Should().Be(existing.FinancedAmount);
+        entity.TotalAmount.Should().Be(existing.TotalAmount);
+        entity.Installments.Should().Be(existing.Installments);
+        entity.Status.Should().Be(existing.Status);
+        entity.ContractDate.Should().Be(existing.ContractDate);
+        entity.IsActive.Should().Be(existing.IsActive);
     }
 
     [Fact]
@@ -68,11 +78,18 @@ public sealed class RentalApplicationMapperTests
             .With(r => r.Installments, 12)
             .Create();
 
-        var update = request.ToUpdateDomain();
+        var existing = new RentalApplicationBuilder()
+            .WithId(Guid.NewGuid())
+            .WithFinancedAmount(50m)
+            .WithTotalAmount(80m)
+            .WithInstallments(6)
+            .Build();
 
-        update.FinancedAmount.Should().Be(request.FinancedAmount);
-        update.TotalAmount.Should().Be(request.TotalAmount);
-        update.Installments.Should().Be(request.Installments);
+        var entity = request.ToEntity(existing);
+
+        entity.FinancedAmount.Should().Be(request.FinancedAmount);
+        entity.TotalAmount.Should().Be(request.TotalAmount);
+        entity.Installments.Should().Be(request.Installments);
     }
 
     [Fact]

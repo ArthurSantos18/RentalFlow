@@ -35,8 +35,9 @@ public sealed class ApplicantMapperTests
         entity.Applications.Should().BeEmpty();
     }
 
+
     [Fact]
-    public void ToDomain_ShouldMapAllFieldsCorrectly()
+    public void ToEntity_ShouldMapAllFieldsCorrectly_WhenExistingProvided()
     {
         // Arrange
         var request = _fixture.Build<UpdateApplicantRequest>()
@@ -44,16 +45,28 @@ public sealed class ApplicantMapperTests
             .With(r => r.MonthlyIncome, _fixture.Create<decimal>())
             .Create();
 
+        var existing = new ApplicantBuilder()
+            .WithId(_fixture.Create<Guid>())
+            .WithFullName("Existing Name")
+            .WithCpf("11122233344")
+            .WithEmail("existing@test.com")
+            .WithPhone("123456789")
+            .WithMonthlyIncome(100m)
+            .WithActive(true)
+            .Build();
+
         // Act
-        var update = request.ToUpdateDomain();
+        var entity = request.ToEntity(existing);
 
         // Assert
-        update.Should().NotBeNull();
-        update.FullName.Should().Be(request.FullName);
-        update.Cpf.Should().Be(request.Cpf);
-        update.Email.Should().Be(request.Email);
-        update.Phone.Should().Be(request.Phone);
-        update.MonthlyIncome.Should().Be(request.MonthlyIncome);
+        entity.Should().NotBeNull();
+        entity.Id.Should().Be(existing.Id);
+        entity.FullName.Should().Be(request.FullName ?? existing.FullName);
+        entity.Cpf.Should().Be(string.IsNullOrEmpty(request.Cpf) ? existing.Cpf : request.Cpf);
+        entity.Email.Should().Be(request.Email ?? existing.Email);
+        entity.Phone.Should().Be(request.Phone ?? existing.Phone);
+        entity.MonthlyIncome.Should().Be(request.MonthlyIncome ?? existing.MonthlyIncome);
+        entity.IsActive.Should().Be(existing.IsActive);
     }
 
     [Fact]
