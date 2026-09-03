@@ -8,10 +8,10 @@ namespace RentalFlow.Domain.Entities.RentalApplication;
 public sealed class RentalApplicationBuilder
 {
     public Guid Id { get; set; } = Guid.NewGuid();
-    public Guid ApplicantId { get; set; } = Guid.NewGuid();
-    public Guid PropertyId { get; set; } = Guid.NewGuid();
-    public Guid OperatorId { get; set; } = Guid.NewGuid();
-    public Guid Installments { get; set; } = Guid.NewGuid();
+    public Guid ApplicantId { get; set; }
+    public Guid PropertyId { get; set; }
+    public Guid OperatorId { get; set; }
+    public int Installments { get; set; }
     public decimal FinancedAmount { get; set; }
     public decimal TotalAmount { get; set; }
     public RentalStatus Status { get; set; } = RentalStatus.Draft;
@@ -27,13 +27,7 @@ public sealed class RentalApplicationBuilder
 
     public RentalApplicationBuilder WithId(Guid id) { Id = id; return this; }
 
-    public RentalApplicationBuilder WithApplicantId(Guid applicantId) { ApplicantId = applicantId; return this; }
-
-    public RentalApplicationBuilder WithPropertyId(Guid propertyId) { PropertyId = propertyId; return this; }
-
-    public RentalApplicationBuilder WithOperatorId(Guid operatorId) { OperatorId = operatorId; return this; }
-
-    public RentalApplicationBuilder WithInstallments(Guid installments) { Installments = installments; return this; }
+    public RentalApplicationBuilder WithInstallments(int installments) { Installments = installments; return this; }
 
     public RentalApplicationBuilder WithFinancedAmount(decimal financedAmount) { FinancedAmount = financedAmount; return this; }
 
@@ -49,21 +43,31 @@ public sealed class RentalApplicationBuilder
 
     public RentalApplicationBuilder WithProposalNumber(string proposalNumber) { ProposalNumber = proposalNumber; return this; }
 
-    public RentalApplicationBuilder WithApplicant(ApplicantEntity applicant) { Applicant = applicant; return this; }
+    public RentalApplicationBuilder WithApplicant(ApplicantEntity applicant)
+    {
+        Applicant = applicant;
+        ApplicantId = applicant?.Id ?? Guid.Empty;
+        return this;
+    }
 
-    public RentalApplicationBuilder WithProperty(PropertyEntity property) { Property = property; return this; }
+    public RentalApplicationBuilder WithProperty(PropertyEntity property)
+    {
+        Property = property;
+        PropertyId = property?.Id ?? Guid.Empty;
+        return this;
+    }
 
-    public RentalApplicationBuilder WithOperator(OperatorEntity @operator) { Operator = @operator; return this; }
-
+    public RentalApplicationBuilder WithOperator(OperatorEntity @operator)
+    {
+        Operator = @operator;
+        OperatorId = @operator?.Id ?? Guid.Empty;
+        return this;
+    }
 
     public RentalApplicationEntity Build()
     {
-
         return new RentalApplicationEntity(
             Id,
-            ApplicantId,
-            PropertyId,
-            OperatorId,
             Installments,
             FinancedAmount,
             TotalAmount,
@@ -71,7 +75,7 @@ public sealed class RentalApplicationBuilder
             CreatedAt,
             ContractDate,
             IsActive,
-            ProposalNumber,
+            string.IsNullOrEmpty(ProposalNumber) ? RentalApplicationEntity.GenerateProposalNumber() : ProposalNumber,
             Applicant,
             Property,
             Operator

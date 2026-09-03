@@ -94,7 +94,7 @@ public sealed class OperatorEntity
             SetEmail(update.Email);
         }
             
-        if (update.Role.HasValue)
+        if (update.Role.HasValue && update.Role != OperatorRole.None)
         {
             SetRole(update.Role.Value);
         }

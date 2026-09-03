@@ -21,8 +21,7 @@ public sealed class DeletePropertyCommandHandler(IPropertyRepository _propertyRe
             return Result.Success();
         }
 
-        property
-            .SetIsActive(false);
+        property.SetIsActive(false);
 
         _propertyRepository.Update(property);
 

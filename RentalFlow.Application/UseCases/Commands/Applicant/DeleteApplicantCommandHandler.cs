@@ -21,8 +21,7 @@ public sealed class DeleteApplicantCommandHandler(IApplicantRepository _applican
             return Result.Success();
         }
 
-        applicant
-            .SetIsActive(false);
+        applicant.SetIsActive(false);
 
         _applicantRepository.Update(applicant);
 

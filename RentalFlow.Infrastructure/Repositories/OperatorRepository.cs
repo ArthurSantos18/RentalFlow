@@ -69,7 +69,7 @@ public sealed class OperatorRepository(AppDbContext context) : BaseRepository<Op
 
     private static IQueryable<OperatorEntity> ApplyRoleFilter(IQueryable<OperatorEntity> query, OperatorRole? role)
     {
-        if (role.HasValue)
+        if (role.HasValue && role != OperatorRole.None)
         {
             return query.Where(o => o.Role == role.Value);
         }
