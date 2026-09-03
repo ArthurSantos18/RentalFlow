@@ -54,6 +54,22 @@ public sealed class RentalApplicationEntity
         Operator = @operator;
     }
 
+    public static RentalApplicationEntity Empty { get; } = new RentalApplicationEntity
+    {
+        Id = Guid.NewGuid(),
+        Installments = 0,
+        FinancedAmount = 0,
+        TotalAmount = 0,
+        Status = RentalStatus.Draft,
+        CreatedAt = DateTime.UtcNow,
+        ContractDate = DateTime.MinValue,
+        IsActive = false,
+        ProposalNumber = string.Empty,
+        Applicant = ApplicantEntity.Empty,
+        Property = PropertyEntity.Empty,
+        Operator = OperatorEntity.Empty
+    };
+
     private RentalApplicationEntity() { }
 
     public RentalApplicationEntity SetId(Guid id) { Id = id; return this; }

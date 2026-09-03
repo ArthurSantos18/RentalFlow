@@ -1,14 +1,14 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using FluentValidation;
+﻿using FluentValidation;
 using FluentValidation.AspNetCore;
-using RentalFlow.Application.UseCases.Queries.Applicant;
-using RentalFlow.Application.Validators.Applicant;
+using Microsoft.Extensions.DependencyInjection;
 using RentalFlow.Application.Requests.Applicant;
-using RentalFlow.Application.Requests;
-using RentalFlow.Application.Validators.Property;
-using RentalFlow.Application.Requests.Property;
-using RentalFlow.Application.Validators.Operator;
 using RentalFlow.Application.Requests.Operator;
+using RentalFlow.Application.Requests.Property;
+using RentalFlow.Application.Requests.RentalApplication;
+using RentalFlow.Application.Validators.RentalApplication;
+using RentalFlow.Application.Validators.Applicant;
+using RentalFlow.Application.Validators.Operator;
+using RentalFlow.Application.Validators.Property;
 
 namespace RentalFlow.Crosscutting.Extensions;
 
@@ -29,6 +29,10 @@ public static class ValidatorExtension
         services.AddScoped<IValidator<GetOperatorRequest>, GetOperatorsRequestValidator>();
         services.AddScoped<IValidator<UpdateOperatorRequest>, UpdateOperatorRequestValidator>();
         services.AddScoped<IValidator<AddOperatorRequest>, AddOperatorRequestValidator>();
+
+        services.AddScoped<IValidator<AddRentalApplicationRequest>, AddRentalApplicationRequestValidator>();
+        services.AddScoped<IValidator<UpdateRentalApplicationRequest>, UpdateRentalApplicationRequestValidator>();
+        services.AddScoped<IValidator<GetRentalApplicationRequest>, GetRentalApplicationRequestValidator>();
 
         return services;
     }
