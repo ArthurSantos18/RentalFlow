@@ -18,16 +18,12 @@ public static class OperatorMapper
             .Build();
     }
 
-    public static OperatorEntity ToEntity(this UpdateOperatorRequest request, OperatorEntity entity)
+    public static OperatorEntity UpdateEntity(this UpdateOperatorRequest request, OperatorEntity entity)
     {
-        return new OperatorBuilder()
-            .WithId(entity.Id)
-            .WithName(request.Name ?? entity.Name)
-            .WithEmail(request.Email ?? entity.Email)
-            .WithRole(request.Role ?? entity.Role)
-            .WithIsActive(entity.IsActive)
-            .WithApplications(entity.Applications)
-            .Build();
+        return entity
+            .SetName(request.Name ?? entity.Name)
+            .SetEmail(request.Email ?? entity.Email)
+            .SetRole(request.Role ?? entity.Role);
     }
 
     public static GetOperatorResponse ToResponse(this OperatorEntity entity)

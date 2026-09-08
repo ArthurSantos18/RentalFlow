@@ -4,4 +4,4 @@ using RentalFlow.Domain.Patterns.Result;
 
 namespace RentalFlow.Application.UseCases.Commands.RentalApplication;
 
-public record ChangeRentalApplicationApplicantCommand(Guid Id, ChangeRentalApplicationApplicantRequest Request) : ICommand<Result>;
+public record UpdateRentalApplicationStatusCommand(Guid Id, UpdateRentalApplicationStatusRequest Request) : ICommand<Result>;

@@ -21,18 +21,14 @@ public static class ApplicantMapper
             .Build();
     }
 
-    public static ApplicantEntity ToEntity(this UpdateApplicantRequest request, ApplicantEntity entity)
+    public static ApplicantEntity UpdateEntity(this UpdateApplicantRequest request, ApplicantEntity entity)
     {
-        return new ApplicantBuilder()
-            .WithId(entity.Id)
-            .WithFullName(request.FullName ?? entity.FullName)
-            .WithCpf(string.IsNullOrEmpty(request.Cpf) ? entity.Cpf : CpfValidator.Normalize(request.Cpf))
-            .WithEmail(request.Email ?? entity.Email)
-            .WithPhone(request.Phone ?? entity.Phone)
-            .WithMonthlyIncome(request.MonthlyIncome ?? entity.MonthlyIncome)
-            .WithActive(entity.IsActive)
-            .WithApplications(entity.Applications)
-            .Build();
+        return entity
+            .SetFullName(request.FullName ?? entity.FullName)
+            .SetCpf(string.IsNullOrEmpty(request.Cpf) ? entity.Cpf : CpfValidator.Normalize(request.Cpf))
+            .SetEmail(request.Email ?? entity.Email)
+            .SetPhone(request.Phone ?? entity.Phone)
+            .SetMonthlyIncome(request.MonthlyIncome ?? entity.MonthlyIncome);
     }
 
     public static GetApplicantResponse ToResponse(this ApplicantEntity applicant)

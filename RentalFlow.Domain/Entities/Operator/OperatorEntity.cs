@@ -1,4 +1,5 @@
 ﻿using RentalFlow.Domain.Entities.RentalApplication;
+using RentalFlow.Domain.Entities.Team;
 using RentalFlow.Domain.Enums;
 
 namespace RentalFlow.Domain.Entities.Operator;
@@ -6,19 +7,29 @@ namespace RentalFlow.Domain.Entities.Operator;
 public sealed class OperatorEntity
 {
     public Guid Id { get; private set; } = Guid.NewGuid();
+    public Guid TeamId { get; private set; }
     public string Name { get; private set; } = string.Empty;
     public string Email { get; private set; } = string.Empty;
     public OperatorRole Role { get; private set; }
     public bool IsActive { get; private set; }
+    public TeamEntity Team { get; private set; } = TeamEntity.Empty;
     public List<RentalApplicationEntity> Applications { get; private set; } = [];
 
-    public OperatorEntity(Guid id, string name, string email, OperatorRole role, bool isActive, List<RentalApplicationEntity> applications)
+    public OperatorEntity(Guid id,
+        string name,
+        string email,
+        OperatorRole role,
+        bool isActive,
+        TeamEntity team,
+        List<RentalApplicationEntity> applications)
     {
         Id = id;
         Name = name;
+        TeamId = team.Id;
         Email = email;
         Role = role;
         IsActive = isActive;
+        Team = team;
         Applications = applications ?? [];
     }
 
@@ -64,6 +75,13 @@ public sealed class OperatorEntity
         return this;
     }
 
+    public OperatorEntity SetTeam(TeamEntity team)
+    {
+        TeamId = team.Id;
+        Team = team;
+        return this;
+    }
+
     public OperatorEntity SetApplications(List<RentalApplicationEntity> applications)
     {
         Applications = applications ?? [];
@@ -85,10 +103,12 @@ public sealed class OperatorEntity
     public OperatorBuilder ToBuilder() => new()
     {
         Id = Id,
+        TeamId = TeamId,
         Name = Name,
         Email = Email,
         Role = Role,
         IsActive = IsActive,
+        Team = Team,
         Applications = Applications
     };
 }

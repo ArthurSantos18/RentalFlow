@@ -17,7 +17,7 @@ public sealed class UpdatePropertyCommandHandler(IPropertyRepository _propertyRe
             return Result.Failure(PropertyErrors.PropertyNotFound);
         }
 
-        property = command.Request.ToEntity(property);
+        property = command.Request.UpdateEntity(property);
 
         _propertyRepository.Update(property);
 

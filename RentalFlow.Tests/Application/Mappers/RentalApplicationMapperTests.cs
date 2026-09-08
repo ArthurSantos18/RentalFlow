@@ -41,36 +41,7 @@ public sealed class RentalApplicationMapperTests
     }
 
     [Fact]
-    public void ToUpdateDomain_ShouldHandleNullValues()
-    {
-        // Arrange
-        var request = new UpdateRentalApplicationRequest();
-
-        var existing = new RentalApplicationBuilder()
-            .WithId(Guid.NewGuid())
-            .WithFinancedAmount(100m)
-            .WithTotalAmount(200m)
-            .WithInstallments(12)
-            .WithStatus(RentalFlow.Domain.Enums.RentalStatus.Draft)
-            .WithContractDate(DateTime.UtcNow)
-            .WithIsActive(true)
-            .Build();
-
-        // Act
-        var entity = request.ToEntity(existing);
-
-        // Assert
-        entity.Should().NotBeNull();
-        entity.FinancedAmount.Should().Be(existing.FinancedAmount);
-        entity.TotalAmount.Should().Be(existing.TotalAmount);
-        entity.Installments.Should().Be(existing.Installments);
-        entity.Status.Should().Be(existing.Status);
-        entity.ContractDate.Should().Be(existing.ContractDate);
-        entity.IsActive.Should().Be(existing.IsActive);
-    }
-
-    [Fact]
-    public void ToUpdateDomain_ShouldMapCorrectly()
+    public void UpdateEntityDomain_ShouldMapCorrectly()
     {
         var request = _fixture.Build<UpdateRentalApplicationRequest>()
             .With(r => r.FinancedAmount, 100m)
@@ -85,7 +56,7 @@ public sealed class RentalApplicationMapperTests
             .WithInstallments(6)
             .Build();
 
-        var entity = request.ToEntity(existing);
+        var entity = request.UpdateEntity(existing);
 
         entity.FinancedAmount.Should().Be(request.FinancedAmount);
         entity.TotalAmount.Should().Be(request.TotalAmount);

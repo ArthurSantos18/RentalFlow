@@ -15,21 +15,53 @@ public sealed class ApplicantBuilder
 
     public static ApplicantBuilder Create() => new();
 
-    public ApplicantBuilder WithId(Guid id) { Id = id; return this; }
+    public ApplicantBuilder WithId(Guid id)
+    {
+        Id = id;
+        return this;
+    }
 
-    public ApplicantBuilder WithFullName(string fullName) { FullName = fullName; return this; }
+    public ApplicantBuilder WithFullName(string fullName)
+    {
+        FullName = fullName;
+        return this;
+    }
 
-    public ApplicantBuilder WithCpf(string cpf) { Cpf = cpf; return this; }
+    public ApplicantBuilder WithCpf(string cpf)
+    {
+        Cpf = cpf;
+        return this;
+    }
 
-    public ApplicantBuilder WithEmail(string email) { Email = email; return this; }
+    public ApplicantBuilder WithEmail(string email)
+    {
+        Email = email;
+        return this;
+    }
 
-    public ApplicantBuilder WithPhone(string? phone) { Phone = phone; return this; }
+    public ApplicantBuilder WithPhone(string? phone)
+    {
+        Phone = phone;
+        return this;
+    }
 
-    public ApplicantBuilder WithMonthlyIncome(decimal monthlyIncome) { MonthlyIncome = monthlyIncome; return this; }
+    public ApplicantBuilder WithMonthlyIncome(decimal monthlyIncome)
+    {
+        MonthlyIncome = monthlyIncome;
+        return this;
+    }
 
-    public ApplicantBuilder WithActive(bool isActive) { IsActive = isActive; return this; }
+    public ApplicantBuilder WithActive(bool isActive)
+    {
+        IsActive = isActive;
+        return this;
+    }
 
-    public ApplicantBuilder WithApplications(List<RentalApplicationEntity> applications) { Applications = applications; return this; }
+    public ApplicantBuilder WithApplications(List<RentalApplicationEntity> applications)
+    {
+        Applications = applications;
+        return this;
+    }
 
     public ApplicantBuilder AddApplication(RentalApplicationEntity application)
     {

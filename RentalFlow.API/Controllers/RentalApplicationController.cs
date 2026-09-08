@@ -8,7 +8,7 @@ using RentalFlow.Application.UseCases.Queries.RentalApplication;
 
 namespace RentalFlow.API.Controllers;
 
-[Route("api/rental-application")]
+[Route("api/rental-applications")]
 [ApiController]
 public class RentalApplicationController(ICommandMediator _commandMediator, IQueryMediator _queryMediator) : ControllerBase
 {
@@ -56,32 +56,10 @@ public class RentalApplicationController(ICommandMediator _commandMediator, IQue
             : ApiResponseHelper.HandleError(result.Error);
     }
 
-    [HttpPatch("{id:guid}/applicant")]
-    public async Task<IActionResult> ChangeRentalApplicationApplicantAsync([FromRoute] Guid id, [FromBody] ChangeRentalApplicationApplicantRequest request, CancellationToken cancellationToken)
+    [HttpPatch("{id:guid}/status")]
+    public async Task<IActionResult> UpdateRentalApplicationStatusAsync([FromRoute] Guid id, [FromBody] UpdateRentalApplicationStatusRequest request, CancellationToken cancellationToken)
     {
-        var command = new ChangeRentalApplicationApplicantCommand(id, request);
-        var result = await _commandMediator.SendAsync(command, cancellationToken);
-
-        return result.IsSuccess
-            ? NoContent()
-            : ApiResponseHelper.HandleError(result.Error);
-    }
-
-    [HttpPatch("{id:guid}/operator")]
-    public async Task<IActionResult> ChangeRentalApplicationOperatorAsync([FromRoute] Guid id, [FromBody] ChangeRentalApplicationOperatorRequest request, CancellationToken cancellationToken)
-    {
-        var command = new ChangeRentalApplicationOperatorCommand(id, request);
-        var result = await _commandMediator.SendAsync(command, cancellationToken);
-
-        return result.IsSuccess
-            ? NoContent()
-            : ApiResponseHelper.HandleError(result.Error);
-    }
-
-    [HttpPatch("{id:guid}/property")]
-    public async Task<IActionResult> ChangeRentalApplicationPropertyAsync([FromRoute] Guid id, [FromBody] ChangeRentalApplicationPropertyRequest request, CancellationToken cancellationToken)
-    {
-        var command = new ChangeRentalApplicationPropertyCommand(id, request);
+        var command = new UpdateRentalApplicationStatusCommand(id, request);
         var result = await _commandMediator.SendAsync(command, cancellationToken);
 
         return result.IsSuccess

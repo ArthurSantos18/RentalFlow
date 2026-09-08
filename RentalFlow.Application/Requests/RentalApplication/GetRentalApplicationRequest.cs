@@ -23,4 +23,3 @@ public record GetRentalApplicationRequest
     public DateTime? MaxContractDate { get; set; }
     public bool? IsActive { get; set; }
 }
-

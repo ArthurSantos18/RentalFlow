@@ -8,7 +8,7 @@ using RentalFlow.Application.UseCases.Queries.Applicant;
 
 namespace RentalFlow.API.Controllers;
 
-[Route("api/applicant")]
+[Route("api/applicants")]
 [ApiController]
 public sealed class ApplicantController(ICommandMediator _commandMediator, IQueryMediator _queryMediator) : ControllerBase
 {

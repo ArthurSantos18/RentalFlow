@@ -17,7 +17,7 @@ public sealed class UpdateApplicantCommandHandler(IApplicantRepository _applican
             return Result.Failure(ApplicantErrors.ApplicantNotFound);
         }
 
-        applicant = command.Request.ToEntity(applicant);
+        applicant = command.Request.UpdateEntity(applicant);
 
         _applicantRepository.Update(applicant);
 

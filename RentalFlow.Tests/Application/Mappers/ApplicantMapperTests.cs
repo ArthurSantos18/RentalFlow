@@ -37,7 +37,7 @@ public sealed class ApplicantMapperTests
 
 
     [Fact]
-    public void ToEntity_ShouldMapAllFieldsCorrectly_WhenExistingProvided()
+    public void UpdateEntity_ShouldMapAllFieldsCorrectly_WhenExistingProvided()
     {
         // Arrange
         var request = _fixture.Build<UpdateApplicantRequest>()
@@ -56,7 +56,7 @@ public sealed class ApplicantMapperTests
             .Build();
 
         // Act
-        var entity = request.ToEntity(existing);
+        var entity = request.UpdateEntity(existing);
 
         // Assert
         entity.Should().NotBeNull();

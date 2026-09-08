@@ -33,7 +33,7 @@ public sealed class OperatorMapperTests
     }
 
     [Fact]
-    public void ToDomain_ShouldMapAllFieldsCorrectly()
+    public void UpdateEntity_ShouldMapAllFieldsCorrectly_WhenExistingProvided()
     {
         // Arrange
         var request = _fixture.Build<UpdateOperatorRequest>()
@@ -48,7 +48,7 @@ public sealed class OperatorMapperTests
             .Build();
 
         // Act
-        var entity = request.ToEntity(existing);
+        var entity = request.UpdateEntity(existing);
 
         // Assert
         entity.Should().NotBeNull();

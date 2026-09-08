@@ -4,7 +4,7 @@ using RentalFlow.Domain.Entities.Property;
 
 namespace RentalFlow.Infrastructure.Data.Configurations;
 
-public class PropertyConfiguration : IEntityTypeConfiguration<PropertyEntity>
+public sealed class PropertyConfiguration : IEntityTypeConfiguration<PropertyEntity>
 {
     public void Configure(EntityTypeBuilder<PropertyEntity> builder)
     {

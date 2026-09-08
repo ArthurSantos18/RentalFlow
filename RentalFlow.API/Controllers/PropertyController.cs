@@ -8,7 +8,7 @@ using RentalFlow.Application.UseCases.Queries.Property;
 
 namespace RentalFlow.API.Controllers;
 
-[Route("api/property")]
+[Route("api/properties")]
 [ApiController]
 public sealed class PropertyController(ICommandMediator _commandMediator, IQueryMediator _queryMediator) : ControllerBase
 {

@@ -1,4 +1,5 @@
-﻿using RentalFlow.Domain.Entities.Applicant;
+﻿
+using RentalFlow.Domain.Entities.Applicant;
 using RentalFlow.Domain.Entities.Operator;
 using RentalFlow.Domain.Entities.Property;
 using RentalFlow.Domain.Enums;
@@ -25,23 +26,59 @@ public sealed class RentalApplicationBuilder
 
     public static RentalApplicationBuilder Create() => new();
 
-    public RentalApplicationBuilder WithId(Guid id) { Id = id; return this; }
+    public RentalApplicationBuilder WithId(Guid id)
+    {
+        Id = id;
+        return this;
+    }
 
-    public RentalApplicationBuilder WithInstallments(int installments) { Installments = installments; return this; }
+    public RentalApplicationBuilder WithInstallments(int installments)
+    {
+        Installments = installments;
+        return this;
+    }
 
-    public RentalApplicationBuilder WithFinancedAmount(decimal financedAmount) { FinancedAmount = financedAmount; return this; }
+    public RentalApplicationBuilder WithFinancedAmount(decimal financedAmount)
+    {
+        FinancedAmount = financedAmount;
+        return this;
+    }
 
-    public RentalApplicationBuilder WithTotalAmount(decimal totalAmount) { TotalAmount = totalAmount; return this; }
+    public RentalApplicationBuilder WithTotalAmount(decimal totalAmount)
+    {
+        TotalAmount = totalAmount;
+        return this;
+    }
 
-    public RentalApplicationBuilder WithStatus(RentalStatus status) { Status = status; return this; }
+    public RentalApplicationBuilder WithStatus(RentalStatus status)
+    {
+        Status = status;
+        return this;
+    }
 
-    public RentalApplicationBuilder WithCreatedAt(DateTime createdAt) { CreatedAt = createdAt; return this; }
+    public RentalApplicationBuilder WithCreatedAt(DateTime createdAt)
+    {
+        CreatedAt = createdAt;
+        return this;
+    }
 
-    public RentalApplicationBuilder WithContractDate(DateTime contractDate) { ContractDate = contractDate; return this; }
+    public RentalApplicationBuilder WithContractDate(DateTime contractDate)
+    {
+        ContractDate = contractDate;
+        return this;
+    }
 
-    public RentalApplicationBuilder WithIsActive(bool isActive) { IsActive = isActive; return this; }
+    public RentalApplicationBuilder WithIsActive(bool isActive)
+    {
+        IsActive = isActive;
+        return this;
+    }
 
-    public RentalApplicationBuilder WithProposalNumber(string proposalNumber) { ProposalNumber = proposalNumber; return this; }
+    public RentalApplicationBuilder WithProposalNumber(string proposalNumber)
+    {
+        ProposalNumber = proposalNumber;
+        return this;
+    }
 
     public RentalApplicationBuilder WithApplicant(ApplicantEntity applicant)
     {

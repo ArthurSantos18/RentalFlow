@@ -17,7 +17,7 @@ public sealed class UpdateOperatorCommandHandler(IOperatorRepository _operatorRe
             return Result.Failure(OperatorErrors.OperatorNotFound);
         }
 
-        @operator = command.Request.ToEntity(@operator);
+        @operator = command.Request.UpdateEntity(@operator);
 
         _operatorRepository.Update(@operator);
 

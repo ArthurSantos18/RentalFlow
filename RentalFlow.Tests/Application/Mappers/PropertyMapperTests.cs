@@ -48,7 +48,7 @@ public sealed class PropertyMapperTests
     }
 
     [Fact]
-    public void ToEntity_ShouldMapAllFieldsCorrectly_WhenExistingProvided()
+    public void UpdateEntity_ShouldMapAllFieldsCorrectly_WhenExistingProvided()
     {
         // Arrange
         var address = new Address(
@@ -78,7 +78,7 @@ public sealed class PropertyMapperTests
             .Build();
 
         // Act
-        var entity = request.ToEntity(existing);
+        var entity = request.UpdateEntity(existing);
 
         // Assert
         entity.Should().NotBeNull();

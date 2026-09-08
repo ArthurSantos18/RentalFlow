@@ -2,6 +2,8 @@
 using RentalFlow.Domain.Entities.Operator;
 using RentalFlow.Domain.Entities.Property;
 using RentalFlow.Domain.Enums;
+using RentalFlow.Domain.Errors;
+using RentalFlow.Domain.Patterns.Result;
 
 namespace RentalFlow.Domain.Entities.RentalApplication;
 
@@ -81,25 +83,80 @@ public sealed class RentalApplicationEntity
     public RentalApplicationEntity SetContractDate(DateTime contractDate) { ContractDate = contractDate; return this; }
     public RentalApplicationEntity SetIsActive(bool isActive) { IsActive = isActive; return this; }
     public RentalApplicationEntity SetProposalNumber(string proposalNumber) { ProposalNumber = proposalNumber; return this; }
-    public RentalApplicationEntity SetApplicant(ApplicantEntity applicant)
+
+    public Result ChangeApplicant(ApplicantEntity applicant)
     {
+        if (Status is not RentalStatus.Draft and not RentalStatus.Pending)
+        {
+            return Result.Failure(RentalApplicationErrors.RentalApplicationApplicantChangeNotAllowed);
+        }
+
+        if (ApplicantId == applicant.Id)
+        {
+            return Result.Failure(RentalApplicationErrors.ApplicantAlreadyAssigned);
+        }
+
         Applicant = applicant;
-        ApplicantId = applicant?.Id ?? Guid.Empty;
-        return this;
+        ApplicantId = applicant.Id;
+
+        return Result.Success();
     }
 
-    public RentalApplicationEntity SetProperty(PropertyEntity property)
+    public Result ChangeOperator(OperatorEntity @operator)
     {
-        Property = property;
-        PropertyId = property?.Id ?? Guid.Empty;
-        return this;
-    }
+        if (Status is RentalStatus.Approved or RentalStatus.Rejected)
+        {
+            return Result.Failure(RentalApplicationErrors.RentalApplicationOperatorChangeNotAllowed);
+        }
 
-    public RentalApplicationEntity SetOperator(OperatorEntity @operator)
-    {
+        if (OperatorId == @operator.Id)
+        {
+            return Result.Failure(RentalApplicationErrors.OperatorAlreadyAssigned);
+        }
+
         Operator = @operator;
-        OperatorId = @operator?.Id ?? Guid.Empty;
-        return this;
+        OperatorId = @operator.Id;
+
+        return Result.Success();
+    }
+
+    public Result ChangeProperty(PropertyEntity property)
+    {
+        if (Status is not RentalStatus.Draft and not RentalStatus.Pending)
+        {
+            return Result.Failure(RentalApplicationErrors.RentalApplicationPropertyChangeNotAllowed);
+        }
+
+        if (PropertyId == property.Id)
+        {
+            return Result.Failure(RentalApplicationErrors.PropertyAlreadyAssigned);
+        }
+
+        Property = property;
+        PropertyId = property.Id;
+
+        return Result.Success();
+    }
+
+    public Result ChangeStatus(RentalStatus newStatus)
+    {
+        var isValidTransition = (Status, newStatus) switch
+        {
+            (RentalStatus.Draft, RentalStatus.Pending) => true,
+            (RentalStatus.Pending, RentalStatus.Draft) => true,
+            (RentalStatus.Pending, RentalStatus.Approved) => true,
+            (RentalStatus.Pending, RentalStatus.Rejected) => true,
+            _ => false
+        };
+
+        if (!isValidTransition)
+        {
+            return Result.Failure(RentalApplicationErrors.InvalidStatusTransition);
+        }
+
+        Status = newStatus;
+
+        return Result.Success();
     }
 
     public RentalApplicationBuilder ToBuilder() => new()

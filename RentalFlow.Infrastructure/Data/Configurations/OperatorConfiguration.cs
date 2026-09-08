@@ -5,7 +5,7 @@ using RentalFlow.Domain.Entities.Operator;
 
 namespace RentalFlow.Infrastructure.Data.Configurations;
 
-public class OperatorConfiguration : IEntityTypeConfiguration<OperatorEntity>
+public sealed class OperatorConfiguration : IEntityTypeConfiguration<OperatorEntity>
 {
     public void Configure(EntityTypeBuilder<OperatorEntity> builder)
     {
@@ -22,6 +22,11 @@ public class OperatorConfiguration : IEntityTypeConfiguration<OperatorEntity>
 
         builder.Property(o => o.Role)
             .HasMaxLength(50);
+
+        builder.HasOne(o => o.Team)
+            .WithMany(t => t.Operators)
+            .HasForeignKey(o => o.TeamId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasMany(o => o.Applications)
             .WithOne(ra => ra.Operator)
