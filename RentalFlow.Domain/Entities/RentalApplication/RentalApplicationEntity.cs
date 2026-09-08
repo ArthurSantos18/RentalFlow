@@ -84,13 +84,19 @@ public sealed class RentalApplicationEntity
     public RentalApplicationEntity SetIsActive(bool isActive) { IsActive = isActive; return this; }
     public RentalApplicationEntity SetProposalNumber(string proposalNumber) { ProposalNumber = proposalNumber; return this; }
 
+
+    public Result ValidateCanBeEdited()
+    {
+        return Status switch
+        {
+            RentalStatus.Draft => Result.Success(),
+            RentalStatus.Pending => Result.Success(),
+            _ => Result.Failure(RentalApplicationErrors.RentalApplicationCannotBeEdited)
+        };
+    }
+
     public Result ChangeApplicant(ApplicantEntity applicant)
     {
-        if (Status is not RentalStatus.Draft and not RentalStatus.Pending)
-        {
-            return Result.Failure(RentalApplicationErrors.RentalApplicationApplicantChangeNotAllowed);
-        }
-
         if (ApplicantId == applicant.Id)
         {
             return Result.Failure(RentalApplicationErrors.ApplicantAlreadyAssigned);
@@ -104,11 +110,6 @@ public sealed class RentalApplicationEntity
 
     public Result ChangeOperator(OperatorEntity @operator)
     {
-        if (Status is RentalStatus.Approved or RentalStatus.Rejected)
-        {
-            return Result.Failure(RentalApplicationErrors.RentalApplicationOperatorChangeNotAllowed);
-        }
-
         if (OperatorId == @operator.Id)
         {
             return Result.Failure(RentalApplicationErrors.OperatorAlreadyAssigned);
@@ -122,11 +123,6 @@ public sealed class RentalApplicationEntity
 
     public Result ChangeProperty(PropertyEntity property)
     {
-        if (Status is not RentalStatus.Draft and not RentalStatus.Pending)
-        {
-            return Result.Failure(RentalApplicationErrors.RentalApplicationPropertyChangeNotAllowed);
-        }
-
         if (PropertyId == property.Id)
         {
             return Result.Failure(RentalApplicationErrors.PropertyAlreadyAssigned);

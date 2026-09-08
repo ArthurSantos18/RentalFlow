@@ -21,6 +21,13 @@ public sealed class UpdateRentalApplicationCommandHandler(IRentalApplicationRepo
             return Result.Failure(RentalApplicationErrors.RentalApplicationNotFound);
         }
 
+        var canBeEdited = rentalApplication.ValidateCanBeEdited();
+
+        if (canBeEdited.IsFailure)
+        {
+            return canBeEdited;
+        }
+
         var applicantResult = await UpdateApplicantAsync(rentalApplication, command.Request.ApplicantId, cancellationToken);
 
         if (applicantResult.IsFailure)
