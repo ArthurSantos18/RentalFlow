@@ -18,12 +18,15 @@ public sealed class UpdateRentalApplicationStatusRequestValidatorTests
     [InlineData(RentalStatus.Rejected)]
     public void Validate_ShouldNotHaveError_WhenRentalStatusIsValid(RentalStatus status)
     {
+        // Arrange
         var request = _fixture.Build<UpdateRentalApplicationStatusRequest>()
             .With(r => r.RentalStatus, status)
             .Create();
 
+        // Act
         var result = _validator.TestValidate(request);
 
+        // Assert
         result.ShouldNotHaveValidationErrorFor(x => x.RentalStatus);
     }
 
@@ -32,12 +35,31 @@ public sealed class UpdateRentalApplicationStatusRequestValidatorTests
     [InlineData(999)]
     public void Validate_ShouldHaveError_WhenRentalStatusIsInvalid(int status)
     {
+        // Arrange
         var request = _fixture.Build<UpdateRentalApplicationStatusRequest>()
             .With(r => r.RentalStatus, (RentalStatus)status)
             .Create();
 
+        // Act
         var result = _validator.TestValidate(request);
 
-        result.ShouldHaveValidationErrorFor(x => x.RentalStatus).WithErrorMessage("Rental status must be a valid status.");
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.RentalStatus)
+            .WithErrorMessage("Rental status must be a valid status.");
+    }
+
+    [Fact]
+    public void Validate_ShouldNotHaveError_WhenRentalStatusIsDefault()
+    {
+        // Arrange
+        var request = _fixture.Build<UpdateRentalApplicationStatusRequest>()
+            .With(r => r.RentalStatus, RentalStatus.Draft)
+            .Create();
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldNotHaveValidationErrorFor(x => x.RentalStatus);
     }
 }

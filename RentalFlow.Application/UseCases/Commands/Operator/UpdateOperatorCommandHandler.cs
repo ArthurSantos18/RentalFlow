@@ -1,6 +1,7 @@
 ﻿using LiteBus.Commands.Abstractions;
 using RentalFlow.Application.Interfaces.Repositories;
 using RentalFlow.Application.Mappers;
+using RentalFlow.Domain.Entities.Operator;
 using RentalFlow.Domain.Errors;
 using RentalFlow.Domain.Patterns.Result;
 

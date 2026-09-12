@@ -7,4 +7,5 @@ public record UpdateOperatorRequest
     public string? Name { get; init; }
     public string? Email { get; init; }
     public OperatorRole? Role { get; init; }
+    public Guid? TeamId { get; init; }
 }

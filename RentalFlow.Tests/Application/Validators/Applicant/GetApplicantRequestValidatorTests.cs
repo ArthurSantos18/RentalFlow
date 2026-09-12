@@ -11,8 +11,8 @@ public sealed class GetApplicantRequestValidatorTests
     private readonly GetApplicantRequestValidator _validator = new();
 
     [Theory]
-    [InlineData("", "CPF cannot be empty.")]
-    public void Validate_Cpfs_ShouldHaveError_WhenEmpty(string cpf, string expectedError)
+    [InlineData("")]
+    public void Validate_Cpfs_ShouldHaveError_WhenEmpty(string cpf)
     {
         // Arrange
         var request = _fixture.Build<GetApplicantRequest>()
@@ -23,7 +23,8 @@ public sealed class GetApplicantRequestValidatorTests
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Cpfs).WithErrorMessage(expectedError);
+        result.ShouldHaveValidationErrorFor(x => x.Cpfs)
+            .WithErrorMessage("CPF cannot be empty.");
     }
 
     [Theory]
@@ -40,7 +41,8 @@ public sealed class GetApplicantRequestValidatorTests
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Cpfs).WithErrorMessage(expectedError);
+        result.ShouldHaveValidationErrorFor(x => x.Cpfs)
+            .WithErrorMessage(expectedError);
     }
 
     [Theory]
@@ -60,8 +62,8 @@ public sealed class GetApplicantRequestValidatorTests
     }
 
     [Theory]
-    [InlineData("", "Email cannot be empty.")]
-    public void Validate_Emails_ShouldHaveError_WhenEmpty(string email, string expectedError)
+    [InlineData("")]
+    public void Validate_Emails_ShouldHaveError_WhenEmpty(string email)
     {
         // Arrange
         var request = _fixture.Build<GetApplicantRequest>()
@@ -72,7 +74,8 @@ public sealed class GetApplicantRequestValidatorTests
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Emails).WithErrorMessage(expectedError);
+        result.ShouldHaveValidationErrorFor(x => x.Emails)
+            .WithErrorMessage("Email cannot be empty.");
     }
 
     [Theory]
@@ -90,7 +93,8 @@ public sealed class GetApplicantRequestValidatorTests
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Emails).WithErrorMessage(expectedError);
+        result.ShouldHaveValidationErrorFor(x => x.Emails)
+            .WithErrorMessage(expectedError);
     }
 
     [Fact]
@@ -129,8 +133,8 @@ public sealed class GetApplicantRequestValidatorTests
     }
 
     [Theory]
-    [InlineData("", "Full name cannot be empty.")]
-    public void Validate_FullNames_ShouldHaveError_WhenEmpty(string fullName, string expectedError)
+    [InlineData("")]
+    public void Validate_FullNames_ShouldHaveError_WhenEmpty(string fullName)
     {
         // Arrange
         var request = _fixture.Build<GetApplicantRequest>()
@@ -141,15 +145,14 @@ public sealed class GetApplicantRequestValidatorTests
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.FullNames).WithErrorMessage(expectedError);
+        result.ShouldHaveValidationErrorFor(x => x.FullNames)
+            .WithErrorMessage("Full name cannot be empty.");
     }
 
     [Theory]
     [InlineData("Jo", "Full name must have at least 3 characters.")]
     [InlineData("A", "Full name must have at least 3 characters.")]
-    public void Validate_FullNames_ShouldHaveError_WhenBelowMinimumLength(
-        string fullName,
-        string expectedError)
+    public void Validate_FullNames_ShouldHaveError_WhenBelowMinimumLength(string fullName, string expectedError)
     {
         // Arrange
         var request = _fixture.Build<GetApplicantRequest>()
@@ -160,7 +163,8 @@ public sealed class GetApplicantRequestValidatorTests
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.FullNames).WithErrorMessage(expectedError);
+        result.ShouldHaveValidationErrorFor(x => x.FullNames)
+            .WithErrorMessage(expectedError);
     }
 
     [Fact]
@@ -199,8 +203,8 @@ public sealed class GetApplicantRequestValidatorTests
     }
 
     [Theory]
-    [InlineData("", "Phone number cannot be empty.")]
-    public void Validate_Phones_ShouldHaveError_WhenEmpty(string phone, string expectedError)
+    [InlineData("")]
+    public void Validate_Phones_ShouldHaveError_WhenEmpty(string phone)
     {
         // Arrange
         var request = _fixture.Build<GetApplicantRequest>()
@@ -211,15 +215,14 @@ public sealed class GetApplicantRequestValidatorTests
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Phones).WithErrorMessage(expectedError);
+        result.ShouldHaveValidationErrorFor(x => x.Phones)
+            .WithErrorMessage("Phone number cannot be empty.");
     }
 
     [Theory]
     [InlineData("1234567", "Phone number must have at least 8 digits.")]
     [InlineData("123456", "Phone number must have at least 8 digits.")]
-    public void Validate_Phones_ShouldHaveError_WhenBelowMinimumLength(
-        string phone,
-        string expectedError)
+    public void Validate_Phones_ShouldHaveError_WhenBelowMinimumLength(string phone, string expectedError)
     {
         // Arrange
         var request = _fixture.Build<GetApplicantRequest>()
@@ -230,7 +233,8 @@ public sealed class GetApplicantRequestValidatorTests
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Phones).WithErrorMessage(expectedError);
+        result.ShouldHaveValidationErrorFor(x => x.Phones)
+            .WithErrorMessage(expectedError);
     }
 
     [Fact]
@@ -271,9 +275,7 @@ public sealed class GetApplicantRequestValidatorTests
     [Theory]
     [InlineData(-1, "Minimum monthly income cannot be negative.")]
     [InlineData(-1000, "Minimum monthly income cannot be negative.")]
-    public void Validate_MinMonthlyIncome_ShouldHaveError_WhenNegative(
-        decimal minMonthlyIncome,
-        string expectedError)
+    public void Validate_MinMonthlyIncome_ShouldHaveError_WhenNegative(decimal minMonthlyIncome, string expectedError)
     {
         // Arrange
         var request = _fixture.Build<GetApplicantRequest>()
@@ -284,15 +286,14 @@ public sealed class GetApplicantRequestValidatorTests
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.MinMonthlyIncome).WithErrorMessage(expectedError);
+        result.ShouldHaveValidationErrorFor(x => x.MinMonthlyIncome)
+            .WithErrorMessage(expectedError);
     }
 
     [Theory]
     [InlineData(-1, "Maximum monthly income cannot be negative.")]
     [InlineData(-1000, "Maximum monthly income cannot be negative.")]
-    public void Validate_MaxMonthlyIncome_ShouldHaveError_WhenNegative(
-        decimal maxMonthlyIncome,
-        string expectedError)
+    public void Validate_MaxMonthlyIncome_ShouldHaveError_WhenNegative(decimal maxMonthlyIncome, string expectedError)
     {
         // Arrange
         var request = _fixture.Build<GetApplicantRequest>()
@@ -303,7 +304,8 @@ public sealed class GetApplicantRequestValidatorTests
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.MaxMonthlyIncome).WithErrorMessage(expectedError);
+        result.ShouldHaveValidationErrorFor(x => x.MaxMonthlyIncome)
+            .WithErrorMessage(expectedError);
     }
 
     [Fact]
@@ -386,5 +388,30 @@ public sealed class GetApplicantRequestValidatorTests
 
         // Assert
         result.ShouldNotHaveAnyValidationErrors();
+    }
+
+    [Fact]
+    public void Validate_ShouldHaveMultipleErrors_WhenMultipleFieldsInvalid()
+    {
+        // Arrange
+        var request = _fixture.Build<GetApplicantRequest>()
+            .With(r => r.Cpfs, [Guid.NewGuid().ToString()])
+            .With(r => r.Emails, ["invalid-email"])
+            .With(r => r.FullNames, ["Jo"])
+            .With(r => r.Phones, ["123"])
+            .With(r => r.MinMonthlyIncome, -1)
+            .With(r => r.MaxMonthlyIncome, -1000)
+            .Create();
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Cpfs);
+        result.ShouldHaveValidationErrorFor(x => x.Emails);
+        result.ShouldHaveValidationErrorFor(x => x.FullNames);
+        result.ShouldHaveValidationErrorFor(x => x.Phones);
+        result.ShouldHaveValidationErrorFor(x => x.MinMonthlyIncome);
+        result.ShouldHaveValidationErrorFor(x => x.MaxMonthlyIncome);
     }
 }

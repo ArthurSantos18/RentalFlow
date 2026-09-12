@@ -21,8 +21,7 @@ public sealed class DeleteOperatorCommandHandler(IOperatorRepository _operatorRe
             return Result.Success();
         }
 
-        @operator
-            .SetIsActive(false);
+        @operator.SetIsActive(false);
 
         _operatorRepository.Update(@operator);
 

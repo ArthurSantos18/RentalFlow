@@ -25,5 +25,9 @@ public sealed class AddOperatorRequestValidator : AbstractValidator<AddOperatorR
         RuleFor(x => x.Role)
             .NotEqual(OperatorRole.None)
             .WithMessage("Role is required.");
+
+        RuleFor(x => x.TeamId)
+            .NotEmpty()
+            .WithMessage("TeamId is required.");
     }
 }

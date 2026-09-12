@@ -1,19 +1,21 @@
 ﻿using RentalFlow.Application.Requests.Operator;
 using RentalFlow.Application.Responses;
 using RentalFlow.Domain.Entities.Operator;
+using RentalFlow.Domain.Entities.Team;
 using RentalFlow.Domain.Patterns.PagedResult;
 
 namespace RentalFlow.Application.Mappers;
 
 public static class OperatorMapper
 {
-    public static OperatorEntity ToEntity(this AddOperatorRequest request)
+    public static OperatorEntity ToEntity(this AddOperatorRequest request, TeamEntity team)
     {
         return new OperatorBuilder()
             .WithId(Guid.NewGuid())
             .WithName(request.Name)
             .WithEmail(request.Email)
             .WithRole(request.Role)
+            .WithTeam(team)
             .WithIsActive(true)
             .Build();
     }
@@ -34,7 +36,9 @@ public static class OperatorMapper
             Name = entity.Name,
             Email = entity.Email,
             Role = entity.Role,
-            IsActive = entity.IsActive
+            IsActive = entity.IsActive,
+            TeamId = entity.TeamId,
+            TeamName = entity.Team.Name
         };
     }
 
@@ -45,7 +49,7 @@ public static class OperatorMapper
             Page = pagedResult.Page,
             PageSize = pagedResult.PageSize,
             TotalResults = pagedResult.TotalResults,
-            Results = pagedResult.Results.Select(p => p.ToResponse())
+            Results = pagedResult.Results.Select(o => o.ToResponse())
         };
     }
 }

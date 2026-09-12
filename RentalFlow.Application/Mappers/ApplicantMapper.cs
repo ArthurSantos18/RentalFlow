@@ -52,7 +52,7 @@ public static class ApplicantMapper
             Page = pagedResult.Page,
             PageSize = pagedResult.PageSize,
             TotalResults = pagedResult.TotalResults,
-            Results = pagedResult.Results.Select(p => p.ToResponse())
+            Results = pagedResult.Results.Select(a => a.ToResponse())
         };
     }
 }

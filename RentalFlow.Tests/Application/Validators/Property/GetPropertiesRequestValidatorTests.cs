@@ -24,7 +24,8 @@ public sealed class GetPropertiesRequestValidatorTests
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.MinRentPrice).WithErrorMessage(expectedError);
+        result.ShouldHaveValidationErrorFor(x => x.MinRentPrice)
+            .WithErrorMessage(expectedError);
     }
 
     [Theory]
@@ -41,7 +42,8 @@ public sealed class GetPropertiesRequestValidatorTests
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.MaxRentPrice).WithErrorMessage(expectedError);
+        result.ShouldHaveValidationErrorFor(x => x.MaxRentPrice)
+            .WithErrorMessage(expectedError);
     }
 
     [Fact]
@@ -57,7 +59,8 @@ public sealed class GetPropertiesRequestValidatorTests
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x).WithErrorMessage("Minimum rent price cannot be greater than maximum rent price.");
+        result.ShouldHaveValidationErrorFor(x => x)
+            .WithErrorMessage("Minimum rent price cannot be greater than maximum rent price.");
     }
 
     [Fact]
@@ -65,10 +68,10 @@ public sealed class GetPropertiesRequestValidatorTests
     {
         // Arrange
         var request = _fixture.Build<GetPropertyRequest>()
+            .With(r => r.MinRentPrice, 1000)
+            .With(r => r.MaxRentPrice, 5000)
             .With(r => r.MinBedrooms, 1)
             .With(r => r.MaxBedrooms, 3)
-            .With(r => r.MinRentPrice, 1000m)
-            .With(r => r.MaxRentPrice, 5000m)
             .Create();
 
         // Act
@@ -92,7 +95,8 @@ public sealed class GetPropertiesRequestValidatorTests
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.MinBedrooms).WithErrorMessage(expectedError);
+        result.ShouldHaveValidationErrorFor(x => x.MinBedrooms)
+            .WithErrorMessage(expectedError);
     }
 
     [Theory]
@@ -109,7 +113,8 @@ public sealed class GetPropertiesRequestValidatorTests
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.MaxBedrooms).WithErrorMessage(expectedError);
+        result.ShouldHaveValidationErrorFor(x => x.MaxBedrooms)
+            .WithErrorMessage(expectedError);
     }
 
     [Fact]
@@ -125,17 +130,19 @@ public sealed class GetPropertiesRequestValidatorTests
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x).WithErrorMessage("Minimum number of bedrooms cannot be greater than maximum number of bedrooms.");
+        result.ShouldHaveValidationErrorFor(x => x)
+            .WithErrorMessage("Minimum number of bedrooms cannot be greater than maximum number of bedrooms.");
     }
 
     [Fact]
     public void Validate_MinBedroomsLessThanMaxBedrooms_ShouldNotHaveError()
     {
+        // Arrange
         var request = _fixture.Build<GetPropertyRequest>()
+            .With(r => r.MinRentPrice, 1000m)
+            .With(r => r.MaxRentPrice, 2000m)
             .With(r => r.MinBedrooms, 1)
             .With(r => r.MaxBedrooms, 3)
-            .With(r => r.MinRentPrice, 1000m)
-            .With(r => r.MaxRentPrice, 5000m)
             .Create();
 
         // Act
@@ -162,7 +169,8 @@ public sealed class GetPropertiesRequestValidatorTests
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.ZipCodes).WithErrorMessage(expectedError);
+        result.ShouldHaveValidationErrorFor(x => x.ZipCodes)
+            .WithErrorMessage(expectedError);
     }
 
     [Theory]
@@ -212,5 +220,28 @@ public sealed class GetPropertiesRequestValidatorTests
 
         // Assert
         result.ShouldNotHaveAnyValidationErrors();
+    }
+
+    [Fact]
+    public void Validate_ShouldHaveMultipleErrors_WhenMultipleFieldsInvalid()
+    {
+        // Arrange
+        var request = _fixture.Build<GetPropertyRequest>()
+            .With(r => r.MinRentPrice, -1)
+            .With(r => r.MaxRentPrice, -100)
+            .With(r => r.MinBedrooms, -1)
+            .With(r => r.MaxBedrooms, -5)
+            .With(r => r.ZipCodes, ["12345"])
+            .Create();
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.MinRentPrice);
+        result.ShouldHaveValidationErrorFor(x => x.MaxRentPrice);
+        result.ShouldHaveValidationErrorFor(x => x.MinBedrooms);
+        result.ShouldHaveValidationErrorFor(x => x.MaxBedrooms);
+        result.ShouldHaveValidationErrorFor(x => x.ZipCodes);
     }
 }

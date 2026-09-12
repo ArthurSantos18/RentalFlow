@@ -7,6 +7,7 @@ public record GetRentalApplicationRequest
     public GetRentalApplicationRequest() => PageFilter = new PageFilterRequest { Page = 1, PageSize = 60 };
 
     public PageFilterRequest PageFilter { get; set; }
+
     public IEnumerable<Guid>? Ids { get; set; }
     public IEnumerable<string>? ProposalNumbers { get; set; }
     public IEnumerable<Guid>? ApplicantIds { get; set; }

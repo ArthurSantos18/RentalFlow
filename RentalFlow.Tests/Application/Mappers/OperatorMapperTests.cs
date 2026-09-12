@@ -3,6 +3,7 @@ using FluentAssertions;
 using RentalFlow.Application.Mappers;
 using RentalFlow.Application.Requests.Operator;
 using RentalFlow.Domain.Entities.Operator;
+using RentalFlow.Domain.Entities.Team;
 using RentalFlow.Domain.Enums;
 using RentalFlow.Domain.Patterns.PagedResult;
 
@@ -20,8 +21,10 @@ public sealed class OperatorMapperTests
             .With(r => r.Role, OperatorRole.Broker)
             .Create();
 
+        var team = TeamEntity.Empty;
+
         // Act
-        var entity = request.ToEntity();
+        var entity = request.ToEntity(team);
 
         // Assert
         entity.Should().NotBeNull();

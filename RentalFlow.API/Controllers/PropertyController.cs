@@ -13,7 +13,7 @@ namespace RentalFlow.API.Controllers;
 public sealed class PropertyController(ICommandMediator _commandMediator, IQueryMediator _queryMediator) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetProperties([FromQuery] GetPropertyRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetPropertiesAsync([FromQuery] GetPropertyRequest request, CancellationToken cancellationToken)
     {
         var query = new GetPropertiesQuery(request);
         var result = await _queryMediator.QueryAsync(query, cancellationToken);

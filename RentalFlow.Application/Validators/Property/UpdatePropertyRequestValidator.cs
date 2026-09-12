@@ -42,8 +42,6 @@ public sealed class UpdatePropertyRequestValidator : AbstractValidator<UpdatePro
                 .When(x => x.Address!.State is not null);
 
             RuleFor(x => x.Address!.ZipCode)
-                .Length(8)
-                .WithMessage("ZipCode must have exactly 8 digits.")
                 .Matches(@"^\d{5}-?\d{3}$")
                 .WithMessage("ZipCode must be in the format XXXXX-XXX or XXXXXXXX.")
                 .When(x => x.Address!.ZipCode is not null);
@@ -58,10 +56,5 @@ public sealed class UpdatePropertyRequestValidator : AbstractValidator<UpdatePro
             .GreaterThan(0)
             .WithMessage("Bedrooms must be greater than zero.")
             .When(x => x.Bedrooms.HasValue);
-
-        RuleFor(x => x.IsAvailable)
-            .NotNull()
-            .WithMessage("Availability status is required.")
-            .When(x => x.IsAvailable.HasValue);
     }
 }

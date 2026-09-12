@@ -17,6 +17,7 @@ public static class DatabaseExtension
         services.AddScoped<IOperatorRepository, OperatorRepository>();
         services.AddScoped<IPropertyRepository, PropertyRepository>();
         services.AddScoped<IRentalApplicationRepository, RentalApplicationRepository>();
+        services.AddScoped<ITeamRepository, TeamRepository>();
 
         return services;
     }

@@ -6,7 +6,7 @@ public sealed class TeamBuilder
 {
     public Guid Id { get; set; } = Guid.NewGuid();
     public string Name { get; set; } = string.Empty;
-    public string? Description { get; set; }
+    public string Description { get; set; } = string.Empty;
     public bool IsActive { get; set; }
     public List<OperatorEntity> Operators { get; set; } = [];
 
@@ -24,7 +24,7 @@ public sealed class TeamBuilder
         return this;
     }
 
-    public TeamBuilder WithDescription(string? description)
+    public TeamBuilder WithDescription(string description)
     {
         Description = description;
         return this;
@@ -33,18 +33,6 @@ public sealed class TeamBuilder
     public TeamBuilder WithIsActive(bool isActive)
     {
         IsActive = isActive;
-        return this;
-    }
-
-    public TeamBuilder WithOperators(List<OperatorEntity> operators)
-    {
-        Operators = operators ?? [];
-        return this;
-    }
-
-    public TeamBuilder AddOperator(OperatorEntity operatorEntity)
-    {
-        Operators.Add(operatorEntity);
         return this;
     }
 

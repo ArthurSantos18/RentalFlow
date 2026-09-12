@@ -7,6 +7,7 @@ public record GetOperatorRequest
     public GetOperatorRequest() => PageFilter = new PageFilterRequest { Page = 1, PageSize = 60 };
 
     public PageFilterRequest PageFilter { get; set; }
+
     public IEnumerable<Guid>? Ids { get; set; }
     public IEnumerable<string>? Names { get; set; }
     public IEnumerable<string>? Emails { get; set; }
@@ -14,4 +15,5 @@ public record GetOperatorRequest
     public bool? IsActive { get; set; }
     public bool? HasApplications { get; set; }
     public IEnumerable<Guid>? ApplicationIds { get; set; }
+    public IEnumerable<Guid>? TeamIds { get; set; }
 }

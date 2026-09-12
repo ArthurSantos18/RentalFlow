@@ -21,6 +21,7 @@ public sealed class OperatorRepository(AppDbContext context) : BaseRepository<Op
         query = ApplyActiveFilter(query, request.IsActive);
         query = ApplyHasApplicationsFilter(query, request.HasApplications);
         query = ApplyApplicationIdsFilter(query, request.ApplicationIds);
+        query = ApplyTeamIdsFilter(query, request.TeamIds);
 
         var page = request.PageFilter.Page > 0 ? request.PageFilter.Page : 1;
         var pageSize = request.PageFilter.PageSize > 0 ? request.PageFilter.PageSize : 60;
@@ -30,6 +31,7 @@ public sealed class OperatorRepository(AppDbContext context) : BaseRepository<Op
         var results = await query
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
+            .Include(o => o.Team)
             .ToListAsync(cancellationToken);
 
         return new PagedResult<OperatorEntity>(results, total, page, pageSize);
@@ -101,7 +103,17 @@ public sealed class OperatorRepository(AppDbContext context) : BaseRepository<Op
     {
         if (applicationIds?.Any() == true)
         {
-            return query.Where(o =>o.Applications.Any(a => applicationIds.Contains(a.Id)));
+            return query.Where(o => o.Applications.Any(a => applicationIds.Contains(a.Id)));
+        }
+
+        return query;
+    }
+
+    private static IQueryable<OperatorEntity> ApplyTeamIdsFilter(IQueryable<OperatorEntity> query, IEnumerable<Guid>? teamIds)
+    {
+        if (teamIds?.Any() == true)
+        {
+            return query.Where(o => teamIds.Contains(o.TeamId));
         }
 
         return query;

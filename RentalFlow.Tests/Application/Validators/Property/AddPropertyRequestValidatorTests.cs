@@ -11,6 +11,22 @@ public sealed class AddPropertyRequestValidatorTests
     private readonly Fixture _fixture = new();
     private readonly AddPropertyRequestValidator _validator = new();
 
+    [Fact]
+    public void Validate_NullAddress_ShouldHaveError()
+    {
+        // Arrange
+        var request = _fixture.Build<AddPropertyRequest>()
+            .With(r => r.Address, (Address?)null)
+            .Create();
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Address)
+            .WithErrorMessage("Address is required.");
+    }
+
     [Theory]
     [InlineData("", "Street is required.")]
     [InlineData(null, "Street is required.")]
@@ -29,7 +45,154 @@ public sealed class AddPropertyRequestValidatorTests
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Address.Street).WithErrorMessage(expectedError);
+        result.ShouldHaveValidationErrorFor(x => x.Address.Street)
+            .WithErrorMessage(expectedError);
+    }
+
+    [Fact]
+    public void Validate_StreetExceedingMaximumLength_ShouldHaveError()
+    {
+        // Arrange
+        var address = _fixture.Build<Address>()
+            .With(a => a.Street, new string('A', 101))
+            .Create();
+
+        var request = _fixture.Build<AddPropertyRequest>()
+            .With(r => r.Address, address)
+            .Create();
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Address.Street)
+            .WithErrorMessage("Street must not exceed 100 characters.");
+    }
+
+    [Theory]
+    [InlineData("", "Number is required.")]
+    [InlineData(null, "Number is required.")]
+    public void Validate_Number_ShouldHaveError(string? number, string expectedError)
+    {
+        // Arrange
+        var address = _fixture.Build<Address>()
+            .With(a => a.Number, number)
+            .Create();
+
+        var request = _fixture.Build<AddPropertyRequest>()
+            .With(r => r.Address, address)
+            .Create();
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Address.Number)
+            .WithErrorMessage(expectedError);
+    }
+
+    [Fact]
+    public void Validate_NumberExceedingMaximumLength_ShouldHaveError()
+    {
+        // Arrange
+        var address = _fixture.Build<Address>()
+            .With(a => a.Number, new string('1', 11))
+            .Create();
+
+        var request = _fixture.Build<AddPropertyRequest>()
+            .With(r => r.Address, address)
+            .Create();
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Address.Number)
+            .WithErrorMessage("Number must not exceed 10 characters.");
+    }
+
+    [Theory]
+    [InlineData("", "Neighborhood is required.")]
+    [InlineData(null, "Neighborhood is required.")]
+    public void Validate_Neighborhood_ShouldHaveError(string? neighborhood, string expectedError)
+    {
+        // Arrange
+        var address = _fixture.Build<Address>()
+            .With(a => a.Neighborhood, neighborhood)
+            .Create();
+
+        var request = _fixture.Build<AddPropertyRequest>()
+            .With(r => r.Address, address)
+            .Create();
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Address.Neighborhood)
+            .WithErrorMessage(expectedError);
+    }
+
+    [Fact]
+    public void Validate_NeighborhoodExceedingMaximumLength_ShouldHaveError()
+    {
+        // Arrange
+        var address = _fixture.Build<Address>()
+            .With(a => a.Neighborhood, new string('A', 51))
+            .Create();
+
+        var request = _fixture.Build<AddPropertyRequest>()
+            .With(r => r.Address, address)
+            .Create();
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Address.Neighborhood)
+            .WithErrorMessage("Neighborhood must not exceed 50 characters.");
+    }
+
+    [Theory]
+    [InlineData("", "City is required.")]
+    [InlineData(null, "City is required.")]
+    public void Validate_City_ShouldHaveError(string? city, string expectedError)
+    {
+        // Arrange
+        var address = _fixture.Build<Address>()
+            .With(a => a.City, city)
+            .Create();
+
+        var request = _fixture.Build<AddPropertyRequest>()
+            .With(r => r.Address, address)
+            .Create();
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Address.City)
+            .WithErrorMessage(expectedError);
+    }
+
+    [Fact]
+    public void Validate_CityExceedingMaximumLength_ShouldHaveError()
+    {
+        // Arrange
+        var address = _fixture.Build<Address>()
+            .With(a => a.City, new string('A', 51))
+            .Create();
+
+        var request = _fixture.Build<AddPropertyRequest>()
+            .With(r => r.Address, address)
+            .Create();
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Address.City)
+            .WithErrorMessage("City must not exceed 50 characters.");
     }
 
     [Theory]
@@ -52,13 +215,14 @@ public sealed class AddPropertyRequestValidatorTests
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Address.State).WithErrorMessage(expectedError);
+        result.ShouldHaveValidationErrorFor(x => x.Address.State)
+            .WithErrorMessage(expectedError);
     }
 
     [Theory]
     [InlineData("", "ZipCode is required.")]
-    [InlineData("1234567", "ZipCode must have exactly 8 digits.")]
-    [InlineData("123456789", "ZipCode must have exactly 8 digits.")]
+    [InlineData("1234567", "ZipCode must be in the format XXXXX-XXX or XXXXXXXX.")]
+    [InlineData("123456789", "ZipCode must be in the format XXXXX-XXX or XXXXXXXX.")]
     [InlineData("ABCDEFGH", "ZipCode must be in the format XXXXX-XXX or XXXXXXXX.")]
     [InlineData("12345-67", "ZipCode must be in the format XXXXX-XXX or XXXXXXXX.")]
     public void Validate_ZipCode_ShouldHaveError(string zipCode, string expectedError)
@@ -76,7 +240,29 @@ public sealed class AddPropertyRequestValidatorTests
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Address.ZipCode).WithErrorMessage(expectedError);
+        result.ShouldHaveValidationErrorFor(x => x.Address.ZipCode)
+            .WithErrorMessage(expectedError);
+    }
+
+    [Theory]
+    [InlineData("01234567")]
+    [InlineData("01234-567")]
+    public void Validate_ValidZipCode_ShouldNotHaveError(string zipCode)
+    {
+        // Arrange
+        var address = _fixture.Build<Address>()
+            .With(a => a.ZipCode, zipCode)
+            .Create();
+
+        var request = _fixture.Build<AddPropertyRequest>()
+            .With(r => r.Address, address)
+            .Create();
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldNotHaveValidationErrorFor(x => x.Address.ZipCode);
     }
 
     [Fact]
@@ -122,7 +308,8 @@ public sealed class AddPropertyRequestValidatorTests
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.RentPrice).WithErrorMessage(expectedError);
+        result.ShouldHaveValidationErrorFor(x => x.RentPrice)
+            .WithErrorMessage(expectedError);
     }
 
     [Fact]
@@ -154,7 +341,8 @@ public sealed class AddPropertyRequestValidatorTests
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Bedrooms).WithErrorMessage(expectedError);
+        result.ShouldHaveValidationErrorFor(x => x.Bedrooms)
+            .WithErrorMessage(expectedError);
     }
 
     [Fact]
@@ -170,6 +358,23 @@ public sealed class AddPropertyRequestValidatorTests
 
         // Assert
         result.ShouldNotHaveValidationErrorFor(x => x.Bedrooms);
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void Validate_ValidIsAvailable_ShouldNotHaveError(bool isAvailable)
+    {
+        // Arrange
+        var request = _fixture.Build<AddPropertyRequest>()
+            .With(r => r.IsAvailable, isAvailable)
+            .Create();
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldNotHaveValidationErrorFor(x => x.IsAvailable);
     }
 
     [Fact]

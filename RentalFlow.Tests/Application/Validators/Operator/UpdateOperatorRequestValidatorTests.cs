@@ -44,6 +44,36 @@ public sealed class UpdateOperatorRequestValidatorTests
     }
 
     [Fact]
+    public void Validate_Name_ShouldNotHaveError_WhenValid()
+    {
+        // Arrange
+        var request = _fixture.Build<UpdateOperatorRequest>()
+            .With(r => r.Name, "Arthur Azevedo")
+            .Create();
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldNotHaveValidationErrorFor(x => x.Name);
+    }
+
+    [Fact]
+    public void Validate_Name_ShouldNotHaveError_WhenNull()
+    {
+        // Arrange
+        var request = _fixture.Build<UpdateOperatorRequest>()
+            .With(r => r.Name, (string?)null)
+            .Create();
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldNotHaveValidationErrorFor(x => x.Name);
+    }
+
+    [Fact]
     public void Validate_Email_ShouldHaveError_WhenInvalidFormat()
     {
         // Arrange
@@ -76,6 +106,36 @@ public sealed class UpdateOperatorRequestValidatorTests
     }
 
     [Fact]
+    public void Validate_Email_ShouldNotHaveError_WhenValid()
+    {
+        // Arrange
+        var request = _fixture.Build<UpdateOperatorRequest>()
+            .With(r => r.Email, "arthur@example.com")
+            .Create();
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldNotHaveValidationErrorFor(x => x.Email);
+    }
+
+    [Fact]
+    public void Validate_Email_ShouldNotHaveError_WhenNull()
+    {
+        // Arrange
+        var request = _fixture.Build<UpdateOperatorRequest>()
+            .With(r => r.Email, (string?)null)
+            .Create();
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldNotHaveValidationErrorFor(x => x.Email);
+    }
+
+    [Fact]
     public void Validate_Role_ShouldHaveError_WhenNone()
     {
         // Arrange
@@ -89,5 +149,51 @@ public sealed class UpdateOperatorRequestValidatorTests
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.Role)
             .WithErrorMessage("Role is required.");
+    }
+
+    [Theory]
+    [InlineData(OperatorRole.Broker)]
+    [InlineData(OperatorRole.Manager)]
+    [InlineData(OperatorRole.Administrator)]
+    public void Validate_Role_ShouldNotHaveError_WhenValid(OperatorRole role)
+    {
+        // Arrange
+        var request = _fixture.Build<UpdateOperatorRequest>()
+            .With(r => r.Role, role)
+            .Create();
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldNotHaveValidationErrorFor(x => x.Role);
+    }
+
+    [Fact]
+    public void Validate_Role_ShouldNotHaveError_WhenNull()
+    {
+        // Arrange
+        var request = _fixture.Build<UpdateOperatorRequest>()
+            .With(r => r.Role, (OperatorRole?)null)
+            .Create();
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldNotHaveValidationErrorFor(x => x.Role);
+    }
+
+    [Fact]
+    public void Validate_ShouldNotHaveError_WhenRequestIsEmpty()
+    {
+        // Arrange
+        var request = new UpdateOperatorRequest();
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
     }
 }

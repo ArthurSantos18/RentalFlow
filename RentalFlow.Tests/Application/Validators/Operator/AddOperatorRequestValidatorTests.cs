@@ -125,6 +125,36 @@ public sealed class AddOperatorRequestValidatorTests
     }
 
     [Fact]
+    public void Validate_EmptyTeamId_ShouldHaveError()
+    {
+        // Arrange
+        var request = _fixture.Build<AddOperatorRequest>()
+            .With(r => r.TeamId, Guid.Empty)
+            .Create();
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.TeamId).WithErrorMessage("TeamId is required.");
+    }
+
+    [Fact]
+    public void Validate_ValidTeamId_ShouldNotHaveError()
+    {
+        // Arrange
+        var request = _fixture.Build<AddOperatorRequest>()
+            .With(r => r.TeamId, Guid.NewGuid())
+            .Create();
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldNotHaveValidationErrorFor(x => x.TeamId);
+    }
+
+    [Fact]
     public void Validate_RoleNone_ShouldHaveError()
     {
         // Arrange
@@ -165,6 +195,7 @@ public sealed class AddOperatorRequestValidatorTests
             .With(r => r.Name, string.Empty)
             .With(r => r.Email, string.Empty)
             .With(r => r.Role, OperatorRole.None)
+            .With(r => r.TeamId, Guid.NewGuid())
             .Create();
 
         // Act
@@ -174,5 +205,6 @@ public sealed class AddOperatorRequestValidatorTests
         result.ShouldHaveValidationErrorFor(x => x.Name);
         result.ShouldHaveValidationErrorFor(x => x.Email);
         result.ShouldHaveValidationErrorFor(x => x.Role);
+        result.ShouldNotHaveValidationErrorFor(x => x.TeamId);
     }
 }
