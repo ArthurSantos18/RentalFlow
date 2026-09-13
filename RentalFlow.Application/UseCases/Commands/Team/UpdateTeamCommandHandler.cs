@@ -17,9 +17,7 @@ public sealed class UpdateTeamCommandHandler(ITeamRepository _teamRepository) : 
             return Result.Failure(TeamErrors.TeamNotFound);
         }
 
-        team = command.Request.UpdateEntity(team);
-
-        _teamRepository.Update(team);
+        team.UpdateFrom(command.Request);
 
         await _teamRepository.SaveChangesAsync(cancellationToken);
 

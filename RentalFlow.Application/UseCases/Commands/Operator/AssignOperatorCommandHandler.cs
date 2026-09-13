@@ -30,8 +30,6 @@ public sealed class AssignOperatorCommandHandler(ITeamRepository _teamRepository
 
         @operator.SetTeam(team);
 
-        _operatorRepository.Update(@operator);
-
         await _operatorRepository.SaveChangesAsync(cancellationToken);
 
         return Result.Success();

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RentalFlow.Application.Interfaces.Repositories;
 using RentalFlow.Application.Requests.Operator;
-using RentalFlow.Domain.Entities.Operator;
+using RentalFlow.Domain.Entities;
 using RentalFlow.Domain.Enums;
 using RentalFlow.Domain.Patterns.PagedResult;
 using RentalFlow.Infrastructure.Data;
@@ -16,7 +16,6 @@ public sealed class OperatorRepository(AppDbContext context) : BaseRepository<Op
 
         query = ApplyIdsFilter(query, request.Ids);
         query = ApplyNamesFilter(query, request.Names);
-        query = ApplyEmailsFilter(query, request.Emails);
         query = ApplyRoleFilter(query, request.Role);
         query = ApplyActiveFilter(query, request.IsActive);
         query = ApplyHasApplicationsFilter(query, request.HasApplications);
@@ -53,17 +52,6 @@ public sealed class OperatorRepository(AppDbContext context) : BaseRepository<Op
         {
             var namesLower = names.Select(n => n.ToLower()).ToList();
             return query.Where(o => namesLower.Contains(o.Name.ToLower()));
-        }
-
-        return query;
-    }
-
-    private static IQueryable<OperatorEntity> ApplyEmailsFilter(IQueryable<OperatorEntity> query, IEnumerable<string>? emails)
-    {
-        if (emails?.Any() == true)
-        {
-            var emailsLower = emails.Select(e => e.ToLower()).ToList();
-            return query.Where(o => emailsLower.Contains(o.Email.ToLower()));
         }
 
         return query;

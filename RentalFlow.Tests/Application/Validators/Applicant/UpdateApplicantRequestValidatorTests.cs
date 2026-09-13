@@ -73,52 +73,6 @@ public sealed class UpdateApplicantRequestValidatorTests
     }
 
     [Fact]
-    public void Validate_Cpf_ShouldHaveError_WhenInvalid()
-    {
-        // Arrange
-        var request = _fixture.Build<UpdateApplicantRequest>()
-            .With(r => r.Cpf, "11111111111")
-            .Create();
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Cpf)
-            .WithErrorMessage("Invalid CPF.");
-    }
-
-    [Fact]
-    public void Validate_Cpf_ShouldNotHaveError_WhenValid()
-    {
-        // Arrange
-        var request = _fixture.Build<UpdateApplicantRequest>()
-            .With(r => r.Cpf, "52998224725")
-            .Create();
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.Cpf);
-    }
-
-    [Fact]
-    public void Validate_Cpf_ShouldNotHaveError_WhenNull()
-    {
-        // Arrange
-        var request = _fixture.Build<UpdateApplicantRequest>()
-            .With(r => r.Cpf, (string?)null)
-            .Create();
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.Cpf);
-    }
-
-    [Fact]
     public void Validate_Email_ShouldHaveError_WhenInvalidFormat()
     {
         // Arrange

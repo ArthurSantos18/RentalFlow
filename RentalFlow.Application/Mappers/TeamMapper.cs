@@ -1,6 +1,6 @@
 ﻿using RentalFlow.Application.Requests.Team;
 using RentalFlow.Application.Responses;
-using RentalFlow.Domain.Entities.Team;
+using RentalFlow.Domain.Entities;
 using RentalFlow.Domain.Patterns.PagedResult;
 
 namespace RentalFlow.Application.Mappers;
@@ -9,19 +9,29 @@ public static class TeamMapper
 {
     public static TeamEntity ToEntity(this AddTeamRequest request)
     {
-        return new TeamBuilder()
-            .WithId(Guid.NewGuid())
-            .WithName(request.Name)
-            .WithDescription(request.Description)
-            .WithIsActive(true)
-            .Build();
+        return new TeamEntity(
+            name: request.Name,
+            description: request.Description);
     }
 
-    public static TeamEntity UpdateEntity(this UpdateTeamRequest request, TeamEntity entity)
+    public static TeamEntity UpdateFrom(this TeamEntity entity, UpdateTeamRequest request)
     {
-        return entity
-            .SetName(request.Name ?? entity.Name)
-            .SetDescription(request.Description ?? entity.Description);
+        if (!string.IsNullOrWhiteSpace(request.Name))
+        {
+            entity.SetName(request.Name);
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.Description))
+        {
+            entity.SetDescription(request.Description);
+        }
+
+        if (request.IsActive.HasValue)
+        {
+            entity.SetIsActive(request.IsActive.Value);
+        }
+
+        return entity.Touch();
     }
 
     public static GetTeamResponse ToResponse(this TeamEntity entity)
@@ -30,7 +40,10 @@ public static class TeamMapper
         {
             Id = entity.Id,
             Name = entity.Name,
-            Description = entity.Description
+            Description = entity.Description,
+            IsActive = entity.IsActive,
+            CreatedAt = entity.CreatedAt,
+            UpdatedAt = entity.UpdatedAt
         };
     }
 

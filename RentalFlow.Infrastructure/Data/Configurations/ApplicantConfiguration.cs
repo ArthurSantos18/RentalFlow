@@ -1,15 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using RentalFlow.Domain.Entities.Applicant;
+using RentalFlow.Domain.Entities;
 
 namespace RentalFlow.Infrastructure.Data.Configurations;
 
-public sealed class ApplicantConfiguration : IEntityTypeConfiguration<ApplicantEntity>
+public sealed class ApplicantConfiguration : BaseConfiguration<ApplicantEntity>
 {
-    public void Configure(EntityTypeBuilder<ApplicantEntity> builder)
+    protected override void ConfigureEntity(EntityTypeBuilder<ApplicantEntity> builder)
     {
         builder.ToTable("Applicants");
-        builder.HasKey(a => a.Id);
 
         builder.Property(a => a.FullName)
             .IsRequired()
@@ -30,7 +29,7 @@ public sealed class ApplicantConfiguration : IEntityTypeConfiguration<ApplicantE
             .HasMaxLength(15);
 
         builder.Property(a => a.MonthlyIncome)
-            .HasColumnType("decimal(18,2)");
+            .HasColumnType("decimal(18,2)").IsRequired();
 
         builder.HasMany(a => a.Applications)
             .WithOne(ra => ra.Applicant)

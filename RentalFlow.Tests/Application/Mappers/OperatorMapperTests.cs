@@ -2,10 +2,10 @@
 using FluentAssertions;
 using RentalFlow.Application.Mappers;
 using RentalFlow.Application.Requests.Operator;
-using RentalFlow.Domain.Entities.Operator;
-using RentalFlow.Domain.Entities.Team;
+using RentalFlow.Domain.Entities;
 using RentalFlow.Domain.Enums;
 using RentalFlow.Domain.Patterns.PagedResult;
+using RentalFlow.Tests.Fixtures;
 
 namespace RentalFlow.Tests.Application.Mappers;
 
@@ -16,110 +16,96 @@ public sealed class OperatorMapperTests
     [Fact]
     public void ToEntity_ShouldMapAllFieldsCorrectly()
     {
-        // Arrange
         var request = _fixture.Build<AddOperatorRequest>()
+            .With(r => r.Name, "Operator Alpha")
             .With(r => r.Role, OperatorRole.Broker)
             .Create();
 
-        var team = TeamEntity.Empty;
+        var team = TestFixtures.MakeTeam();
 
-        // Act
         var entity = request.ToEntity(team);
 
-        // Assert
         entity.Should().NotBeNull();
         entity.Id.Should().NotBeEmpty();
-        entity.Name.Should().Be(request.Name);
-        entity.Email.Should().Be(request.Email);
-        entity.Role.Should().Be(request.Role);
+        entity.Name.Should().Be("Operator Alpha");
+        entity.Role.Should().Be(OperatorRole.Broker);
+        entity.TeamId.Should().Be(team.Id);
         entity.IsActive.Should().BeTrue();
+        entity.Applications.Should().BeEmpty();
     }
 
     [Fact]
-    public void UpdateEntity_ShouldMapAllFieldsCorrectly_WhenExistingProvided()
+    public void UpdateFrom_ShouldMapAllFieldsCorrectly_WhenRequestHasValues()
     {
-        // Arrange
+        var entity = TestFixtures.MakeOperator(name: "Old Name", role: OperatorRole.Broker);
+
         var request = _fixture.Build<UpdateOperatorRequest>()
+            .With(r => r.Name, "New Name")
             .With(r => r.Role, OperatorRole.Manager)
+            .With(r => r.IsActive, false)
             .Create();
-        var existing = new OperatorBuilder()
-            .WithId(_fixture.Create<Guid>())
-            .WithName("Existing Name")
-            .WithEmail("existing@test.com")
-            .WithRole(OperatorRole.Broker)
-            .WithIsActive(true)
-            .Build();
 
-        // Act
-        var entity = request.UpdateEntity(existing);
+        entity.UpdateFrom(request);
 
-        // Assert
-        entity.Should().NotBeNull();
-        entity.Name.Should().Be(request.Name ?? existing.Name);
-        entity.Email.Should().Be(request.Email ?? existing.Email);
-        entity.Role.Should().Be(request.Role ?? existing.Role);
+        entity.Name.Should().Be("New Name");
+        entity.Role.Should().Be(OperatorRole.Manager);
+        entity.IsActive.Should().BeFalse();
+    }
+
+    [Fact]
+    public void UpdateFrom_ShouldKeepExistingValues_WhenRequestFieldsAreNull()
+    {
+        var entity = TestFixtures.MakeOperator(name: "Existing", role: OperatorRole.Broker);
+
+        var request = _fixture.Build<UpdateOperatorRequest>()
+            .With(r => r.Name, (string?)null)
+            .With(r => r.Role, (OperatorRole?)null)
+            .With(r => r.IsActive, (bool?)null)
+            .Create();
+
+        entity.UpdateFrom(request);
+
+        entity.Name.Should().Be("Existing");
+        entity.Role.Should().Be(OperatorRole.Broker);
+        entity.IsActive.Should().BeTrue();
     }
 
     [Fact]
     public void ToResponse_ShouldMapEntityToResponse()
     {
-        // Arrange
-        var entity = new OperatorBuilder()
-            .WithId(_fixture.Create<Guid>())
-            .WithName(_fixture.Create<string>())
-            .WithEmail(_fixture.Create<string>())
-            .WithRole(OperatorRole.Administrator)
-            .WithIsActive(true)
-            .Build();
+        var team = TestFixtures.MakeTeam(name: "Team Alpha");
+        var entity = TestFixtures.MakeOperator(name: "Operator Name", role: OperatorRole.Administrator, team: team);
 
-        // Act
         var response = entity.ToResponse();
 
-        // Assert
         response.Should().NotBeNull();
         response.Id.Should().Be(entity.Id);
-        response.Name.Should().Be(entity.Name);
-        response.Email.Should().Be(entity.Email);
-        response.Role.Should().Be(entity.Role);
+        response.Name.Should().Be("Operator Name");
+        response.Role.Should().Be(OperatorRole.Administrator);
         response.IsActive.Should().Be(entity.IsActive);
+        response.TeamId.Should().Be(team.Id);
+        response.TeamName.Should().Be("Team Alpha");
     }
 
     [Fact]
     public void ToResponse_ShouldMapPagedResultToPagedResultResponse()
     {
-        // Arrange
-        var entity1 = new OperatorBuilder()
-            .WithId(Guid.NewGuid())
-            .WithName(_fixture.Create<string>())
-            .WithEmail(_fixture.Create<string>() + "@test.com")
-            .WithRole(OperatorRole.Broker)
-            .WithIsActive(_fixture.Create<bool>())
-            .Build();
+        var team = TestFixtures.MakeTeam();
+        var entities = new List<OperatorEntity>
+        {
+            TestFixtures.MakeOperator(team: team),
+            TestFixtures.MakeOperator(name: "Second", team: team)
+        };
 
-        var entity2 = new OperatorBuilder()
-            .WithId(Guid.NewGuid())
-            .WithName(_fixture.Create<string>())
-            .WithEmail(_fixture.Create<string>() + "@test.com")
-            .WithRole(OperatorRole.Manager)
-            .WithIsActive(_fixture.Create<bool>())
-            .Build();
+        var pagedResult = new PagedResult<OperatorEntity>(entities, totalResults: 10, page: 2, pageSize: 2);
 
-        var entities = new List<OperatorEntity> { entity1, entity2 };
-        var pagedResult = new PagedResult<OperatorEntity>(
-            entities,
-            totalResults: 10,
-            page: 2,
-            pageSize: 2);
-
-        // Act
         var response = pagedResult.ToResponse();
 
-        // Assert
         response.Should().NotBeNull();
-        response.Page.Should().Be(pagedResult.Page);
-        response.PageSize.Should().Be(pagedResult.PageSize);
-        response.TotalResults.Should().Be(pagedResult.TotalResults);
-        response.Results.Should().HaveCount(entities.Count);
+        response.Page.Should().Be(2);
+        response.PageSize.Should().Be(2);
+        response.TotalResults.Should().Be(10);
+        response.Results.Should().HaveCount(2);
         response.Results.Should().BeEquivalentTo(entities.Select(e => e.ToResponse()));
     }
 }

@@ -8,4 +8,5 @@ public record UpdateOperatorRequest
     public string? Email { get; init; }
     public OperatorRole? Role { get; init; }
     public Guid? TeamId { get; init; }
+    public bool? IsActive { get; init; }
 }

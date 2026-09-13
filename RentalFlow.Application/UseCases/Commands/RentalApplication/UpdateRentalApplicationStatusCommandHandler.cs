@@ -23,8 +23,6 @@ public sealed class UpdateRentalApplicationStatusCommandHandler(IRentalApplicati
             return statusResult;
         }
 
-        _rentalApplicationrepository.Update(rentalApplication);
-
         await _rentalApplicationrepository.SaveChangesAsync(cancellationToken);
 
         return Result.Success();

@@ -23,16 +23,21 @@ namespace RentalFlow.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("RentalFlow.Domain.Entities.Applicant.ApplicantEntity", b =>
+            modelBuilder.Entity("RentalFlow.Domain.Entities.ApplicantEntity", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Cpf")
                         .IsRequired()
                         .HasMaxLength(11)
                         .HasColumnType("nvarchar(11)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -47,12 +52,18 @@ namespace RentalFlow.Infrastructure.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<decimal>("MonthlyIncome")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Phone")
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -62,18 +73,21 @@ namespace RentalFlow.Infrastructure.Migrations
                     b.ToTable("Applicants", (string)null);
                 });
 
-            modelBuilder.Entity("RentalFlow.Domain.Entities.Operator.OperatorEntity", b =>
+            modelBuilder.Entity("RentalFlow.Domain.Entities.OperatorEntity", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
@@ -82,11 +96,13 @@ namespace RentalFlow.Infrastructure.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("Role")
-                        .HasMaxLength(50)
                         .HasColumnType("int");
 
                     b.Property<Guid>("TeamId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -95,14 +111,19 @@ namespace RentalFlow.Infrastructure.Migrations
                     b.ToTable("Operators", (string)null);
                 });
 
-            modelBuilder.Entity("RentalFlow.Domain.Entities.Property.PropertyEntity", b =>
+            modelBuilder.Entity("RentalFlow.Domain.Entities.PropertyEntity", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Bedrooms")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -110,10 +131,16 @@ namespace RentalFlow.Infrastructure.Migrations
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<decimal>("RentPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.ComplexProperty(typeof(Dictionary<string, object>), "Address", "RentalFlow.Domain.Entities.Property.PropertyEntity.Address#Address", b1 =>
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "Address", "RentalFlow.Domain.Entities.PropertyEntity.Address#Address", b1 =>
                         {
                             b1.IsRequired();
 
@@ -155,13 +182,14 @@ namespace RentalFlow.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("IsAvailable");
+
                     b.ToTable("Properties", (string)null);
                 });
 
-            modelBuilder.Entity("RentalFlow.Domain.Entities.RentalApplication.RentalApplicationEntity", b =>
+            modelBuilder.Entity("RentalFlow.Domain.Entities.RentalApplicationEntity", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ApplicantId")
@@ -173,6 +201,9 @@ namespace RentalFlow.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<decimal>("FinancedAmount")
                         .HasColumnType("decimal(18,2)");
 
@@ -180,6 +211,9 @@ namespace RentalFlow.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<Guid>("OperatorId")
@@ -199,6 +233,9 @@ namespace RentalFlow.Infrastructure.Migrations
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicantId");
@@ -207,14 +244,22 @@ namespace RentalFlow.Infrastructure.Migrations
 
                     b.HasIndex("PropertyId");
 
+                    b.HasIndex("ProposalNumber")
+                        .IsUnique();
+
                     b.ToTable("RentalApplications", (string)null);
                 });
 
-            modelBuilder.Entity("RentalFlow.Domain.Entities.Team.TeamEntity", b =>
+            modelBuilder.Entity("RentalFlow.Domain.Entities.TeamEntity", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -224,19 +269,109 @@ namespace RentalFlow.Infrastructure.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.ToTable("Teams", (string)null);
                 });
 
-            modelBuilder.Entity("RentalFlow.Domain.Entities.Operator.OperatorEntity", b =>
+            modelBuilder.Entity("RentalFlow.Domain.Entities.UserEntity", b =>
                 {
-                    b.HasOne("RentalFlow.Domain.Entities.Team.TeamEntity", "Team")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("MustChangePassword")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("OperatorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OperatorId")
+                        .IsUnique();
+
+                    b.ToTable("UserEntity");
+                });
+
+            modelBuilder.Entity("RentalFlow.Domain.Entities.UserTokenEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("RefreshToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RevokedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserTokenEntity");
+                });
+
+            modelBuilder.Entity("RentalFlow.Domain.Entities.OperatorEntity", b =>
+                {
+                    b.HasOne("RentalFlow.Domain.Entities.TeamEntity", "Team")
                         .WithMany("Operators")
                         .HasForeignKey("TeamId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -245,21 +380,21 @@ namespace RentalFlow.Infrastructure.Migrations
                     b.Navigation("Team");
                 });
 
-            modelBuilder.Entity("RentalFlow.Domain.Entities.RentalApplication.RentalApplicationEntity", b =>
+            modelBuilder.Entity("RentalFlow.Domain.Entities.RentalApplicationEntity", b =>
                 {
-                    b.HasOne("RentalFlow.Domain.Entities.Applicant.ApplicantEntity", "Applicant")
+                    b.HasOne("RentalFlow.Domain.Entities.ApplicantEntity", "Applicant")
                         .WithMany("Applications")
                         .HasForeignKey("ApplicantId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("RentalFlow.Domain.Entities.Operator.OperatorEntity", "Operator")
+                    b.HasOne("RentalFlow.Domain.Entities.OperatorEntity", "Operator")
                         .WithMany("Applications")
                         .HasForeignKey("OperatorId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("RentalFlow.Domain.Entities.Property.PropertyEntity", "Property")
+                    b.HasOne("RentalFlow.Domain.Entities.PropertyEntity", "Property")
                         .WithMany("Applications")
                         .HasForeignKey("PropertyId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -272,24 +407,54 @@ namespace RentalFlow.Infrastructure.Migrations
                     b.Navigation("Property");
                 });
 
-            modelBuilder.Entity("RentalFlow.Domain.Entities.Applicant.ApplicantEntity", b =>
+            modelBuilder.Entity("RentalFlow.Domain.Entities.UserEntity", b =>
+                {
+                    b.HasOne("RentalFlow.Domain.Entities.OperatorEntity", "Operator")
+                        .WithOne("User")
+                        .HasForeignKey("RentalFlow.Domain.Entities.UserEntity", "OperatorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Operator");
+                });
+
+            modelBuilder.Entity("RentalFlow.Domain.Entities.UserTokenEntity", b =>
+                {
+                    b.HasOne("RentalFlow.Domain.Entities.UserEntity", "User")
+                        .WithMany("Tokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("RentalFlow.Domain.Entities.ApplicantEntity", b =>
                 {
                     b.Navigation("Applications");
                 });
 
-            modelBuilder.Entity("RentalFlow.Domain.Entities.Operator.OperatorEntity", b =>
+            modelBuilder.Entity("RentalFlow.Domain.Entities.OperatorEntity", b =>
+                {
+                    b.Navigation("Applications");
+
+                    b.Navigation("User")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("RentalFlow.Domain.Entities.PropertyEntity", b =>
                 {
                     b.Navigation("Applications");
                 });
 
-            modelBuilder.Entity("RentalFlow.Domain.Entities.Property.PropertyEntity", b =>
-                {
-                    b.Navigation("Applications");
-                });
-
-            modelBuilder.Entity("RentalFlow.Domain.Entities.Team.TeamEntity", b =>
+            modelBuilder.Entity("RentalFlow.Domain.Entities.TeamEntity", b =>
                 {
                     b.Navigation("Operators");
+                });
+
+            modelBuilder.Entity("RentalFlow.Domain.Entities.UserEntity", b =>
+                {
+                    b.Navigation("Tokens");
                 });
 #pragma warning restore 612, 618
         }

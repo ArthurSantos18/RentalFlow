@@ -2,12 +2,10 @@
 using FluentAssertions;
 using Moq;
 using RentalFlow.Application.Interfaces.Repositories;
-using RentalFlow.Application.Requests.Property;
 using RentalFlow.Application.UseCases.Commands.Property;
-using RentalFlow.Domain.Entities.Property;
+using RentalFlow.Domain.Entities;
 
 namespace RentalFlow.Tests.Application.UseCases.Commands.Property;
-
 
 public sealed class AddPropertyCommandHandlerTests
 {
@@ -23,13 +21,10 @@ public sealed class AddPropertyCommandHandlerTests
     [Fact]
     public async Task HandleAsync_ShouldAddProperty_WhenAllFieldsAreValid()
     {
-        // Arrange
         var command = _fixture.Build<AddPropertyCommand>().Create();
 
-        // Act
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
-        // Assert
         result.IsSuccess.Should().BeTrue();
 
         _repositoryMock.Verify(r => r.AddAsync(It.IsAny<PropertyEntity>(), It.IsAny<CancellationToken>()), Times.Once);
@@ -38,4 +33,3 @@ public sealed class AddPropertyCommandHandlerTests
         _repositoryMock.VerifyNoOtherCalls();
     }
 }
-

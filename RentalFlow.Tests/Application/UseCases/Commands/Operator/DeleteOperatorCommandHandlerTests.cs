@@ -3,8 +3,9 @@ using FluentAssertions;
 using Moq;
 using RentalFlow.Application.Interfaces.Repositories;
 using RentalFlow.Application.UseCases.Commands.Operator;
-using RentalFlow.Domain.Entities.Operator;
+using RentalFlow.Domain.Entities;
 using RentalFlow.Domain.Errors;
+using RentalFlow.Tests.Fixtures;
 
 namespace RentalFlow.Tests.Application.UseCases.Commands.Operator;
 
@@ -20,61 +21,28 @@ public sealed class DeleteOperatorCommandHandlerTests
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldDeleteOperator_WhenOperatorExistsAndIsActive()
+    public async Task HandleAsync_ShouldSoftDeleteOperator_WhenOperatorExists()
     {
-        // Arrange
         var operatorId = Guid.NewGuid();
         var command = _fixture.Build<DeleteOperatorCommand>()
             .With(c => c.Id, operatorId)
             .Create();
 
-        var @operator = OperatorEntity.Empty
-            .SetId(operatorId)
-            .SetIsActive(true);
+        var @operator = TestFixtures.MakeOperator(id: operatorId);
 
         _repositoryMock
             .Setup(r => r.GetByIdAsync(operatorId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(@operator);
 
-        // Act
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
-        // Assert
         result.IsSuccess.Should().BeTrue();
+        @operator.IsDeleted.Should().BeTrue();
+        @operator.DeletedAt.Should().NotBeNull();
+        @operator.DeletedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
 
         _repositoryMock.Verify(r => r.GetByIdAsync(operatorId, It.IsAny<CancellationToken>()), Times.Once);
-        _repositoryMock.Verify(r => r.Update(@operator), Times.Once);
         _repositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-
-        _repositoryMock.VerifyNoOtherCalls();
-    }
-
-    [Fact]
-    public async Task HandleAsync_ShouldReturnSuccess_WhenOperatorAlreadyInactive()
-    {
-        // Arrange
-        var operatorId = Guid.NewGuid();
-        var command = _fixture.Build<DeleteOperatorCommand>()
-            .With(c => c.Id, operatorId)
-            .Create();
-
-        var @operator = OperatorEntity.Empty
-            .SetId(operatorId)
-            .SetIsActive(false);
-
-        _repositoryMock
-            .Setup(r => r.GetByIdAsync(operatorId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(@operator);
-
-        // Act
-        var result = await _handler.HandleAsync(command, CancellationToken.None);
-
-        // Assert
-        result.IsSuccess.Should().BeTrue();
-
-        _repositoryMock.Verify(r => r.GetByIdAsync(operatorId, It.IsAny<CancellationToken>()), Times.Once);
-        _repositoryMock.Verify(r => r.Update(It.IsAny<OperatorEntity>()), Times.Never);
-        _repositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
 
         _repositoryMock.VerifyNoOtherCalls();
     }
@@ -82,10 +50,7 @@ public sealed class DeleteOperatorCommandHandlerTests
     [Fact]
     public async Task HandleAsync_ShouldReturnFailure_WhenOperatorNotFound()
     {
-        // Arrange
-        var expectedError = OperatorErrors.OperatorNotFound;
         var operatorId = Guid.NewGuid();
-
         var command = _fixture.Build<DeleteOperatorCommand>()
             .With(c => c.Id, operatorId)
             .Create();
@@ -94,15 +59,12 @@ public sealed class DeleteOperatorCommandHandlerTests
             .Setup(r => r.GetByIdAsync(operatorId, It.IsAny<CancellationToken>()))
             .ReturnsAsync((OperatorEntity?)null);
 
-        // Act
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
-        // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(expectedError);
+        result.Error.Should().Be(OperatorErrors.OperatorNotFound);
 
         _repositoryMock.Verify(r => r.GetByIdAsync(operatorId, It.IsAny<CancellationToken>()), Times.Once);
-        _repositoryMock.Verify(r => r.Update(It.IsAny<OperatorEntity>()), Times.Never);
         _repositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
 
         _repositoryMock.VerifyNoOtherCalls();

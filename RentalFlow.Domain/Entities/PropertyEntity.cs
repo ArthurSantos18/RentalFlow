@@ -1,54 +1,28 @@
-﻿using RentalFlow.Domain.Entities.RentalApplication;
-using RentalFlow.Domain.ValueObject;
+﻿using RentalFlow.Domain.ValueObject;
 
-namespace RentalFlow.Domain.Entities.Property;
+namespace RentalFlow.Domain.Entities;
 
-public class PropertyEntity
+public sealed class PropertyEntity : BaseEntity<PropertyEntity>
 {
-    public Guid Id { get; private set; } = Guid.NewGuid();
     public Address Address { get; private set; } = Address.Empty;
     public decimal RentPrice { get; private set; }
     public int Bedrooms { get; private set; }
     public bool IsAvailable { get; private set; } = true;
-    public bool IsActive { get; private set; }
     public List<RentalApplicationEntity> Applications { get; private set; } = [];
 
     public PropertyEntity(
-        Guid id,
         Address address,
         decimal rentPrice,
         int bedrooms,
-        bool isAvailable,
-        bool isActive,
-        List<RentalApplicationEntity> applications)
+        bool isAvailable)
     {
-        Id = id;
         Address = address;
         RentPrice = rentPrice;
         Bedrooms = bedrooms;
         IsAvailable = isAvailable;
-        IsActive = isActive;
-        Applications = applications ?? [];
     }
-
-    public static PropertyEntity Empty { get; } = new PropertyEntity
-    {
-        Id = Guid.NewGuid(),
-        Address = Address.Empty,
-        RentPrice = 0.0m,
-        Bedrooms = 0,
-        IsAvailable = true,
-        IsActive = false,
-        Applications = []
-    };
 
     private PropertyEntity() { }
-
-    public PropertyEntity SetId(Guid id) 
-    { 
-        Id = id;
-        return this;
-    }
 
     public PropertyEntity SetAddress(Address address) 
     { 
@@ -74,12 +48,6 @@ public class PropertyEntity
         return this;
     }
 
-    public PropertyEntity SetIsActive(bool isActive)
-    {
-        IsActive = isActive;
-        return this;
-    }
-
     public PropertyEntity SetApplications(List<RentalApplicationEntity> applications)
     {
         Applications = applications ?? [];
@@ -97,14 +65,4 @@ public class PropertyEntity
         Applications.Remove(application);
         return this;
     }
-    public PropertyBuilder ToBuilder() => new()
-    {
-        Id = Id,
-        Address = Address,
-        RentPrice = RentPrice,
-        Bedrooms = Bedrooms,
-        IsAvailable = IsAvailable,
-        IsActive = IsActive,
-        Applications = Applications
-    };
 }

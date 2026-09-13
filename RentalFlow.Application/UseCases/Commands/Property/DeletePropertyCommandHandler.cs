@@ -16,14 +16,7 @@ public sealed class DeletePropertyCommandHandler(IPropertyRepository _propertyRe
             return Result.Failure(PropertyErrors.PropertyNotFound);
         }
 
-        if (property.IsActive == false)
-        {
-            return Result.Success();
-        }
-
-        property.SetIsActive(false);
-
-        _propertyRepository.Update(property);
+        property.MarkAsDeleted();
 
         await _propertyRepository.SaveChangesAsync(cancellationToken);
 

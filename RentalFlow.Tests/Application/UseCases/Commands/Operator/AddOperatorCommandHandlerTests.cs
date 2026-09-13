@@ -3,9 +3,9 @@ using FluentAssertions;
 using Moq;
 using RentalFlow.Application.Interfaces.Repositories;
 using RentalFlow.Application.UseCases.Commands.Operator;
-using RentalFlow.Domain.Entities.Operator;
-using RentalFlow.Domain.Entities.Team;
+using RentalFlow.Domain.Entities;
 using RentalFlow.Domain.Errors;
+using RentalFlow.Tests.Fixtures;
 
 namespace RentalFlow.Tests.Application.UseCases.Commands.Operator;
 
@@ -24,18 +24,16 @@ public sealed class AddOperatorCommandHandlerTests
     [Fact]
     public async Task HandleAsync_ShouldAddOperator_WhenAllFieldsAreValid()
     {
-        // Arrange
         var command = _fixture.Build<AddOperatorCommand>().Create();
-        var team = TeamEntity.Empty;
+
+        var team = TestFixtures.MakeTeam(id: command.Request.TeamId);
 
         _teamRepositoryMock
             .Setup(r => r.GetByIdAsync(command.Request.TeamId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(team);
 
-        // Act
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
-        // Assert
         result.IsSuccess.Should().BeTrue();
 
         _teamRepositoryMock.Verify(r => r.GetByIdAsync(command.Request.TeamId, It.IsAny<CancellationToken>()), Times.Once);
@@ -49,17 +47,14 @@ public sealed class AddOperatorCommandHandlerTests
     [Fact]
     public async Task HandleAsync_ShouldReturnTeamNotFound_WhenTeamDoesNotExist()
     {
-        // Arrange
         var command = _fixture.Build<AddOperatorCommand>().Create();
 
         _teamRepositoryMock
             .Setup(r => r.GetByIdAsync(command.Request.TeamId, It.IsAny<CancellationToken>()))
             .ReturnsAsync((TeamEntity?)null);
 
-        // Act
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
-        // Assert
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be(TeamErrors.TeamNotFound);
 

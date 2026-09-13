@@ -1,57 +1,29 @@
-﻿using RentalFlow.Domain.Entities.RentalApplication;
+﻿namespace RentalFlow.Domain.Entities;
 
-namespace RentalFlow.Domain.Entities.Applicant;
-
-public sealed class ApplicantEntity
+public sealed class ApplicantEntity : BaseEntity<ApplicantEntity>
 {
-    public Guid Id { get; private set; } = Guid.NewGuid();
     public string FullName { get; private set; } = string.Empty;
     public string Cpf { get; private set; } = string.Empty;
     public string Email { get; private set; } = string.Empty;
     public string? Phone { get; private set; }
     public decimal MonthlyIncome { get; private set; }
-    public bool IsActive { get; private set; }
     public List<RentalApplicationEntity> Applications { get; private set; } = [];
 
     public ApplicantEntity(
-        Guid id,
         string fullName,
         string cpf,
         string email,
         string? phone,
-        decimal monthlyIncome,
-        bool isActive,
-        List<RentalApplicationEntity> applications)
+        decimal monthlyIncome)
     {
-        Id = id;
         FullName = fullName;
         Cpf = cpf;
         Email = email;
         Phone = phone;
         MonthlyIncome = monthlyIncome;
-        IsActive = isActive;
-        Applications = applications ?? [];
     }
-
-    public static ApplicantEntity Empty { get; } = new ApplicantEntity
-    {
-        Id = Guid.Empty,
-        FullName = string.Empty,
-        Cpf = string.Empty,
-        Email = string.Empty,
-        Phone = null,
-        MonthlyIncome = 0.0m,
-        IsActive = false,
-        Applications = []
-    };
 
     private ApplicantEntity() { }
-
-    public ApplicantEntity SetId(Guid id)
-    {
-        Id = id;
-        return this;
-    }
 
     public ApplicantEntity SetFullName(string fullName)
     {
@@ -83,12 +55,6 @@ public sealed class ApplicantEntity
         return this;
     }
 
-    public ApplicantEntity SetIsActive(bool isActive)
-    {
-        IsActive = isActive;
-        return this;
-    }
-
     public ApplicantEntity SetApplications(List<RentalApplicationEntity> applications)
     {
         Applications = applications ?? [];
@@ -106,16 +72,4 @@ public sealed class ApplicantEntity
         Applications.Remove(application);
         return this;
     }
-
-    public ApplicantBuilder ToBuilder() => new()
-    {
-        Id = Id,
-        FullName = FullName,
-        Cpf = Cpf,
-        Email = Email,
-        Phone = Phone,
-        MonthlyIncome = MonthlyIncome,
-        IsActive = IsActive,
-        Applications = Applications
-    };
 }

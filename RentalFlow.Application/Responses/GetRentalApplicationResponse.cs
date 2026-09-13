@@ -2,17 +2,14 @@
 
 namespace RentalFlow.Application.Responses;
 
-public record GetRentalApplicationResponse
+public record GetRentalApplicationResponse : BaseResponse
 {
-    public Guid Id { get; init; }
     public string ProposalNumber { get; init; } = string.Empty;
     public decimal FinancedAmount { get; init; }
     public decimal TotalAmount { get; init; }
     public int Installments { get; init; }
     public RentalStatus Status { get; init; }
-    public DateTime CreatedAt { get; init; }
     public DateTime? ContractDate { get; init; }
-    public bool IsActive { get; init; }
     public Guid ApplicantId { get; init; }
     public string ApplicantName { get; init; } = string.Empty;
     public string ApplicantCpf { get; init; } = string.Empty;

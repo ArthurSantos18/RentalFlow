@@ -2,10 +2,12 @@ using AutoFixture;
 using FluentAssertions;
 using Moq;
 using RentalFlow.Application.Interfaces.Repositories;
+using RentalFlow.Application.Mappers;
 using RentalFlow.Application.Requests.Team;
 using RentalFlow.Application.UseCases.Queries.Team;
-using RentalFlow.Domain.Entities.Team;
+using RentalFlow.Domain.Entities;
 using RentalFlow.Domain.Patterns.PagedResult;
+using RentalFlow.Tests.Fixtures;
 
 namespace RentalFlow.Tests.Application.UseCases.Queries;
 
@@ -13,46 +15,45 @@ public sealed class GetTeamsQueryHandlerTests
 {
     private readonly Fixture _fixture = new();
     private readonly Mock<ITeamRepository> _repositoryMock = new();
-    private readonly GetPropertiesQueryHandler _handler;
+    private readonly GetTeamsQueryHandler _handler;
 
     public GetTeamsQueryHandlerTests()
     {
-        _handler = new GetPropertiesQueryHandler(_repositoryMock.Object);
+        _handler = new GetTeamsQueryHandler(_repositoryMock.Object);
     }
 
     [Fact]
     public async Task HandleAsync_ShouldReturnSuccess_WhenTeamsExist()
     {
-        // Arrange
         var request = _fixture.Create<GetTeamRequest>();
         var query = _fixture.Build<GetTeamsQuery>()
             .With(q => q.Request, request)
             .Create();
 
-        var team = new TeamBuilder()
-            .WithId(Guid.NewGuid())
-            .WithName(_fixture.Create<string>())
-            .WithDescription(_fixture.Create<string>())
-            .WithIsActive(_fixture.Create<bool>())
-            .Build();
+        var teams = new List<TeamEntity>
+        {
+            TestFixtures.MakeTeam(name: "Team A"),
+            TestFixtures.MakeTeam(name: "Team B")
+        };
 
-        var teams = new List<TeamEntity> { team };
         var pagedResult = new PagedResult<TeamEntity>(
             results: teams,
-            totalResults: 1,
+            totalResults: teams.Count,
             page: 1,
-            pageSize: 60
-        );
+            pageSize: 60);
 
         _repositoryMock
             .Setup(r => r.GetTeamsAsync(request, It.IsAny<CancellationToken>()))
             .ReturnsAsync(pagedResult);
 
-        // Act
         var result = await _handler.HandleAsync(query, CancellationToken.None);
 
-        // Assert
         result.IsSuccess.Should().BeTrue();
+        result.Value.Page.Should().Be(1);
+        result.Value.PageSize.Should().Be(60);
+        result.Value.TotalResults.Should().Be(teams.Count);
+        result.Value.Results.Should().HaveCount(teams.Count);
+        result.Value.Results.Should().BeEquivalentTo(teams.Select(t => t.ToResponse()));
 
         _repositoryMock.Verify(r => r.GetTeamsAsync(request, It.IsAny<CancellationToken>()), Times.Once);
         _repositoryMock.VerifyNoOtherCalls();
@@ -61,29 +62,26 @@ public sealed class GetTeamsQueryHandlerTests
     [Fact]
     public async Task HandleAsync_ShouldReturnSuccess_WhenNoTeamsExist()
     {
-        // Arrange
         var request = _fixture.Create<GetTeamRequest>();
         var query = _fixture.Build<GetTeamsQuery>()
             .With(q => q.Request, request)
             .Create();
 
-        var teams = new List<TeamEntity>();
         var pagedResult = new PagedResult<TeamEntity>(
-            results: teams,
+            results: [],
             totalResults: 0,
             page: 1,
-            pageSize: 60
-        );
+            pageSize: 60);
 
         _repositoryMock
             .Setup(r => r.GetTeamsAsync(request, It.IsAny<CancellationToken>()))
             .ReturnsAsync(pagedResult);
 
-        // Act
         var result = await _handler.HandleAsync(query, CancellationToken.None);
 
-        // Assert
         result.IsSuccess.Should().BeTrue();
+        result.Value.TotalResults.Should().Be(0);
+        result.Value.Results.Should().BeEmpty();
 
         _repositoryMock.Verify(r => r.GetTeamsAsync(request, It.IsAny<CancellationToken>()), Times.Once);
         _repositoryMock.VerifyNoOtherCalls();

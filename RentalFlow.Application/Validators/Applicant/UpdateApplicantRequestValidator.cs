@@ -15,11 +15,6 @@ public sealed class UpdateApplicantRequestValidator : AbstractValidator<UpdateAp
             .WithMessage("Full name must not exceed 100 characters.")
             .When(x => x.FullName is not null);
 
-        RuleFor(x => x.Cpf)
-            .Must(CpfValidator.IsValid)
-            .WithMessage("Invalid CPF.")
-            .When(x => x.Cpf is not null);
-
         RuleFor(x => x.Email)
             .EmailAddress()
             .WithMessage("Invalid email format.")

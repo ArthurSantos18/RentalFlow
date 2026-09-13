@@ -16,14 +16,7 @@ public sealed class DeleteTeamCommandHandler(ITeamRepository _teamRepository) : 
             return Result.Failure(TeamErrors.TeamNotFound);
         }
 
-        if (team.IsActive == false)
-        {
-            return Result.Success();
-        }
-
-        team.SetIsActive(false);
-
-        _teamRepository.Update(team);
+        team.MarkAsDeleted();
 
         await _teamRepository.SaveChangesAsync(cancellationToken);
 

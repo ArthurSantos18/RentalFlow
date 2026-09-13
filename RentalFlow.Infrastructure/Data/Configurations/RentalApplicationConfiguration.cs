@@ -1,15 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using RentalFlow.Domain.Entities.RentalApplication;
+using RentalFlow.Domain.Entities;
 
 namespace RentalFlow.Infrastructure.Data.Configurations;
 
-public sealed class RentalApplicationConfiguration : IEntityTypeConfiguration<RentalApplicationEntity>
+public sealed class RentalApplicationConfiguration : BaseConfiguration<RentalApplicationEntity>
 {
-    public void Configure(EntityTypeBuilder<RentalApplicationEntity> builder)
+    protected override void ConfigureEntity(EntityTypeBuilder<RentalApplicationEntity> builder)
     {
         builder.ToTable("RentalApplications");
-        builder.HasKey(ra => ra.Id);
 
         builder.Property(ra => ra.ProposalNumber)
             .IsRequired()
@@ -21,6 +20,9 @@ public sealed class RentalApplicationConfiguration : IEntityTypeConfiguration<Re
 
         builder.Property(ra => ra.TotalAmount)
             .HasColumnType("decimal(18,2)")
+            .IsRequired();
+
+        builder.Property(ra => ra.Installments)
             .IsRequired();
 
         builder.Property(ra => ra.Status)
@@ -44,5 +46,10 @@ public sealed class RentalApplicationConfiguration : IEntityTypeConfiguration<Re
             .WithMany(o => o.Applications)
             .HasForeignKey(ra => ra.OperatorId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasIndex(ra => ra.ApplicantId);
+        builder.HasIndex(ra => ra.PropertyId);
+        builder.HasIndex(ra => ra.OperatorId);
+        builder.HasIndex(ra => ra.ProposalNumber).IsUnique();
     }
 }

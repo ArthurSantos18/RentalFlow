@@ -13,17 +13,10 @@ public sealed class DeleteApplicantCommandHandler(IApplicantRepository _applican
 
         if (applicant is null)
         {
-            return Result.Failure(PropertyErrors.PropertyNotFound);
+            return Result.Failure(ApplicantErrors.ApplicantNotFound);
         }
 
-        if (applicant.IsActive == false)
-        {
-            return Result.Success();
-        }
-
-        applicant.SetIsActive(false);
-
-        _applicantRepository.Update(applicant);
+        applicant.MarkAsDeleted();
 
         await _applicantRepository.SaveChangesAsync(cancellationToken);
 

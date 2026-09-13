@@ -1,44 +1,44 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using RentalFlow.Domain.Entities.Property;
+using RentalFlow.Domain.Entities;
 
 namespace RentalFlow.Infrastructure.Data.Configurations;
 
-public sealed class PropertyConfiguration : IEntityTypeConfiguration<PropertyEntity>
+public sealed class PropertyConfiguration : BaseConfiguration<PropertyEntity>
 {
-    public void Configure(EntityTypeBuilder<PropertyEntity> builder)
+    protected override void ConfigureEntity(EntityTypeBuilder<PropertyEntity> builder)
     {
         builder.ToTable("Properties");
-        builder.HasKey(p => p.Id);
 
         builder.ComplexProperty(p => p.Address, address =>
         {
-            address.Property(p => p.Street)
+            address.Property(a => a.Street)
                 .HasMaxLength(200)
                 .IsRequired();
-
-            address.Property(p => p.Number)
+                
+            address.Property(a => a.Number)
                 .HasMaxLength(20)
                 .IsRequired();
-
-            address.Property(p => p.Complement)
+                
+            address.Property(a => a.Complement)
                 .HasMaxLength(200);
-
-            address.Property(p => p.Neighborhood)
+                
+            address.Property(a => a.Neighborhood)
                 .HasMaxLength(100)
                 .IsRequired();
-
-            address.Property(p => p.City)
+                
+            address.Property(a => a.City)
                 .HasMaxLength(100)
                 .IsRequired();
-
-            address.Property(p => p.State)
+                
+            address.Property(a => a.State)
                 .HasMaxLength(2)
                 .IsRequired();
-
-            address.Property(p => p.ZipCode)
+                
+            address.Property(a => a.ZipCode)
                 .HasMaxLength(8)
                 .IsRequired();
+                
         });
 
         builder.Property(p => p.RentPrice)
@@ -55,5 +55,7 @@ public sealed class PropertyConfiguration : IEntityTypeConfiguration<PropertyEnt
             .WithOne(ra => ra.Property)
             .HasForeignKey(ra => ra.PropertyId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasIndex(p => p.IsAvailable);
     }
 }

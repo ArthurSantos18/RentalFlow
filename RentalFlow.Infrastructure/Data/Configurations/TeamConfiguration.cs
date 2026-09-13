@@ -1,15 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using RentalFlow.Domain.Entities.Team;
+using RentalFlow.Domain.Entities;
 
 namespace RentalFlow.Infrastructure.Data.Configurations;
 
-public sealed class TeamConfiguration : IEntityTypeConfiguration<TeamEntity>
+public sealed class TeamConfiguration : BaseConfiguration<TeamEntity>
 {
-    public void Configure(EntityTypeBuilder<TeamEntity> builder)
+    protected override void ConfigureEntity(EntityTypeBuilder<TeamEntity> builder)
     {
         builder.ToTable("Teams");
-        builder.HasKey(t => t.Id);
 
         builder.Property(t => t.Name)
             .IsRequired()
@@ -17,9 +16,6 @@ public sealed class TeamConfiguration : IEntityTypeConfiguration<TeamEntity>
 
         builder.Property(t => t.Description)
             .HasMaxLength(500);
-
-        builder.Property(t => t.IsActive)
-            .IsRequired();
 
         builder.HasMany(t => t.Operators)
             .WithOne(o => o.Team)

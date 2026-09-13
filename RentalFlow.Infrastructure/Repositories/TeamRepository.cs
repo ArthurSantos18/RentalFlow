@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RentalFlow.Application.Interfaces.Repositories;
 using RentalFlow.Application.Requests.Team;
-using RentalFlow.Domain.Entities.Operator;
-using RentalFlow.Domain.Entities.Team;
+using RentalFlow.Domain.Entities;
 using RentalFlow.Domain.Patterns.PagedResult;
 using RentalFlow.Infrastructure.Data;
 
@@ -25,6 +24,7 @@ public sealed class TeamRepository(AppDbContext context) : BaseRepository<TeamEn
         var total = await query.CountAsync(cancellationToken);
 
         var results = await query
+            .Include(t => t.Operators)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);

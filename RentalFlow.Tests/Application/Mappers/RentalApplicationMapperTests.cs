@@ -2,11 +2,10 @@ using AutoFixture;
 using FluentAssertions;
 using RentalFlow.Application.Mappers;
 using RentalFlow.Application.Requests.RentalApplication;
-using RentalFlow.Domain.Entities.Applicant;
-using RentalFlow.Domain.Entities.Operator;
-using RentalFlow.Domain.Entities.Property;
-using RentalFlow.Domain.Entities.RentalApplication;
+using RentalFlow.Domain.Entities;
+using RentalFlow.Domain.Enums;
 using RentalFlow.Domain.Patterns.PagedResult;
+using RentalFlow.Tests.Fixtures;
 
 namespace RentalFlow.Tests.Application.Mappers;
 
@@ -17,9 +16,9 @@ public sealed class RentalApplicationMapperTests
     [Fact]
     public void ToEntity_ShouldMapCorrectly()
     {
-        var applicant = ApplicantEntity.Empty.SetId(Guid.NewGuid());
-        var property = PropertyEntity.Empty.SetId(Guid.NewGuid());
-        var @operator = OperatorEntity.Empty.SetId(Guid.NewGuid());
+        var applicant = TestFixtures.MakeApplicant();
+        var property = TestFixtures.MakeProperty();
+        var @operator = TestFixtures.MakeOperator();
 
         var request = _fixture.Build<AddRentalApplicationRequest>()
             .With(r => r.ApplicantId, applicant.Id)
@@ -28,125 +27,129 @@ public sealed class RentalApplicationMapperTests
             .With(r => r.FinancedAmount, 100m)
             .With(r => r.TotalAmount, 200m)
             .With(r => r.Installments, 12)
+            .With(r => r.ContractDate, (DateTime?)null)
             .Create();
 
         var entity = request.ToEntity(applicant, property, @operator);
 
-        entity.FinancedAmount.Should().Be(request.FinancedAmount);
-        entity.TotalAmount.Should().Be(request.TotalAmount);
-        entity.Installments.Should().Be(request.Installments);
+        entity.Should().NotBeNull();
+        entity.FinancedAmount.Should().Be(100m);
+        entity.TotalAmount.Should().Be(200m);
+        entity.Installments.Should().Be(12);
         entity.ApplicantId.Should().Be(applicant.Id);
         entity.PropertyId.Should().Be(property.Id);
         entity.OperatorId.Should().Be(@operator.Id);
+        entity.ProposalNumber.Should().NotBeNullOrEmpty();
+        entity.IsActive.Should().BeTrue();
     }
 
     [Fact]
-    public void UpdateEntityDomain_ShouldMapCorrectly()
+    public void UpdateFrom_ShouldMapAllFieldsCorrectly_WhenRequestHasValues()
     {
+        var entity = TestFixtures.MakeRentalApplication();
+        var newDate = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
         var request = _fixture.Build<UpdateRentalApplicationRequest>()
-            .With(r => r.FinancedAmount, 100m)
-            .With(r => r.TotalAmount, 200m)
-            .With(r => r.Installments, 12)
+            .With(r => r.FinancedAmount, 500m)
+            .With(r => r.TotalAmount, 1000m)
+            .With(r => r.Installments, 24)
+            .With(r => r.ContractDate, newDate)
             .Create();
 
-        var existing = new RentalApplicationBuilder()
-            .WithId(Guid.NewGuid())
-            .WithFinancedAmount(50m)
-            .WithTotalAmount(80m)
-            .WithInstallments(6)
-            .Build();
+        entity.UpdateFrom(request);
 
-        var entity = request.UpdateEntity(existing);
+        entity.FinancedAmount.Should().Be(500m);
+        entity.TotalAmount.Should().Be(1000m);
+        entity.Installments.Should().Be(24);
+        entity.ContractDate.Should().Be(newDate);
+    }
 
-        entity.FinancedAmount.Should().Be(request.FinancedAmount);
-        entity.TotalAmount.Should().Be(request.TotalAmount);
-        entity.Installments.Should().Be(request.Installments);
+    [Fact]
+    public void UpdateFrom_ShouldKeepExistingValues_WhenRequestFieldsAreNull()
+    {
+        var originalDate = new DateTime(2024, 6, 1, 0, 0, 0, DateTimeKind.Utc);
+        var entity = TestFixtures.MakeRentalApplication(
+            financedAmount: 100m,
+            totalAmount: 200m,
+            installments: 12,
+            contractDate: originalDate);
+
+        var request = _fixture.Build<UpdateRentalApplicationRequest>()
+            .With(r => r.FinancedAmount, (decimal?)null)
+            .With(r => r.TotalAmount, (decimal?)null)
+            .With(r => r.Installments, (int?)null)
+            .With(r => r.ContractDate, (DateTime?)null)
+            .Create();
+
+        entity.UpdateFrom(request);
+
+        entity.FinancedAmount.Should().Be(100m);
+        entity.TotalAmount.Should().Be(200m);
+        entity.Installments.Should().Be(12);
+        entity.ContractDate.Should().Be(originalDate);
     }
 
     [Fact]
     public void ToResponse_ShouldMapCorrectly()
     {
-        var entity = new RentalApplicationBuilder()
-            .WithId(Guid.NewGuid())
-            .WithFinancedAmount(100m)
-            .WithTotalAmount(200m)
-            .WithInstallments(12)
-            .Build();
+        var entity = TestFixtures.MakeRentalApplication(
+            financedAmount: 100m,
+            totalAmount: 200m,
+            installments: 12);
 
         var response = entity.ToResponse();
 
+        response.Should().NotBeNull();
         response.Id.Should().Be(entity.Id);
-        response.FinancedAmount.Should().Be(entity.FinancedAmount);
-        response.TotalAmount.Should().Be(entity.TotalAmount);
-        response.Installments.Should().Be(entity.Installments);
+        response.FinancedAmount.Should().Be(100m);
+        response.TotalAmount.Should().Be(200m);
+        response.Installments.Should().Be(12);
+        response.Status.Should().Be(entity.Status);
+        response.ProposalNumber.Should().Be(entity.ProposalNumber);
+        response.IsActive.Should().Be(entity.IsActive);
     }
 
     [Fact]
     public void ToResponse_ShouldMapEntityToResponse()
     {
-        // Arrange
-        var applicant = ApplicantEntity.Empty.SetId(Guid.NewGuid()).SetFullName("John Doe").SetCpf("52998224725");
-        var property = PropertyEntity.Empty.SetId(Guid.NewGuid()).SetAddress(null!).SetRentPrice(150m);
-        var @operator = OperatorEntity.Empty.SetId(Guid.NewGuid()).SetName("Operator 1");
+        var applicant = TestFixtures.MakeApplicant(fullName: "John Doe", cpf: "52998224725");
+        var property = TestFixtures.MakeProperty(rentPrice: 150m);
+        var @operator = TestFixtures.MakeOperator(name: "Operator 1");
 
-        var entity = new RentalApplicationBuilder()
-            .WithId(Guid.NewGuid())
-            .WithFinancedAmount(100m)
-            .WithTotalAmount(200m)
-            .WithInstallments(12)
-            .WithApplicant(applicant)
-            .WithProperty(property)
-            .WithOperator(@operator)
-            .Build();
+        var entity = TestFixtures.MakeRentalApplication(
+            applicant: applicant,
+            property: property,
+            @operator: @operator);
 
-        // Act
         var response = entity.ToResponse();
 
-        // Assert
         response.Should().NotBeNull();
-        response.Id.Should().Be(entity.Id);
-        response.FinancedAmount.Should().Be(entity.FinancedAmount);
-        response.TotalAmount.Should().Be(entity.TotalAmount);
-        response.Installments.Should().Be(entity.Installments);
-        response.ApplicantId.Should().Be(entity.ApplicantId);
-        response.ApplicantName.Should().Be(entity.Applicant?.FullName ?? string.Empty);
-        response.ApplicantCpf.Should().Be(entity.Applicant?.Cpf ?? string.Empty);
-        response.PropertyId.Should().Be(entity.PropertyId);
-        response.PropertyAddress.Should().Be(entity.Property?.Address?.Street ?? string.Empty);
-        response.PropertyRentPrice.Should().Be(entity.Property?.RentPrice ?? 0);
-        response.OperatorId.Should().Be(entity.OperatorId);
-        response.OperatorName.Should().Be(entity.Operator?.Name ?? string.Empty);
+        response.ApplicantId.Should().Be(applicant.Id);
+        response.ApplicantName.Should().Be("John Doe");
+        response.ApplicantCpf.Should().Be("52998224725");
+        response.PropertyId.Should().Be(property.Id);
+        response.PropertyRentPrice.Should().Be(150m);
+        response.OperatorId.Should().Be(@operator.Id);
+        response.OperatorName.Should().Be("Operator 1");
     }
 
     [Fact]
     public void ToResponse_ShouldMapPagedResultToPagedResultResponse()
     {
-        // Arrange
-        var entity1 = new RentalApplicationBuilder()
-            .WithId(Guid.NewGuid())
-            .WithFinancedAmount(100m)
-            .WithTotalAmount(200m)
-            .WithInstallments(12)
-            .Build();
+        var entities = new List<RentalApplicationEntity>
+        {
+            TestFixtures.MakeRentalApplication(financedAmount: 100m),
+            TestFixtures.MakeRentalApplication(financedAmount: 150m, installments: 24)
+        };
 
-        var entity2 = new RentalApplicationBuilder()
-            .WithId(Guid.NewGuid())
-            .WithFinancedAmount(150m)
-            .WithTotalAmount(300m)
-            .WithInstallments(24)
-            .Build();
-
-        var entities = new List<RentalApplicationEntity> { entity1, entity2 };
         var pagedResult = new PagedResult<RentalApplicationEntity>(entities, totalResults: 2, page: 1, pageSize: 60);
 
-        // Act
         var response = pagedResult.ToResponse();
 
-        // Assert
         response.Should().NotBeNull();
-        response.Page.Should().Be(pagedResult.Page);
-        response.PageSize.Should().Be(pagedResult.PageSize);
-        response.TotalResults.Should().Be(pagedResult.TotalResults);
-        response.Results.Should().HaveCount(entities.Count);
+        response.Page.Should().Be(1);
+        response.PageSize.Should().Be(60);
+        response.TotalResults.Should().Be(2);
+        response.Results.Should().HaveCount(2);
     }
 }

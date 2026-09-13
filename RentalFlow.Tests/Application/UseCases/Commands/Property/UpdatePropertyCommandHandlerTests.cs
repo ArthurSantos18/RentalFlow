@@ -4,8 +4,9 @@ using Moq;
 using RentalFlow.Application.Interfaces.Repositories;
 using RentalFlow.Application.Requests.Property;
 using RentalFlow.Application.UseCases.Commands.Property;
-using RentalFlow.Domain.Entities.Property;
+using RentalFlow.Domain.Entities;
 using RentalFlow.Domain.Errors;
+using RentalFlow.Tests.Fixtures;
 
 namespace RentalFlow.Tests.Application.UseCases.Commands.Property;
 
@@ -23,29 +24,36 @@ public sealed class UpdatePropertyCommandHandlerTests
     [Fact]
     public async Task HandleAsync_ShouldUpdateProperty_WhenExists()
     {
-        // Arrange
         var propertyId = _fixture.Create<Guid>();
-        var request = _fixture.Create<UpdatePropertyRequest>();
+        var newAddress = TestFixtures.MakeAddress(street: "New Street");
+
+        var request = _fixture.Build<UpdatePropertyRequest>()
+            .With(r => r.Address, newAddress)
+            .With(r => r.RentPrice, 2500m)
+            .With(r => r.Bedrooms, 4)
+            .With(r => r.IsAvailable, true)
+            .With(r => r.IsActive, true)
+            .Create();
+
         var command = _fixture.Build<UpdatePropertyCommand>()
             .With(c => c.Id, propertyId)
             .With(c => c.Request, request)
             .Create();
 
-        var existingProperty = PropertyEntity.Empty
-            .SetId(propertyId);
+        var existingProperty = TestFixtures.MakeProperty(id: propertyId, rentPrice: 1000m, bedrooms: 2);
 
         _repositoryMock
             .Setup(r => r.GetByIdAsync(propertyId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingProperty);
 
-        // Act
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
-        // Assert
         result.IsSuccess.Should().BeTrue();
+        existingProperty.Address.Should().Be(newAddress);
+        existingProperty.RentPrice.Should().Be(2500m);
+        existingProperty.Bedrooms.Should().Be(4);
 
-        _repositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
-        _repositoryMock.Verify(r => r.Update(It.IsAny<PropertyEntity>()), Times.Once);
+        _repositoryMock.Verify(r => r.GetByIdAsync(propertyId, It.IsAny<CancellationToken>()), Times.Once);
         _repositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
 
         _repositoryMock.VerifyNoOtherCalls();
@@ -54,29 +62,24 @@ public sealed class UpdatePropertyCommandHandlerTests
     [Fact]
     public async Task HandleAsync_ShouldReturnNotFound_WhenPropertyDoesNotExist()
     {
-        // Arrange
         var propertyId = _fixture.Create<Guid>();
         var request = _fixture.Create<UpdatePropertyRequest>();
+
         var command = _fixture.Build<UpdatePropertyCommand>()
             .With(c => c.Id, propertyId)
             .With(c => c.Request, request)
             .Create();
 
-        var expectedError = PropertyErrors.PropertyNotFound;
-
         _repositoryMock
             .Setup(r => r.GetByIdAsync(propertyId, It.IsAny<CancellationToken>()))
             .ReturnsAsync((PropertyEntity?)null);
 
-        // Act
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
-        // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(expectedError);
+        result.Error.Should().Be(PropertyErrors.PropertyNotFound);
 
-        _repositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
-        _repositoryMock.Verify(r => r.Update(It.IsAny<PropertyEntity>()), Times.Never);
+        _repositoryMock.Verify(r => r.GetByIdAsync(propertyId, It.IsAny<CancellationToken>()), Times.Once);
         _repositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
 
         _repositoryMock.VerifyNoOtherCalls();

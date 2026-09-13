@@ -1,5 +1,5 @@
 ﻿using RentalFlow.Application.Requests.Team;
-using RentalFlow.Domain.Entities.Team;
+using RentalFlow.Domain.Entities;
 using RentalFlow.Domain.Patterns.PagedResult;
 
 namespace RentalFlow.Application.Interfaces.Repositories;

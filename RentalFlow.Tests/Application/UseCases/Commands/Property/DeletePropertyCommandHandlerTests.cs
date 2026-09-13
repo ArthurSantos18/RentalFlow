@@ -3,8 +3,9 @@ using FluentAssertions;
 using Moq;
 using RentalFlow.Application.Interfaces.Repositories;
 using RentalFlow.Application.UseCases.Commands.Property;
-using RentalFlow.Domain.Entities.Property;
+using RentalFlow.Domain.Entities;
 using RentalFlow.Domain.Errors;
+using RentalFlow.Tests.Fixtures;
 
 namespace RentalFlow.Tests.Application.UseCases.Commands.Property;
 
@@ -20,61 +21,27 @@ public sealed class DeletePropertyCommandHandlerTests
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldDeleteProperty_WhenPropertyExistsAndIsActive()
+    public async Task HandleAsync_ShouldSoftDeleteProperty_WhenPropertyExists()
     {
-        // Arrange
         var propertyId = Guid.NewGuid();
         var command = _fixture.Build<DeletePropertyCommand>()
             .With(c => c.Id, propertyId)
             .Create();
 
-        var property = PropertyEntity.Empty
-            .SetId(propertyId)
-            .SetIsActive(true);
+        var property = TestFixtures.MakeProperty(id: propertyId);
 
         _repositoryMock
             .Setup(r => r.GetByIdAsync(propertyId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(property);
 
-        // Act
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
-        // Assert
         result.IsSuccess.Should().BeTrue();
+        property.IsDeleted.Should().BeTrue();
+        property.DeletedAt.Should().NotBeNull();
 
         _repositoryMock.Verify(r => r.GetByIdAsync(propertyId, It.IsAny<CancellationToken>()), Times.Once);
-        _repositoryMock.Verify(r => r.Update(property), Times.Once);
         _repositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-
-        _repositoryMock.VerifyNoOtherCalls();
-    }
-
-    [Fact]
-    public async Task HandleAsync_ShouldReturnSuccess_WhenPropertyAlreadyInactive()
-    {
-        // Arrange
-        var propertyId = Guid.NewGuid();
-        var command = _fixture.Build<DeletePropertyCommand>()
-            .With(c => c.Id, propertyId)
-            .Create();
-
-        var property = PropertyEntity.Empty
-            .SetId(propertyId)
-            .SetIsActive(false);
-
-        _repositoryMock
-            .Setup(r => r.GetByIdAsync(propertyId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(property);
-
-        // Act
-        var result = await _handler.HandleAsync(command, CancellationToken.None);
-
-        // Assert
-        result.IsSuccess.Should().BeTrue();
-
-        _repositoryMock.Verify(r => r.GetByIdAsync(propertyId, It.IsAny<CancellationToken>()), Times.Once);
-        _repositoryMock.Verify(r => r.Update(It.IsAny<PropertyEntity>()), Times.Never);
-        _repositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
 
         _repositoryMock.VerifyNoOtherCalls();
     }
@@ -82,8 +49,6 @@ public sealed class DeletePropertyCommandHandlerTests
     [Fact]
     public async Task HandleAsync_ShouldReturnFailure_WhenPropertyNotFound()
     {
-        // Arrange
-        var expectedError = PropertyErrors.PropertyNotFound;
         var propertyId = Guid.NewGuid();
         var command = _fixture.Build<DeletePropertyCommand>()
             .With(c => c.Id, propertyId)
@@ -93,15 +58,12 @@ public sealed class DeletePropertyCommandHandlerTests
             .Setup(r => r.GetByIdAsync(propertyId, It.IsAny<CancellationToken>()))
             .ReturnsAsync((PropertyEntity?)null);
 
-        // Act
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
-        // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(expectedError);
+        result.Error.Should().Be(PropertyErrors.PropertyNotFound);
 
         _repositoryMock.Verify(r => r.GetByIdAsync(propertyId, It.IsAny<CancellationToken>()), Times.Once);
-        _repositoryMock.Verify(r => r.Update(It.IsAny<PropertyEntity>()), Times.Never);
         _repositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
 
         _repositoryMock.VerifyNoOtherCalls();

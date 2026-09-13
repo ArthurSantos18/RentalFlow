@@ -16,14 +16,7 @@ public sealed class DeleteRentalApplicationCommandHandler(IRentalApplicationRepo
             return Result.Failure(RentalApplicationErrors.RentalApplicationNotFound);
         }
 
-        if (rentalApplication.IsActive == false)
-        {
-            return Result.Success();
-        }
-
-        rentalApplication.SetIsActive(false);
-
-        _rentalApplicationRepository.Update(rentalApplication);
+        rentalApplication.MarkAsDeleted();
 
         await _rentalApplicationRepository.SaveChangesAsync(cancellationToken);
 

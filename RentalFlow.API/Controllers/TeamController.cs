@@ -2,8 +2,10 @@
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using RentalFlow.API.Helpers;
+using RentalFlow.Application.Requests.Operator;
 using RentalFlow.Application.Requests.Team;
 using RentalFlow.Application.UseCases.Commands.Team;
+using RentalFlow.Application.UseCases.Queries.Operator;
 using RentalFlow.Application.UseCases.Queries.Team;
 
 namespace RentalFlow.API.Controllers;
@@ -22,6 +24,18 @@ public sealed class TeamController(ICommandMediator _commandMediator, IQueryMedi
         return result.IsSuccess
             ? Ok(result.Value)
             : ApiResponseHelper.HandleError(result.Error);
+    }
+
+    [HttpGet("{id:guid}/operators")]
+    public async Task<IActionResult> GetTeamOperators([FromRoute] Guid id, CancellationToken cancellationToken = default)
+    {
+        var request = new GetOperatorRequest { TeamIds = [id] };
+        var query = new GetOperatorsQuery(request);
+        var result = await _queryMediator.QueryAsync(query, cancellationToken);
+
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : BadRequest(result.Error);
     }
 
     [HttpPost]

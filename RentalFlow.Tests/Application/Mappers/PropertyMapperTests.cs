@@ -2,9 +2,10 @@
 using FluentAssertions;
 using RentalFlow.Application.Mappers;
 using RentalFlow.Application.Requests.Property;
-using RentalFlow.Domain.Entities.Property;
+using RentalFlow.Domain.Entities;
 using RentalFlow.Domain.Patterns.PagedResult;
 using RentalFlow.Domain.ValueObject;
+using RentalFlow.Tests.Fixtures;
 
 namespace RentalFlow.Tests.Application.Mappers;
 
@@ -15,171 +16,107 @@ public sealed class PropertyMapperTests
     [Fact]
     public void ToEntity_ShouldMapAllFieldsCorrectly()
     {
-        // Arrange
-        var address = new Address(
-            street: _fixture.Create<string>(),
-            number: _fixture.Create<string>(),
-            complement: _fixture.Create<string>(),
-            neighborhood: _fixture.Create<string>(),
-            city: _fixture.Create<string>(),
-            state: _fixture.Create<string>(),
-            zipCode: _fixture.Create<string>()
-        );
+        var address = TestFixtures.MakeAddress();
 
         var request = _fixture.Build<AddPropertyRequest>()
             .With(r => r.Address, address)
-            .With(r => r.RentPrice, _fixture.Create<decimal>())
-            .With(r => r.Bedrooms, _fixture.Create<int>())
-            .With(r => r.IsAvailable, _fixture.Create<bool>())
+            .With(r => r.RentPrice, 1500m)
+            .With(r => r.Bedrooms, 3)
+            .With(r => r.IsAvailable, true)
             .Create();
 
-        // Act
         var entity = request.ToEntity();
 
-        // Assert
         entity.Should().NotBeNull();
         entity.Id.Should().NotBeEmpty();
         entity.Address.Should().Be(address);
-        entity.RentPrice.Should().Be(request.RentPrice);
-        entity.Bedrooms.Should().Be(request.Bedrooms);
-        entity.IsAvailable.Should().Be(request.IsAvailable);
+        entity.RentPrice.Should().Be(1500m);
+        entity.Bedrooms.Should().Be(3);
+        entity.IsAvailable.Should().BeTrue();
         entity.IsActive.Should().BeTrue();
         entity.Applications.Should().BeEmpty();
     }
 
     [Fact]
-    public void UpdateEntity_ShouldMapAllFieldsCorrectly_WhenExistingProvided()
+    public void UpdateFrom_ShouldMapAllFieldsCorrectly_WhenRequestHasValues()
     {
-        // Arrange
-        var address = new Address(
-            street: _fixture.Create<string>(),
-            number: _fixture.Create<string>(),
-            complement: _fixture.Create<string>(),
-            neighborhood: _fixture.Create<string>(),
-            city: _fixture.Create<string>(),
-            state: _fixture.Create<string>(),
-            zipCode: _fixture.Create<string>()
-        );
+        var entity = TestFixtures.MakeProperty(rentPrice: 50m, bedrooms: 1, isAvailable: false);
+        var newAddress = TestFixtures.MakeAddress(street: "New Street");
 
         var request = _fixture.Build<UpdatePropertyRequest>()
-            .With(r => r.Address, address)
-            .With(r => r.RentPrice, _fixture.Create<decimal>())
-            .With(r => r.Bedrooms, _fixture.Create<int>())
-            .With(r => r.IsAvailable, _fixture.Create<bool>())
+            .With(r => r.Address, newAddress)
+            .With(r => r.RentPrice, 2000m)
+            .With(r => r.Bedrooms, 4)
+            .With(r => r.IsAvailable, true)
+            .With(r => r.IsActive, false)
             .Create();
 
-        var existing = new PropertyBuilder()
-            .WithId(_fixture.Create<Guid>())
-            .WithAddress(new Address("old","1","","nb","city","ST","12345678"))
-            .WithRentPrice(50m)
-            .WithBedrooms(1)
-            .WithIsAvailable(false)
-            .WithIsActive(true)
-            .Build();
+        entity.UpdateFrom(request);
 
-        // Act
-        var entity = request.UpdateEntity(existing);
-
-        // Assert
-        entity.Should().NotBeNull();
-        entity.Id.Should().Be(existing.Id);
-        entity.Address.Should().Be(request.Address ?? existing.Address);
-        entity.RentPrice.Should().Be(request.RentPrice ?? existing.RentPrice);
-        entity.Bedrooms.Should().Be(request.Bedrooms ?? existing.Bedrooms);
-        entity.IsAvailable.Should().Be(request.IsAvailable ?? existing.IsAvailable);
-        entity.IsActive.Should().Be(existing.IsActive);
+        entity.Address.Should().Be(newAddress);
+        entity.RentPrice.Should().Be(2000m);
+        entity.Bedrooms.Should().Be(4);
+        entity.IsAvailable.Should().BeTrue();
+        entity.IsActive.Should().BeFalse();
     }
 
+    [Fact]
+    public void UpdateFrom_ShouldKeepExistingValues_WhenRequestFieldsAreNull()
+    {
+        var address = TestFixtures.MakeAddress();
+        var entity = TestFixtures.MakeProperty(address: address, rentPrice: 50m, bedrooms: 1, isAvailable: false);
 
+        var request = _fixture.Build<UpdatePropertyRequest>()
+            .With(r => r.Address, (Address?)null)
+            .With(r => r.RentPrice, (decimal?)null)
+            .With(r => r.Bedrooms, (int?)null)
+            .With(r => r.IsAvailable, (bool?)null)
+            .With(r => r.IsActive, (bool?)null)
+            .Create();
+
+        entity.UpdateFrom(request);
+
+        entity.Address.Should().Be(address);
+        entity.RentPrice.Should().Be(50m);
+        entity.Bedrooms.Should().Be(1);
+        entity.IsAvailable.Should().BeFalse();
+        entity.IsActive.Should().BeTrue();
+    }
 
     [Fact]
     public void ToResponse_ShouldMapEntityToResponse()
     {
-        // Arrange
-        var address = new Address(
-            street: _fixture.Create<string>(),
-            number: _fixture.Create<string>(),
-            complement: _fixture.Create<string>(),
-            neighborhood: _fixture.Create<string>(),
-            city: _fixture.Create<string>(),
-            state: _fixture.Create<string>(),
-            zipCode: _fixture.Create<string>()
-        );
+        var entity = TestFixtures.MakeProperty(rentPrice: 2500m, bedrooms: 3, isAvailable: true);
 
-        var entity = new PropertyBuilder()
-            .WithId(_fixture.Create<Guid>())
-            .WithAddress(address)
-            .WithRentPrice(_fixture.Create<decimal>())
-            .WithBedrooms(_fixture.Create<int>())
-            .WithIsAvailable(_fixture.Create<bool>())
-            .WithIsActive(_fixture.Create<bool>())
-            .Build();
-
-        // Act
         var response = entity.ToResponse();
 
-        // Assert
         response.Should().NotBeNull();
         response.Id.Should().Be(entity.Id);
         response.Address.Should().Be(entity.Address);
-        response.RentPrice.Should().Be(entity.RentPrice);
-        response.Bedrooms.Should().Be(entity.Bedrooms);
-        response.IsAvailable.Should().Be(entity.IsAvailable);
+        response.RentPrice.Should().Be(2500m);
+        response.Bedrooms.Should().Be(3);
+        response.IsAvailable.Should().BeTrue();
         response.IsActive.Should().Be(entity.IsActive);
     }
 
     [Fact]
     public void ToResponse_ShouldMapPagedResultToPagedResultResponse()
     {
-        var address1 = new Address(
-            street: _fixture.Create<string>(),
-            number: _fixture.Create<string>(),
-            complement: _fixture.Create<string>(),
-            neighborhood: _fixture.Create<string>(),
-            city: _fixture.Create<string>(),
-            state: _fixture.Create<string>(),
-            zipCode: _fixture.Create<string>()
-        );
-        var address2 = new Address(
-            street: _fixture.Create<string>(),
-            number: _fixture.Create<string>(),
-            complement: _fixture.Create<string>(),
-            neighborhood: _fixture.Create<string>(),
-            city: _fixture.Create<string>(),
-            state: _fixture.Create<string>(),
-            zipCode: _fixture.Create<string>()
-        );
+        var entities = new List<PropertyEntity>
+        {
+            TestFixtures.MakeProperty(),
+            TestFixtures.MakeProperty(rentPrice: 3000m, bedrooms: 4)
+        };
 
-        var entity1 = new PropertyBuilder()
-            .WithId(Guid.NewGuid())
-            .WithAddress(address1)
-            .WithRentPrice(_fixture.Create<decimal>())
-            .WithBedrooms(_fixture.Create<int>())
-            .WithIsAvailable(_fixture.Create<bool>())
-            .WithIsActive(_fixture.Create<bool>())
-            .Build();
-
-        var entity2 = new PropertyBuilder()
-            .WithId(Guid.NewGuid())
-            .WithAddress(address2)
-            .WithRentPrice(_fixture.Create<decimal>())
-            .WithBedrooms(_fixture.Create<int>())
-            .WithIsAvailable(_fixture.Create<bool>())
-            .WithIsActive(_fixture.Create<bool>())
-            .Build();
-
-        var entities = new List<PropertyEntity> { entity1, entity2 };
         var pagedResult = new PagedResult<PropertyEntity>(entities, totalResults: 10, page: 2, pageSize: 2);
 
-        // Act
         var response = pagedResult.ToResponse();
 
-        // Assert
         response.Should().NotBeNull();
-        response.Page.Should().Be(pagedResult.Page);
-        response.PageSize.Should().Be(pagedResult.PageSize);
-        response.TotalResults.Should().Be(pagedResult.TotalResults);
-        response.Results.Should().HaveCount(entities.Count);
+        response.Page.Should().Be(2);
+        response.PageSize.Should().Be(2);
+        response.TotalResults.Should().Be(10);
+        response.Results.Should().HaveCount(2);
         response.Results.Should().BeEquivalentTo(entities.Select(e => e.ToResponse()));
     }
 }

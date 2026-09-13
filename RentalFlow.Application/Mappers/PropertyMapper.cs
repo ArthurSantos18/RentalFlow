@@ -1,6 +1,6 @@
 ﻿using RentalFlow.Application.Requests.Property;
 using RentalFlow.Application.Responses;
-using RentalFlow.Domain.Entities.Property;
+using RentalFlow.Domain.Entities;
 using RentalFlow.Domain.Patterns.PagedResult;
 
 namespace RentalFlow.Application.Mappers;
@@ -9,35 +9,55 @@ public static class PropertyMapper
 {
     public static PropertyEntity ToEntity(this AddPropertyRequest request)
     {
-        return new PropertyBuilder()
-            .WithId(Guid.NewGuid())
-            .WithAddress(request.Address)
-            .WithBedrooms(request.Bedrooms)
-            .WithRentPrice(request.RentPrice)
-            .WithIsAvailable(request.IsAvailable)
-            .WithIsActive(true)
-            .Build();
+        return new PropertyEntity(
+            address: request.Address,
+            rentPrice: request.RentPrice,
+            bedrooms: request.Bedrooms,
+            isAvailable: request.IsAvailable);
     }
 
-    public static PropertyEntity UpdateEntity(this UpdatePropertyRequest request, PropertyEntity entity)
+    public static PropertyEntity UpdateFrom(this PropertyEntity entity, UpdatePropertyRequest request)
     {
-        return entity
-            .SetAddress(request.Address ?? entity.Address)
-            .SetBedrooms(request.Bedrooms ?? entity.Bedrooms)
-            .SetRentPrice(request.RentPrice ?? entity.RentPrice)
-            .SetIsAvailable(request.IsAvailable ?? entity.IsAvailable);
+        if (request.Address is not null)
+        {
+            entity.SetAddress(request.Address);
+        }
+
+        if (request.RentPrice.HasValue)
+        {
+            entity.SetRentPrice(request.RentPrice.Value);
+        }
+
+        if (request.Bedrooms.HasValue)
+        {
+            entity.SetBedrooms(request.Bedrooms.Value);
+        }
+
+        if (request.IsAvailable.HasValue)
+        {
+            entity.SetIsAvailable(request.IsAvailable.Value);
+        }
+
+        if (request.IsActive.HasValue)
+        {
+            entity.SetIsActive(request.IsActive.Value);
+        }
+
+        return entity.Touch();
     }
 
-    public static GetPropertyResponse ToResponse(this PropertyEntity property)
+    public static GetPropertyResponse ToResponse(this PropertyEntity entity)
     {
         return new GetPropertyResponse
         {
-            Id = property.Id,
-            Address = property.Address,
-            RentPrice = property.RentPrice,
-            Bedrooms = property.Bedrooms,
-            IsAvailable = property.IsAvailable,
-            IsActive = property.IsActive
+            Id = entity.Id,
+            Address = entity.Address,
+            RentPrice = entity.RentPrice,
+            Bedrooms = entity.Bedrooms,
+            IsAvailable = entity.IsAvailable,
+            IsActive = entity.IsActive,
+            CreatedAt = entity.CreatedAt,
+            UpdatedAt = entity.UpdatedAt,
         };
     }
 

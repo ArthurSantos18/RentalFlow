@@ -1,7 +1,7 @@
 ﻿using RentalFlow.Application.Requests.Operator;
 using RentalFlow.Application.Responses;
-using RentalFlow.Domain.Entities.Operator;
-using RentalFlow.Domain.Entities.Team;
+using RentalFlow.Domain.Entities;
+using RentalFlow.Domain.Enums;
 using RentalFlow.Domain.Patterns.PagedResult;
 
 namespace RentalFlow.Application.Mappers;
@@ -10,22 +10,30 @@ public static class OperatorMapper
 {
     public static OperatorEntity ToEntity(this AddOperatorRequest request, TeamEntity team)
     {
-        return new OperatorBuilder()
-            .WithId(Guid.NewGuid())
-            .WithName(request.Name)
-            .WithEmail(request.Email)
-            .WithRole(request.Role)
-            .WithTeam(team)
-            .WithIsActive(true)
-            .Build();
+        return new OperatorEntity(
+            name: request.Name,
+            role: request.Role,
+            team: team);
     }
 
-    public static OperatorEntity UpdateEntity(this UpdateOperatorRequest request, OperatorEntity entity)
+    public static OperatorEntity UpdateFrom(this OperatorEntity entity, UpdateOperatorRequest request)
     {
-        return entity
-            .SetName(request.Name ?? entity.Name)
-            .SetEmail(request.Email ?? entity.Email)
-            .SetRole(request.Role ?? entity.Role);
+        if (!string.IsNullOrWhiteSpace(request.Name))
+        {
+            entity.SetName(request.Name);
+        }
+
+        if (request.Role.HasValue && request.Role != OperatorRole.None)
+        {
+            entity.SetRole(request.Role.Value);
+        }
+
+        if (request.IsActive.HasValue)
+        {
+            entity.SetIsActive(request.IsActive.Value);
+        }
+
+        return entity.Touch();
     }
 
     public static GetOperatorResponse ToResponse(this OperatorEntity entity)
@@ -34,11 +42,12 @@ public static class OperatorMapper
         {
             Id = entity.Id,
             Name = entity.Name,
-            Email = entity.Email,
             Role = entity.Role,
             IsActive = entity.IsActive,
             TeamId = entity.TeamId,
-            TeamName = entity.Team.Name
+            TeamName = entity.Team.Name,
+            CreatedAt = entity.CreatedAt,
+            UpdatedAt = entity.UpdatedAt,
         };
     }
 

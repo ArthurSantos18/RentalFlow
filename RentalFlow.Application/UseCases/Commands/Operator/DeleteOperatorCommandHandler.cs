@@ -7,7 +7,7 @@ namespace RentalFlow.Application.UseCases.Commands.Operator;
 
 public sealed class DeleteOperatorCommandHandler(IOperatorRepository _operatorRepository) : ICommandHandler<DeleteOperatorCommand, Result>
 {
-    public async Task<Result> HandleAsync(DeleteOperatorCommand command, CancellationToken cancellationToken = default)
+    public async Task<Result> HandleAsync(DeleteOperatorCommand command, CancellationToken cancellationToken)
     {
         var @operator = await _operatorRepository.GetByIdAsync(command.Id, cancellationToken);
 
@@ -16,14 +16,7 @@ public sealed class DeleteOperatorCommandHandler(IOperatorRepository _operatorRe
             return Result.Failure(OperatorErrors.OperatorNotFound);
         }
 
-        if (@operator.IsActive == false)
-        {
-            return Result.Success();
-        }
-
-        @operator.SetIsActive(false);
-
-        _operatorRepository.Update(@operator);
+        @operator.MarkAsDeleted();
 
         await _operatorRepository.SaveChangesAsync(cancellationToken);
 

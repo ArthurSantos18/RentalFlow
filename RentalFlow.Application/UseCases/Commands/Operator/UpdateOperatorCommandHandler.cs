@@ -1,7 +1,6 @@
 ﻿using LiteBus.Commands.Abstractions;
 using RentalFlow.Application.Interfaces.Repositories;
 using RentalFlow.Application.Mappers;
-using RentalFlow.Domain.Entities.Operator;
 using RentalFlow.Domain.Errors;
 using RentalFlow.Domain.Patterns.Result;
 
@@ -18,9 +17,7 @@ public sealed class UpdateOperatorCommandHandler(IOperatorRepository _operatorRe
             return Result.Failure(OperatorErrors.OperatorNotFound);
         }
 
-        @operator = command.Request.UpdateEntity(@operator);
-
-        _operatorRepository.Update(@operator);
+        @operator.UpdateFrom(command.Request);
 
         await _operatorRepository.SaveChangesAsync(cancellationToken);
 

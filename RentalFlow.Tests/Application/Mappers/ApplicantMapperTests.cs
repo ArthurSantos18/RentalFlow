@@ -2,8 +2,9 @@
 using FluentAssertions;
 using RentalFlow.Application.Mappers;
 using RentalFlow.Application.Requests.Applicant;
-using RentalFlow.Domain.Entities.Applicant;
+using RentalFlow.Domain.Entities;
 using RentalFlow.Domain.Patterns.PagedResult;
+using RentalFlow.Tests.Fixtures;
 
 namespace RentalFlow.Tests.Application.Mappers;
 
@@ -14,16 +15,13 @@ public sealed class ApplicantMapperTests
     [Fact]
     public void ToEntity_ShouldMapAllFieldsCorrectly()
     {
-        // Arrange
         var request = _fixture.Build<AddApplicantRequest>()
             .With(r => r.Cpf, "52998224725")
-            .With(r => r.MonthlyIncome, _fixture.Create<decimal>())
+            .With(r => r.MonthlyIncome, 5000m)
             .Create();
 
-        // Act
         var entity = request.ToEntity();
 
-        // Assert
         entity.Should().NotBeNull();
         entity.Id.Should().NotBeEmpty();
         entity.FullName.Should().Be(request.FullName);
@@ -35,58 +33,82 @@ public sealed class ApplicantMapperTests
         entity.Applications.Should().BeEmpty();
     }
 
-
     [Fact]
-    public void UpdateEntity_ShouldMapAllFieldsCorrectly_WhenExistingProvided()
+    public void UpdateFrom_ShouldMapAllFieldsCorrectly_WhenRequestHasValues()
     {
-        // Arrange
+        var entity = TestFixtures.MakeApplicant(
+            fullName: "Existing Name",
+            cpf: "11122233344",
+            email: "existing@test.com",
+            phone: "123456789",
+            monthlyIncome: 100m);
+
         var request = _fixture.Build<UpdateApplicantRequest>()
-            .With(r => r.Cpf, "52998224725")
-            .With(r => r.MonthlyIncome, _fixture.Create<decimal>())
+            .With(r => r.FullName, "New Name")
+            .With(r => r.Email, "new@test.com")
+            .With(r => r.Phone, "987654321")
+            .With(r => r.MonthlyIncome, 200m)
+            .With(r => r.IsActive, false)
             .Create();
 
-        var existing = new ApplicantBuilder()
-            .WithId(_fixture.Create<Guid>())
-            .WithFullName("Existing Name")
-            .WithCpf("11122233344")
-            .WithEmail("existing@test.com")
-            .WithPhone("123456789")
-            .WithMonthlyIncome(100m)
-            .WithActive(true)
-            .Build();
+        entity.UpdateFrom(request);
 
-        // Act
-        var entity = request.UpdateEntity(existing);
+        entity.FullName.Should().Be("New Name");
+        entity.Email.Should().Be("new@test.com");
+        entity.Phone.Should().Be("987654321");
+        entity.MonthlyIncome.Should().Be(200m);
+        entity.IsActive.Should().BeFalse();
+        entity.Cpf.Should().Be("11122233344");
+    }
 
-        // Assert
-        entity.Should().NotBeNull();
-        entity.Id.Should().Be(existing.Id);
-        entity.FullName.Should().Be(request.FullName ?? existing.FullName);
-        entity.Cpf.Should().Be(string.IsNullOrEmpty(request.Cpf) ? existing.Cpf : request.Cpf);
-        entity.Email.Should().Be(request.Email ?? existing.Email);
-        entity.Phone.Should().Be(request.Phone ?? existing.Phone);
-        entity.MonthlyIncome.Should().Be(request.MonthlyIncome ?? existing.MonthlyIncome);
-        entity.IsActive.Should().Be(existing.IsActive);
+    [Fact]
+    public void UpdateFrom_ShouldKeepExistingValues_WhenRequestFieldsAreNull()
+    {
+        var entity = TestFixtures.MakeApplicant(
+            fullName: "Existing Name",
+            cpf: "11122233344",
+            email: "existing@test.com",
+            phone: "123456789",
+            monthlyIncome: 100m);
+
+        var request = _fixture.Build<UpdateApplicantRequest>()
+            .With(r => r.FullName, (string?)null)
+            .With(r => r.Email, (string?)null)
+            .With(r => r.Phone, (string?)null)
+            .With(r => r.MonthlyIncome, (decimal?)null)
+            .With(r => r.IsActive, (bool?)null)
+            .Create();
+
+        entity.UpdateFrom(request);
+
+        entity.FullName.Should().Be("Existing Name");
+        entity.Email.Should().Be("existing@test.com");
+        entity.Phone.Should().Be("123456789");
+        entity.MonthlyIncome.Should().Be(100m);
+        entity.IsActive.Should().BeTrue();
+    }
+
+    [Fact]
+    public void UpdateFrom_ShouldClearPhone_WhenRequestPhoneIsWhitespace()
+    {
+        var entity = TestFixtures.MakeApplicant(phone: "123456789");
+
+        var request = _fixture.Build<UpdateApplicantRequest>()
+            .With(r => r.Phone, "   ")
+            .Create();
+
+        entity.UpdateFrom(request);
+
+        entity.Phone.Should().BeNull();
     }
 
     [Fact]
     public void ToResponse_ShouldMapEntityToResponse()
     {
-        // Arrange
-        var entity = new ApplicantBuilder()
-            .WithId(_fixture.Create<Guid>())
-            .WithFullName(_fixture.Create<string>())
-            .WithCpf("52998224725")
-            .WithEmail(_fixture.Create<string>())
-            .WithPhone(_fixture.Create<string>())
-            .WithMonthlyIncome(_fixture.Create<decimal>())
-            .WithActive(true)
-            .Build();
+        var entity = TestFixtures.MakeApplicant();
 
-        // Act
         var response = entity.ToResponse();
 
-        // Assert
         response.Should().NotBeNull();
         response.Id.Should().Be(entity.Id);
         response.FullName.Should().Be(entity.FullName);
@@ -100,39 +122,21 @@ public sealed class ApplicantMapperTests
     [Fact]
     public void ToResponse_ShouldMapPagedResultToPagedResultResponse()
     {
-        // Arrange
-        var entity1 = new ApplicantBuilder()
-            .WithId(Guid.NewGuid())
-            .WithFullName(_fixture.Create<string>())
-            .WithCpf(_fixture.Create<string>().Substring(0, 11))
-            .WithEmail(_fixture.Create<string>() + "@test.com")
-            .WithPhone(_fixture.Create<string>().Substring(0, 11))
-            .WithMonthlyIncome(_fixture.Create<decimal>())
-            .WithActive(_fixture.Create<bool>())
-            .Build();
+        var entities = new List<ApplicantEntity>
+        {
+            TestFixtures.MakeApplicant(fullName: "John Doe"),
+            TestFixtures.MakeApplicant(fullName: "Jane Doe", cpf: "11122233344", email: "jane@test.com")
+        };
 
-        var entity2 = new ApplicantBuilder()
-            .WithId(Guid.NewGuid())
-            .WithFullName(_fixture.Create<string>())
-            .WithCpf(_fixture.Create<string>().Substring(0, 11))
-            .WithEmail(_fixture.Create<string>() + "@test.com")
-            .WithPhone(_fixture.Create<string>().Substring(0, 11))
-            .WithMonthlyIncome(_fixture.Create<decimal>())
-            .WithActive(_fixture.Create<bool>())
-            .Build();
-
-        var entities = new List<ApplicantEntity> { entity1, entity2 };
         var pagedResult = new PagedResult<ApplicantEntity>(entities, totalResults: 10, page: 2, pageSize: 2);
 
-        // Act
         var response = pagedResult.ToResponse();
 
-        // Assert
         response.Should().NotBeNull();
-        response.Page.Should().Be(pagedResult.Page);
-        response.PageSize.Should().Be(pagedResult.PageSize);
-        response.TotalResults.Should().Be(pagedResult.TotalResults);
-        response.Results.Should().HaveCount(entities.Count);
+        response.Page.Should().Be(2);
+        response.PageSize.Should().Be(2);
+        response.TotalResults.Should().Be(10);
+        response.Results.Should().HaveCount(2);
         response.Results.Should().BeEquivalentTo(entities.Select(e => e.ToResponse()));
     }
 }

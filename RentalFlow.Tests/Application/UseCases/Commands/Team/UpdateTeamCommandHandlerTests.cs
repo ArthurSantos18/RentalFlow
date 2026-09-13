@@ -4,8 +4,9 @@ using Moq;
 using RentalFlow.Application.Interfaces.Repositories;
 using RentalFlow.Application.Requests.Team;
 using RentalFlow.Application.UseCases.Commands.Team;
-using RentalFlow.Domain.Entities.Team;
+using RentalFlow.Domain.Entities;
 using RentalFlow.Domain.Errors;
+using RentalFlow.Tests.Fixtures;
 
 namespace RentalFlow.Tests.Application.UseCases.Commands.Team;
 
@@ -23,32 +24,33 @@ public sealed class UpdateTeamCommandHandlerTests
     [Fact]
     public async Task HandleAsync_ShouldUpdateTeam_WhenExists()
     {
-        // Arrange
         var teamId = _fixture.Create<Guid>();
-        var request = _fixture.Create<UpdateTeamRequest>();
+
+        var request = _fixture.Build<UpdateTeamRequest>()
+            .With(r => r.Name, "Updated Name")
+            .With(r => r.Description, "Updated Description")
+            .With(r => r.IsActive, false)
+            .Create();
+
         var command = _fixture.Build<UpdateTeamCommand>()
             .With(c => c.Id, teamId)
             .With(c => c.Request, request)
             .Create();
 
-        var existingTeam = TeamEntity.Empty
-            .SetId(teamId)
-            .SetName("Old Name")
-            .SetDescription("Old Description")
-            .SetIsActive(true);
+        var existingTeam = TestFixtures.MakeTeam(id: teamId, name: "Old Name", description: "Old Description");
 
         _repositoryMock
             .Setup(r => r.GetByIdAsync(teamId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingTeam);
 
-        // Act
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
-        // Assert
         result.IsSuccess.Should().BeTrue();
+        existingTeam.Name.Should().Be("Updated Name");
+        existingTeam.Description.Should().Be("Updated Description");
+        existingTeam.IsActive.Should().BeFalse();
 
-        _repositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
-        _repositoryMock.Verify(r => r.Update(It.IsAny<TeamEntity>()), Times.Once);
+        _repositoryMock.Verify(r => r.GetByIdAsync(teamId, It.IsAny<CancellationToken>()), Times.Once);
         _repositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
 
         _repositoryMock.VerifyNoOtherCalls();
@@ -57,7 +59,6 @@ public sealed class UpdateTeamCommandHandlerTests
     [Fact]
     public async Task HandleAsync_ShouldReturnNotFound_WhenTeamDoesNotExist()
     {
-        // Arrange
         var teamId = _fixture.Create<Guid>();
         var request = _fixture.Create<UpdateTeamRequest>();
         var command = _fixture.Build<UpdateTeamCommand>()
@@ -65,18 +66,16 @@ public sealed class UpdateTeamCommandHandlerTests
             .With(c => c.Request, request)
             .Create();
 
-        _repositoryMock.Setup(r => r.GetByIdAsync(teamId, It.IsAny<CancellationToken>()))
+        _repositoryMock
+            .Setup(r => r.GetByIdAsync(teamId, It.IsAny<CancellationToken>()))
             .ReturnsAsync((TeamEntity?)null);
 
-        // Act
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
-        // Assert
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be(TeamErrors.TeamNotFound);
 
-        _repositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
-        _repositoryMock.Verify(r => r.Update(It.IsAny<TeamEntity>()), Times.Never);
+        _repositoryMock.Verify(r => r.GetByIdAsync(teamId, It.IsAny<CancellationToken>()), Times.Once);
         _repositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
 
         _repositoryMock.VerifyNoOtherCalls();

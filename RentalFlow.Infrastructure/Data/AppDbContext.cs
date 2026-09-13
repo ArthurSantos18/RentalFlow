@@ -1,10 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using RentalFlow.Domain.Entities.Applicant;
-using RentalFlow.Domain.Entities.Operator;
-using RentalFlow.Domain.Entities.Property;
-using RentalFlow.Domain.Entities.RentalApplication;
-using RentalFlow.Domain.Entities.Team;
+using RentalFlow.Domain.Entities;
 using RentalFlow.Infrastructure.Data.Configurations;
 
 namespace RentalFlow.Infrastructure.Data;
