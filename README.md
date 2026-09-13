@@ -60,8 +60,6 @@ RentalFlow/
 
 ---
 
----
-
 ## 🧩 Entidades Principais
 
 | Entidade | Descrição |
@@ -70,6 +68,7 @@ RentalFlow/
 | **Property** | Imóvel disponível para locação |
 | **Operator** | Operador (corretor/gerente/admin) |
 | **RentalApplication** | Proposta de locação (une Applicant, Property e Operator) |
+| **Team** | Times ao qual os operadores pertencem |
 
 ---
 
@@ -77,10 +76,11 @@ RentalFlow/
 
 ### ✅ CRUDs Completos
 
-- [x] **Applicant** – Cadastro, consulta, atualização, soft delete, restauração.
-- [x] **Property** – Cadastro com endereço (Value Object), disponibilidade, soft delete.
-- [x] **Operator** – Cadastro, papéis (`Corretor`, `Gerente`, `Administrador`), associação a time.
-- [x] **RentalApplication** – Criação, aprovação, rejeição, troca de inquilino/imóvel/operador.
+- [x] **Applicant** – Cadastro, consulta, atualização, soft delete.
+- [x] **Property** – Cadastro com endereço (Value Object), consulta, atualização, soft delete.
+- [x] **Operator** – Cadastro, papéis (`Broker`, `Manager`, `Administrator`), associação a time, consulta, atualização, soft delete.
+- [x] **RentalApplication** – Cadastro, consulta, atualização, mudança de status, soft delete.
+- [x] **Team** - Cadastro, consulta, atualização, soft delete
 
 ### 📦 Padrões e Boas Práticas
 
