@@ -87,10 +87,9 @@ RentalFlow/
 - **Clean Architecture** – Separação clara de responsabilidades.
 - **CQRS** – Commands (escrita) e Queries (leitura) separados.
 - **Result Pattern** – Tratamento explícito de sucesso/erro.
-- **Soft Delete** – Exclusão lógica com `IsActive`.
+- **Soft Delete** – Exclusão lógica com `IsDeleted`.
 - **Value Objects** – `Address` encapsulado.
 - **FluentValidation** – Validação centralizada.
-- **Fluent Interface** – Builders para criação de entidades.
 
 ---
 
