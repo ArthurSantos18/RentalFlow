@@ -10,9 +10,9 @@ public sealed class AddTeamCommandHandler(ITeamRepository _teamRepository) : ICo
 {
     public async Task<Result<Guid>> HandleAsync(AddTeamCommand command, CancellationToken cancellationToken)
     {
-        var team = _teamRepository.FindAsync(t => t.Name == command.Request.Name, cancellationToken);
+        var teams = await _teamRepository.FindAsync(t => t.Name == command.Request.Name, cancellationToken);
 
-        if (team is not null)
+        if (teams.Any())
         {
             return Result<Guid>.Failure(TeamErrors.TeamDoesExist);
         }

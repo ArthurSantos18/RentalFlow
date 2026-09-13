@@ -3,7 +3,7 @@ using RentalFlow.Application.Requests.Team;
 
 namespace RentalFlow.Application.Validators.Team;
 
-internal class AddTeamRequestValidator : AbstractValidator<AddTeamRequest>
+public sealed class AddTeamRequestValidator : AbstractValidator<AddTeamRequest>
 {
     public AddTeamRequestValidator()
     {

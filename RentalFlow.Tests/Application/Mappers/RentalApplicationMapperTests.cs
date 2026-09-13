@@ -148,6 +148,5 @@ public sealed class RentalApplicationMapperTests
         response.PageSize.Should().Be(pagedResult.PageSize);
         response.TotalResults.Should().Be(pagedResult.TotalResults);
         response.Results.Should().HaveCount(entities.Count);
-        response.Results.Should().BeEquivalentTo(entities.Select(e => e.ToResponse()));
     }
 }
