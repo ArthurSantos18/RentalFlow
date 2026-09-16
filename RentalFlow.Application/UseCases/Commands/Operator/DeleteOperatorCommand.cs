@@ -1,4 +1,4 @@
 ﻿namespace RentalFlow.Application.UseCases.Commands.Operator;
 
-public record DeleteOperatorCommand(Guid Id) : ICommand<Result>;
+public sealed record DeleteOperatorCommand(Guid Id) : ICommand<Result>;
 

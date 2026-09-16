@@ -1,6 +1,6 @@
 ﻿namespace RentalFlow.Application.Requests.Operator;
 
-public record UpdateOperatorRequest
+public sealed record UpdateOperatorRequest
 {
     public string? Name { get; init; }
     public string? Email { get; init; }

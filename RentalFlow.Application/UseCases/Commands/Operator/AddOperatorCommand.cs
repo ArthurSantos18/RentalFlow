@@ -1,3 +1,3 @@
 ﻿namespace RentalFlow.Application.UseCases.Commands.Operator;
 
-public record AddOperatorCommand(AddOperatorRequest Request) : ICommand<Result<Guid>>;
+public sealed record AddOperatorCommand(AddOperatorRequest Request) : ICommand<Result<Guid>>;

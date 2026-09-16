@@ -1,6 +1,6 @@
 ﻿namespace RentalFlow.Application.Responses;
 
-public record GetPropertyResponse : BaseResponse
+public sealed record GetPropertyResponse : BaseResponse
 {
     public Address Address { get; init; } = Address.Empty;
     public decimal RentPrice { get; init; }

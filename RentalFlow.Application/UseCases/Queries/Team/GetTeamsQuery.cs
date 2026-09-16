@@ -1,3 +1,3 @@
 ﻿namespace RentalFlow.Application.UseCases.Queries.Team;
 
-public record GetTeamsQuery(GetTeamRequest Request) : IQuery<Result<PagedResult<GetTeamResponse>>>;
+public sealed record GetTeamsQuery(GetTeamRequest Request) : IQuery<Result<PagedResult<GetTeamResponse>>>;

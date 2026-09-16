@@ -1,3 +1,3 @@
 ﻿namespace RentalFlow.Application.UseCases.Commands.Property;
 
-public record AddPropertyCommand(AddPropertyRequest Request) : ICommand<Result<Guid>>;
+public sealed record AddPropertyCommand(AddPropertyRequest Request) : ICommand<Result<Guid>>;

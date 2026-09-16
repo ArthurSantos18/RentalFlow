@@ -4,15 +4,13 @@ public class ApiResponseHelper
 {
     public static IActionResult HandleError(Error error)
     {
-        return error.Code switch
+        return new ObjectResult(new
         {
-            400 => new BadRequestObjectResult(new { error.Code, error.Message }),
-            401 => new UnauthorizedObjectResult(new { error.Code, error.Message }),
-            404 => new NotFoundObjectResult(new { error.Code, error.Message }),
-            409 => new ConflictObjectResult(new { error.Code, error.Message }),
-            500 => new ObjectResult(new { error.Code, error.Message })
-            { StatusCode = 500 },
-            _ => new BadRequestObjectResult(new { error.Code, error.Message })
+            error.Code,
+            error.Message
+        })
+        {
+            StatusCode = error.Code
         };
     }
 }

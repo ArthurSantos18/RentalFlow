@@ -1,6 +1,6 @@
 ﻿namespace RentalFlow.Application.Requests.User;
 
-public record GetUserRequest
+public sealed record GetUserRequest
 {
     public GetUserRequest() => PageFilter = new PageFilterRequest { Page = 1, PageSize = 60 };
 

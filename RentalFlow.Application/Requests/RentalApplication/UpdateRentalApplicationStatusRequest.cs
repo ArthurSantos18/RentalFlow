@@ -1,6 +1,6 @@
 ﻿namespace RentalFlow.Application.Requests.RentalApplication;
 
-public record UpdateRentalApplicationStatusRequest
+public sealed record UpdateRentalApplicationStatusRequest
 {
     public RentalStatus RentalStatus { get; init; }
 }

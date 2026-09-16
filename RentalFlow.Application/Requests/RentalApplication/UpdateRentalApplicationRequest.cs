@@ -1,6 +1,6 @@
 ﻿namespace RentalFlow.Application.Requests.RentalApplication;
 
-public record UpdateRentalApplicationRequest
+public sealed record UpdateRentalApplicationRequest
 {
     public int? Installments { get; init; }
     public decimal? FinancedAmount { get; init; }

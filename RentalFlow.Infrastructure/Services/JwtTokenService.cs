@@ -53,4 +53,9 @@ public class JwtTokenService(IOptions<JwtSettings> settings) : ITokenService
 
         return Guid.TryParse(userIdClaim, out var userId) ? userId : null;
     }
+
+    public DateTime GetRefreshTokenExpiration()
+    {
+        return DateTime.UtcNow.AddDays(_settings.RefreshTokenExpirationDays);
+    }
 }

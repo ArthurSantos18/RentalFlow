@@ -1,6 +1,6 @@
 ﻿namespace RentalFlow.Application.Requests.Operator;
 
-public record GetOperatorRequest
+public sealed record GetOperatorRequest
 {
     public GetOperatorRequest() => PageFilter = new PageFilterRequest { Page = 1, PageSize = 60 };
 

@@ -54,7 +54,7 @@ public sealed class UserEntity : BaseEntity<UserEntity>
     public UserTokenEntity AddToken(string refreshToken, DateTime expiresAt)
     {
         var token = new UserTokenEntity(
-            Id,
+            this,
             refreshToken,
             expiresAt,
             DateTime.UtcNow,

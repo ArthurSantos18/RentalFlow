@@ -1,6 +1,6 @@
 ﻿namespace RentalFlow.Application.Requests.RentalApplication;
 
-public record GetRentalApplicationRequest
+public sealed record GetRentalApplicationRequest
 {
     public GetRentalApplicationRequest() => PageFilter = new PageFilterRequest { Page = 1, PageSize = 60 };
 

@@ -1,6 +1,6 @@
 ﻿namespace RentalFlow.Application.Responses;
 
-public record GetRentalApplicationResponse : BaseResponse
+public sealed record GetRentalApplicationResponse : BaseResponse
 {
     public string ProposalNumber { get; init; } = string.Empty;
     public decimal FinancedAmount { get; init; }

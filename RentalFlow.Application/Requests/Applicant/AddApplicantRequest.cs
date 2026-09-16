@@ -1,6 +1,6 @@
 ﻿namespace RentalFlow.Application.Requests.Applicant;
 
-public record AddApplicantRequest
+public sealed record AddApplicantRequest
 {
     public string FullName { get; init; } = string.Empty;
     public string Cpf { get; init; } = string.Empty;

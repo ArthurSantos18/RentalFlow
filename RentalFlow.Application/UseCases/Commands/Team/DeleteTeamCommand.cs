@@ -1,3 +1,3 @@
 ﻿namespace RentalFlow.Application.UseCases.Commands.Team;
 
-public record DeleteTeamCommand(Guid Id) : ICommand<Result>;
+public sealed record DeleteTeamCommand(Guid Id) : ICommand<Result>;

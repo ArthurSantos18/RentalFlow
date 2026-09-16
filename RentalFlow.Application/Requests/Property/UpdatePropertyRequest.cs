@@ -1,6 +1,6 @@
 ﻿namespace RentalFlow.Application.Requests.Property;
 
-public record UpdatePropertyRequest
+public sealed record UpdatePropertyRequest
 {
     public Address? Address { get; init; }
     public decimal? RentPrice { get; init; }

@@ -1,6 +1,6 @@
 ﻿namespace RentalFlow.Application.Requests.Applicant;
 
-public record UpdateApplicantRequest
+public sealed record UpdateApplicantRequest
 {
     public string? FullName { get; init; }
     public string? Email { get; init; }

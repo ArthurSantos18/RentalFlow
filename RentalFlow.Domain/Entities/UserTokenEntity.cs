@@ -9,17 +9,18 @@ public sealed class UserTokenEntity : BaseEntity<UserTokenEntity>
     public UserEntity User { get; private set; } = null!;
 
     public UserTokenEntity(
-        Guid userId,
+        UserEntity user,
         string refreshToken,
         DateTime expiresAt,
         DateTime createdAt,
         DateTime? revokedAt)
     {
-        UserId = userId;
+        UserId = user.Id;
         RefreshToken = refreshToken;
         ExpiresAt = expiresAt;
         CreatedAt = createdAt;
         RevokedAt = revokedAt;
+        User = user;
     }
 
     private UserTokenEntity() { }

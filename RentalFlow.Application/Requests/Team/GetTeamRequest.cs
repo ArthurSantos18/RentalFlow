@@ -1,6 +1,6 @@
 ﻿namespace RentalFlow.Application.Requests.Team;
 
-public record GetTeamRequest
+public sealed record GetTeamRequest
 {
     public GetTeamRequest() => PageFilter = new PageFilterRequest { Page = 1, PageSize = 60 };
 

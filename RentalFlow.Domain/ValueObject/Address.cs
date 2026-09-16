@@ -1,6 +1,6 @@
 ﻿namespace RentalFlow.Domain.ValueObject;
 
-public record Address
+public sealed record Address
 {
     public string Street { get; init; } = string.Empty;
     public string Number { get; init; } = string.Empty;

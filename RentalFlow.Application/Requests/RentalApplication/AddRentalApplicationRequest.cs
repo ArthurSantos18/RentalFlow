@@ -1,6 +1,6 @@
 ﻿namespace RentalFlow.Application.Requests.RentalApplication;
 
-public record AddRentalApplicationRequest
+public sealed record AddRentalApplicationRequest
 {
     public Guid ApplicantId { get; init; }
     public Guid PropertyId { get; init; }

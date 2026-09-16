@@ -8,6 +8,7 @@ global using System.Linq.Expressions;
 global using System.Text.Json.Serialization;
 
 global using RentalFlow.Application.Interfaces.Repositories;
+global using RentalFlow.Application.Interfaces.Services;
 
 global using RentalFlow.Application.Mappers;
 
@@ -19,6 +20,7 @@ global using RentalFlow.Application.Requests.Property;
 global using RentalFlow.Application.Requests.RentalApplication;
 global using RentalFlow.Application.Requests.Team;
 global using RentalFlow.Application.Requests.User;
+global using RentalFlow.Application.Requests.Auth;
 
 global using RentalFlow.Domain.Helpers;
 global using RentalFlow.Domain.Entities;

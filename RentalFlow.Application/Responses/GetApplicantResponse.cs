@@ -1,6 +1,6 @@
 ﻿namespace RentalFlow.Application.Responses;
 
-public record GetApplicantResponse : BaseResponse
+public sealed record GetApplicantResponse : BaseResponse
 {
     public string FullName { get; init; } = string.Empty;
     public string Cpf { get; init; } = string.Empty;
