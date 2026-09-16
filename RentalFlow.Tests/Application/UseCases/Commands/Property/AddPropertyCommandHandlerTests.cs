@@ -1,11 +1,4 @@
-﻿using AutoFixture;
-using FluentAssertions;
-using Moq;
-using RentalFlow.Application.Interfaces.Repositories;
-using RentalFlow.Application.UseCases.Commands.Property;
-using RentalFlow.Domain.Entities;
-
-namespace RentalFlow.Tests.Application.UseCases.Commands.Property;
+﻿namespace RentalFlow.Tests.Application.UseCases.Commands.Property;
 
 public sealed class AddPropertyCommandHandlerTests
 {

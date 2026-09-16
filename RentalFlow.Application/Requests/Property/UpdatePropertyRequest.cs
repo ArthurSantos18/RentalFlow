@@ -1,6 +1,4 @@
-﻿using RentalFlow.Domain.ValueObject;
-
-namespace RentalFlow.Application.Requests.Property;
+﻿namespace RentalFlow.Application.Requests.Property;
 
 public record UpdatePropertyRequest
 {

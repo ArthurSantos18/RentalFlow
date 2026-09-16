@@ -1,8 +1,3 @@
-using AutoFixture;
-using FluentValidation.TestHelper;
-using RentalFlow.Application.Requests.Team;
-using RentalFlow.Application.Validators.Team;
-
 namespace RentalFlow.Tests.Application.Validators.Team;
 
 public sealed class AddTeamRequestValidatorTests

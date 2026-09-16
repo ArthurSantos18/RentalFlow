@@ -1,12 +1,4 @@
-﻿using LiteBus.Commands.Abstractions;
-using LiteBus.Queries.Abstractions;
-using Microsoft.AspNetCore.Mvc;
-using RentalFlow.API.Helpers;
-using RentalFlow.Application.Requests.Applicant;
-using RentalFlow.Application.UseCases.Commands.Applicant;
-using RentalFlow.Application.UseCases.Queries.Applicant;
-
-namespace RentalFlow.API.Controllers;
+﻿namespace RentalFlow.API.Controllers;
 
 [Route("api/applicants")]
 [ApiController]

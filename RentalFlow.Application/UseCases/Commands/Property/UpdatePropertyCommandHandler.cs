@@ -1,10 +1,4 @@
-﻿using LiteBus.Commands.Abstractions;
-using RentalFlow.Application.Interfaces.Repositories;
-using RentalFlow.Application.Mappers;
-using RentalFlow.Domain.Errors;
-using RentalFlow.Domain.Patterns.Result;
-
-namespace RentalFlow.Application.UseCases.Commands.Property;
+﻿namespace RentalFlow.Application.UseCases.Commands.Property;
 
 public sealed class UpdatePropertyCommandHandler(IPropertyRepository _propertyRepository) : ICommandHandler<UpdatePropertyCommand, Result>
 {

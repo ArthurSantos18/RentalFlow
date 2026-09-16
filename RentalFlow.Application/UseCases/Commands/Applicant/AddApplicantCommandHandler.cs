@@ -1,10 +1,4 @@
-﻿using LiteBus.Commands.Abstractions;
-using RentalFlow.Application.Interfaces.Repositories;
-using RentalFlow.Application.Mappers;
-using RentalFlow.Domain.Errors;
-using RentalFlow.Domain.Patterns.Result;
-
-namespace RentalFlow.Application.UseCases.Commands.Applicant;
+﻿namespace RentalFlow.Application.UseCases.Commands.Applicant;
 
 public sealed class AddApplicantCommandHandler(IApplicantRepository _applicantRepository) : ICommandHandler<AddApplicantCommand, Result<Guid>>
 {

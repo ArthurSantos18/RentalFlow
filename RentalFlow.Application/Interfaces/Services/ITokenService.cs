@@ -1,6 +1,4 @@
-﻿using RentalFlow.Domain.Entities;
-
-namespace RentalFlow.Application.Interfaces.Services;
+﻿namespace RentalFlow.Application.Interfaces.Services;
 
 public interface ITokenService
 {

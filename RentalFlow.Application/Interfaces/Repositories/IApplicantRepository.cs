@@ -1,8 +1,4 @@
-﻿using RentalFlow.Application.Requests.Applicant;
-using RentalFlow.Domain.Entities;
-using RentalFlow.Domain.Patterns.PagedResult;
-
-namespace RentalFlow.Application.Interfaces.Repositories;
+﻿namespace RentalFlow.Application.Interfaces.Repositories;
 
 public interface IApplicantRepository : IBaseRepository<ApplicantEntity>
 {

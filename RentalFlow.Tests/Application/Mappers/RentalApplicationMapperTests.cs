@@ -1,12 +1,3 @@
-using AutoFixture;
-using FluentAssertions;
-using RentalFlow.Application.Mappers;
-using RentalFlow.Application.Requests.RentalApplication;
-using RentalFlow.Domain.Entities;
-using RentalFlow.Domain.Enums;
-using RentalFlow.Domain.Patterns.PagedResult;
-using RentalFlow.Tests.Fixtures;
-
 namespace RentalFlow.Tests.Application.Mappers;
 
 public sealed class RentalApplicationMapperTests
@@ -16,9 +7,9 @@ public sealed class RentalApplicationMapperTests
     [Fact]
     public void ToEntity_ShouldMapCorrectly()
     {
-        var applicant = TestFixtures.MakeApplicant();
-        var property = TestFixtures.MakeProperty();
-        var @operator = TestFixtures.MakeOperator();
+        var applicant = TestsFixtures.MakeApplicant();
+        var property = TestsFixtures.MakeProperty();
+        var @operator = TestsFixtures.MakeOperator();
 
         var request = _fixture.Build<AddRentalApplicationRequest>()
             .With(r => r.ApplicantId, applicant.Id)
@@ -46,7 +37,7 @@ public sealed class RentalApplicationMapperTests
     [Fact]
     public void UpdateFrom_ShouldMapAllFieldsCorrectly_WhenRequestHasValues()
     {
-        var entity = TestFixtures.MakeRentalApplication();
+        var entity = TestsFixtures.MakeRentalApplication();
         var newDate = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         var request = _fixture.Build<UpdateRentalApplicationRequest>()
@@ -68,7 +59,7 @@ public sealed class RentalApplicationMapperTests
     public void UpdateFrom_ShouldKeepExistingValues_WhenRequestFieldsAreNull()
     {
         var originalDate = new DateTime(2024, 6, 1, 0, 0, 0, DateTimeKind.Utc);
-        var entity = TestFixtures.MakeRentalApplication(
+        var entity = TestsFixtures.MakeRentalApplication(
             financedAmount: 100m,
             totalAmount: 200m,
             installments: 12,
@@ -92,7 +83,7 @@ public sealed class RentalApplicationMapperTests
     [Fact]
     public void ToResponse_ShouldMapCorrectly()
     {
-        var entity = TestFixtures.MakeRentalApplication(
+        var entity = TestsFixtures.MakeRentalApplication(
             financedAmount: 100m,
             totalAmount: 200m,
             installments: 12);
@@ -112,11 +103,11 @@ public sealed class RentalApplicationMapperTests
     [Fact]
     public void ToResponse_ShouldMapEntityToResponse()
     {
-        var applicant = TestFixtures.MakeApplicant(fullName: "John Doe", cpf: "52998224725");
-        var property = TestFixtures.MakeProperty(rentPrice: 150m);
-        var @operator = TestFixtures.MakeOperator(name: "Operator 1");
+        var applicant = TestsFixtures.MakeApplicant(fullName: "John Doe", cpf: "52998224725");
+        var property = TestsFixtures.MakeProperty(rentPrice: 150m);
+        var @operator = TestsFixtures.MakeOperator(name: "Operator 1");
 
-        var entity = TestFixtures.MakeRentalApplication(
+        var entity = TestsFixtures.MakeRentalApplication(
             applicant: applicant,
             property: property,
             @operator: @operator);
@@ -138,8 +129,8 @@ public sealed class RentalApplicationMapperTests
     {
         var entities = new List<RentalApplicationEntity>
         {
-            TestFixtures.MakeRentalApplication(financedAmount: 100m),
-            TestFixtures.MakeRentalApplication(financedAmount: 150m, installments: 24)
+            TestsFixtures.MakeRentalApplication(financedAmount: 100m),
+            TestsFixtures.MakeRentalApplication(financedAmount: 150m, installments: 24)
         };
 
         var pagedResult = new PagedResult<RentalApplicationEntity>(entities, totalResults: 2, page: 1, pageSize: 60);

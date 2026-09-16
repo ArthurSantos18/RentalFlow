@@ -1,7 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace RentalFlow.Crosscutting.Extensions;
+﻿namespace RentalFlow.Crosscutting.Extensions;
 
 public static class InfrastructureExtension
 {

@@ -1,10 +1,6 @@
-﻿using RentalFlow.Domain.Entities;
-using RentalFlow.Domain.Enums;
-using RentalFlow.Domain.ValueObject;
+﻿namespace RentalFlow.Tests.Fixtures;
 
-namespace RentalFlow.Tests.Fixtures;
-
-public static class TestFixtures
+public static class TestsFixtures
 {
     public static ApplicantEntity MakeApplicant(
         string fullName = "John Doe",

@@ -1,10 +1,4 @@
-﻿using AutoFixture;
-using FluentValidation.TestHelper;
-using RentalFlow.Application.Requests.RentalApplication;
-using RentalFlow.Application.Validators.RentalApplication;
-using RentalFlow.Domain.Enums;
-
-namespace RentalFlow.Tests.Application.Validators.RentalApplication;
+﻿namespace RentalFlow.Tests.Application.Validators.RentalApplication;
 
 public sealed class UpdateRentalApplicationStatusRequestValidatorTests
 {

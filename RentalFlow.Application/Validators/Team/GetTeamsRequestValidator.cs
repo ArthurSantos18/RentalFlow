@@ -1,7 +1,4 @@
-﻿using FluentValidation;
-using RentalFlow.Application.Requests.Team;
-
-namespace RentalFlow.Application.Validators.Team;
+﻿namespace RentalFlow.Application.Validators.Team;
 
 public sealed class GetTeamsRequestValidator : AbstractValidator<GetTeamRequest>
 {

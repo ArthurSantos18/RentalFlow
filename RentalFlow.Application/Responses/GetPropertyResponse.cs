@@ -1,6 +1,4 @@
-﻿using RentalFlow.Domain.ValueObject;
-
-namespace RentalFlow.Application.Responses;
+﻿namespace RentalFlow.Application.Responses;
 
 public record GetPropertyResponse : BaseResponse
 {

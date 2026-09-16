@@ -1,6 +1,4 @@
-﻿using RentalFlow.Domain.Patterns.Result;
-
-namespace RentalFlow.Domain.Errors;
+﻿namespace RentalFlow.Domain.Errors;
 
 public static class PropertyErrors
 {

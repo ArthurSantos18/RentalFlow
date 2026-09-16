@@ -1,9 +1,4 @@
-﻿using LiteBus.Commands.Abstractions;
-using RentalFlow.Application.Interfaces.Repositories;
-using RentalFlow.Domain.Errors;
-using RentalFlow.Domain.Patterns.Result;
-
-namespace RentalFlow.Application.UseCases.Commands.Applicant;
+﻿namespace RentalFlow.Application.UseCases.Commands.Applicant;
 
 public sealed class DeleteApplicantCommandHandler(IApplicantRepository _applicantRepository) : ICommandHandler<DeleteApplicantCommand, Result>
 {

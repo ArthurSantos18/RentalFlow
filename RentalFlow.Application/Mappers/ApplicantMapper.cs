@@ -1,10 +1,4 @@
-﻿using RentalFlow.Application.Requests.Applicant;
-using RentalFlow.Application.Responses;
-using RentalFlow.Domain.Entities;
-using RentalFlow.Domain.Helpers;
-using RentalFlow.Domain.Patterns.PagedResult;
-
-namespace RentalFlow.Application.Mappers;
+﻿namespace RentalFlow.Application.Mappers;
 
 public static class ApplicantMapper
 {

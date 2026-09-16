@@ -1,6 +1,4 @@
-﻿using RentalFlow.Domain.Enums;
-
-namespace RentalFlow.Application.Requests.Operator;
+﻿namespace RentalFlow.Application.Requests.Operator;
 
 public record AddOperatorRequest
 {

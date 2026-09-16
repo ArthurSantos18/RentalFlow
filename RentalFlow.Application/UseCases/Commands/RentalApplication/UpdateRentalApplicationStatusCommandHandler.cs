@@ -1,9 +1,4 @@
-﻿using LiteBus.Commands.Abstractions;
-using RentalFlow.Application.Interfaces.Repositories;
-using RentalFlow.Domain.Errors;
-using RentalFlow.Domain.Patterns.Result;
-
-namespace RentalFlow.Application.UseCases.Commands.RentalApplication;
+﻿namespace RentalFlow.Application.UseCases.Commands.RentalApplication;
 
 public sealed class UpdateRentalApplicationStatusCommandHandler(IRentalApplicationRepository _rentalApplicationrepository) : ICommandHandler<UpdateRentalApplicationStatusCommand, Result>
 {

@@ -1,20 +1,9 @@
-﻿using LiteBus.Commands.Abstractions;
-using LiteBus.Queries.Abstractions;
-using Microsoft.AspNetCore.Mvc;
-using RentalFlow.API.Helpers;
-using RentalFlow.Application.Requests.Operator;
-using RentalFlow.Application.Requests.Team;
-using RentalFlow.Application.UseCases.Commands.Team;
-using RentalFlow.Application.UseCases.Queries.Operator;
-using RentalFlow.Application.UseCases.Queries.Team;
-
-namespace RentalFlow.API.Controllers;
+﻿namespace RentalFlow.API.Controllers;
 
 [Route("api/teams")]
 [ApiController]
 public sealed class TeamController(ICommandMediator _commandMediator, IQueryMediator _queryMediator) : ControllerBase
 {
-    
     [HttpGet]
     public async Task<IActionResult> GetTeamsAsync([FromQuery] GetTeamRequest request, CancellationToken cancellationToken)
     {

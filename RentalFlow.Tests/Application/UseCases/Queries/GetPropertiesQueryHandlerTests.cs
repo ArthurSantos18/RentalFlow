@@ -1,15 +1,4 @@
-﻿using AutoFixture;
-using FluentAssertions;
-using Moq;
-using RentalFlow.Application.Interfaces.Repositories;
-using RentalFlow.Application.Mappers;
-using RentalFlow.Application.Requests.Property;
-using RentalFlow.Application.UseCases.Queries.Property;
-using RentalFlow.Domain.Entities;
-using RentalFlow.Domain.Patterns.PagedResult;
-using RentalFlow.Tests.Fixtures;
-
-namespace RentalFlow.Tests.Application.UseCases.Queries;
+﻿namespace RentalFlow.Tests.Application.UseCases.Queries;
 
 public sealed class GetPropertiesQueryHandlerTests
 {
@@ -32,8 +21,8 @@ public sealed class GetPropertiesQueryHandlerTests
 
         var properties = new List<PropertyEntity>
         {
-            TestFixtures.MakeProperty(rentPrice: 1500m),
-            TestFixtures.MakeProperty(rentPrice: 3000m, bedrooms: 4)
+            TestsFixtures.MakeProperty(rentPrice: 1500m),
+            TestsFixtures.MakeProperty(rentPrice: 3000m, bedrooms: 4)
         };
 
         var pagedResult = new PagedResult<PropertyEntity>(

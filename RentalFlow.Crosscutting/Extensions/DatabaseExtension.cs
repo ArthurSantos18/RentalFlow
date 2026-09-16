@@ -1,8 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using RentalFlow.Infrastructure.Data;
-
-namespace RentalFlow.Crosscutting.Extensions;
+﻿namespace RentalFlow.Crosscutting.Extensions;
 
 public static class DatabaseExtension
 {

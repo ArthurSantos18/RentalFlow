@@ -1,14 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using RentalFlow.Application.Interfaces.Services;
-using RentalFlow.Domain.Entities;
-using RentalFlow.Infrastructure.Settings;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
-
-namespace RentalFlow.Infrastructure.Services;
+﻿namespace RentalFlow.Infrastructure.Services;
 
 public class JwtTokenService(IOptions<JwtSettings> settings) : ITokenService
 {

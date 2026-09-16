@@ -1,10 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using RentalFlow.Application.Interfaces.Repositories;
-using RentalFlow.Domain.Entities;
-using RentalFlow.Infrastructure.Data;
-using System.Linq.Expressions;
-
-namespace RentalFlow.Infrastructure.Repositories;
+﻿namespace RentalFlow.Infrastructure.Repositories;
 
 public class BaseRepository<T>(AppDbContext context) : IBaseRepository<T> where T : BaseEntity<T>
 {

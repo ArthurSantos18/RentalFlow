@@ -1,8 +1,4 @@
-﻿using RentalFlow.Application.Requests.Team;
-using RentalFlow.Domain.Entities;
-using RentalFlow.Domain.Patterns.PagedResult;
-
-namespace RentalFlow.Application.Interfaces.Repositories;
+﻿namespace RentalFlow.Application.Interfaces.Repositories;
 
 public interface ITeamRepository : IBaseRepository<TeamEntity>
 {

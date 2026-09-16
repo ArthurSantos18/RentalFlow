@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using RentalFlow.Domain.Entities;
-
-namespace RentalFlow.Infrastructure.Data;
+﻿namespace RentalFlow.Infrastructure.Data;
 
 public sealed class AppDbContext : DbContext
 {

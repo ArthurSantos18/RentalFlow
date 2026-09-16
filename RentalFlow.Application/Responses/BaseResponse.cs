@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace RentalFlow.Application.Responses;
+﻿namespace RentalFlow.Application.Responses;
 
 public abstract record BaseResponse
 {

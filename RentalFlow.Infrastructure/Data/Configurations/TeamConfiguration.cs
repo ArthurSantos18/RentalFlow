@@ -1,8 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using RentalFlow.Domain.Entities;
-
-namespace RentalFlow.Infrastructure.Data.Configurations;
+﻿namespace RentalFlow.Infrastructure.Data.Configurations;
 
 public sealed class TeamConfiguration : BaseConfiguration<TeamEntity>
 {

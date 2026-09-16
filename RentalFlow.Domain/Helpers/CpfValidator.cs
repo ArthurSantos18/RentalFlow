@@ -1,6 +1,4 @@
-﻿using System.Text.RegularExpressions;
-
-namespace RentalFlow.Domain.Helpers;
+﻿namespace RentalFlow.Domain.Helpers;
 
 public static partial class CpfValidator
 {

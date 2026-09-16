@@ -1,8 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using RentalFlow.Application.Interfaces.Repositories;
-using RentalFlow.Infrastructure.Repositories;
-
-namespace RentalFlow.Crosscutting.Extensions;
+﻿namespace RentalFlow.Crosscutting.Extensions;
 
 public static class RepositoryExtension
 {

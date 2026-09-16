@@ -1,13 +1,4 @@
-﻿using AutoFixture;
-using FluentAssertions;
-using RentalFlow.Application.Mappers;
-using RentalFlow.Application.Requests.Operator;
-using RentalFlow.Domain.Entities;
-using RentalFlow.Domain.Enums;
-using RentalFlow.Domain.Patterns.PagedResult;
-using RentalFlow.Tests.Fixtures;
-
-namespace RentalFlow.Tests.Application.Mappers;
+﻿namespace RentalFlow.Tests.Application.Mappers;
 
 public sealed class OperatorMapperTests
 {
@@ -21,7 +12,7 @@ public sealed class OperatorMapperTests
             .With(r => r.Role, OperatorRole.Broker)
             .Create();
 
-        var team = TestFixtures.MakeTeam();
+        var team = TestsFixtures.MakeTeam();
 
         var entity = request.ToEntity(team);
 
@@ -37,7 +28,7 @@ public sealed class OperatorMapperTests
     [Fact]
     public void UpdateFrom_ShouldMapAllFieldsCorrectly_WhenRequestHasValues()
     {
-        var entity = TestFixtures.MakeOperator(name: "Old Name", role: OperatorRole.Broker);
+        var entity = TestsFixtures.MakeOperator(name: "Old Name", role: OperatorRole.Broker);
 
         var request = _fixture.Build<UpdateOperatorRequest>()
             .With(r => r.Name, "New Name")
@@ -55,7 +46,7 @@ public sealed class OperatorMapperTests
     [Fact]
     public void UpdateFrom_ShouldKeepExistingValues_WhenRequestFieldsAreNull()
     {
-        var entity = TestFixtures.MakeOperator(name: "Existing", role: OperatorRole.Broker);
+        var entity = TestsFixtures.MakeOperator(name: "Existing", role: OperatorRole.Broker);
 
         var request = _fixture.Build<UpdateOperatorRequest>()
             .With(r => r.Name, (string?)null)
@@ -73,8 +64,8 @@ public sealed class OperatorMapperTests
     [Fact]
     public void ToResponse_ShouldMapEntityToResponse()
     {
-        var team = TestFixtures.MakeTeam(name: "Team Alpha");
-        var entity = TestFixtures.MakeOperator(name: "Operator Name", role: OperatorRole.Administrator, team: team);
+        var team = TestsFixtures.MakeTeam(name: "Team Alpha");
+        var entity = TestsFixtures.MakeOperator(name: "Operator Name", role: OperatorRole.Administrator, team: team);
 
         var response = entity.ToResponse();
 
@@ -90,11 +81,11 @@ public sealed class OperatorMapperTests
     [Fact]
     public void ToResponse_ShouldMapPagedResultToPagedResultResponse()
     {
-        var team = TestFixtures.MakeTeam();
+        var team = TestsFixtures.MakeTeam();
         var entities = new List<OperatorEntity>
         {
-            TestFixtures.MakeOperator(team: team),
-            TestFixtures.MakeOperator(name: "Second", team: team)
+            TestsFixtures.MakeOperator(team: team),
+            TestsFixtures.MakeOperator(name: "Second", team: team)
         };
 
         var pagedResult = new PagedResult<OperatorEntity>(entities, totalResults: 10, page: 2, pageSize: 2);

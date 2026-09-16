@@ -1,14 +1,4 @@
-﻿using AutoFixture;
-using FluentAssertions;
-using Moq;
-using RentalFlow.Application.Interfaces.Repositories;
-using RentalFlow.Application.Requests.Property;
-using RentalFlow.Application.UseCases.Commands.Property;
-using RentalFlow.Domain.Entities;
-using RentalFlow.Domain.Errors;
-using RentalFlow.Tests.Fixtures;
-
-namespace RentalFlow.Tests.Application.UseCases.Commands.Property;
+﻿namespace RentalFlow.Tests.Application.UseCases.Commands.Property;
 
 public sealed class UpdatePropertyCommandHandlerTests
 {
@@ -25,7 +15,7 @@ public sealed class UpdatePropertyCommandHandlerTests
     public async Task HandleAsync_ShouldUpdateProperty_WhenExists()
     {
         var propertyId = _fixture.Create<Guid>();
-        var newAddress = TestFixtures.MakeAddress(street: "New Street");
+        var newAddress = TestsFixtures.MakeAddress(street: "New Street");
 
         var request = _fixture.Build<UpdatePropertyRequest>()
             .With(r => r.Address, newAddress)
@@ -40,7 +30,7 @@ public sealed class UpdatePropertyCommandHandlerTests
             .With(c => c.Request, request)
             .Create();
 
-        var existingProperty = TestFixtures.MakeProperty(id: propertyId, rentPrice: 1000m, bedrooms: 2);
+        var existingProperty = TestsFixtures.MakeProperty(id: propertyId, rentPrice: 1000m, bedrooms: 2);
 
         _repositoryMock
             .Setup(r => r.GetByIdAsync(propertyId, It.IsAny<CancellationToken>()))

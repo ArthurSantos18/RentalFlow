@@ -1,12 +1,3 @@
-using AutoFixture;
-using FluentAssertions;
-using Moq;
-using RentalFlow.Application.Interfaces.Repositories;
-using RentalFlow.Application.UseCases.Commands.RentalApplication;
-using RentalFlow.Domain.Entities;
-using RentalFlow.Domain.Errors;
-using RentalFlow.Tests.Fixtures;
-
 namespace RentalFlow.Tests.Application.UseCases.Commands.RentalApplication;
 
 public sealed class DeleteRentalApplicationCommandHandlerTests
@@ -28,7 +19,7 @@ public sealed class DeleteRentalApplicationCommandHandlerTests
             .With(c => c.Id, id)
             .Create();
 
-        var entity = TestFixtures.MakeRentalApplication(id: id);
+        var entity = TestsFixtures.MakeRentalApplication(id: id);
 
         _repositoryMock
             .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))

@@ -1,6 +1,3 @@
-using RentalFlow.Crosscutting.Extensions;
-using Scalar.AspNetCore;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();

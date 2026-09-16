@@ -1,6 +1,4 @@
-﻿using RentalFlow.Domain.ValueObject;
-
-namespace RentalFlow.Domain.Entities;
+﻿namespace RentalFlow.Domain.Entities;
 
 public sealed class PropertyEntity : BaseEntity<PropertyEntity>
 {

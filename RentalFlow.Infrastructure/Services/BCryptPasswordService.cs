@@ -1,7 +1,4 @@
-﻿using BCrypt.Net;
-using RentalFlow.Application.Interfaces.Services;
-
-namespace RentalFlow.Infrastructure.Services;
+﻿namespace RentalFlow.Infrastructure.Services;
 
 public sealed class BCryptPasswordService : IPasswordService
 {

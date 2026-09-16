@@ -1,13 +1,4 @@
-﻿using AutoFixture;
-using FluentAssertions;
-using Moq;
-using RentalFlow.Application.Interfaces.Repositories;
-using RentalFlow.Application.UseCases.Commands.Operator;
-using RentalFlow.Domain.Entities;
-using RentalFlow.Domain.Errors;
-using RentalFlow.Tests.Fixtures;
-
-namespace RentalFlow.Tests.Application.UseCases.Commands.Operator;
+﻿namespace RentalFlow.Tests.Application.UseCases.Commands.Operator;
 
 public sealed class DeleteOperatorCommandHandlerTests
 {
@@ -28,7 +19,7 @@ public sealed class DeleteOperatorCommandHandlerTests
             .With(c => c.Id, operatorId)
             .Create();
 
-        var @operator = TestFixtures.MakeOperator(id: operatorId);
+        var @operator = TestsFixtures.MakeOperator(id: operatorId);
 
         _repositoryMock
             .Setup(r => r.GetByIdAsync(operatorId, It.IsAny<CancellationToken>()))

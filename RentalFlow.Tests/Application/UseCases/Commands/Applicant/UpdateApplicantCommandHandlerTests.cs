@@ -1,14 +1,4 @@
-﻿using AutoFixture;
-using FluentAssertions;
-using Moq;
-using RentalFlow.Application.Interfaces.Repositories;
-using RentalFlow.Application.Requests.Applicant;
-using RentalFlow.Application.UseCases.Commands.Applicant;
-using RentalFlow.Domain.Entities;
-using RentalFlow.Domain.Errors;
-using RentalFlow.Tests.Fixtures;
-
-namespace RentalFlow.Tests.Application.UseCases.Commands.Applicant;
+﻿namespace RentalFlow.Tests.Application.UseCases.Commands.Applicant;
 
 public sealed class UpdateApplicantCommandHandlerTests
 {
@@ -39,7 +29,7 @@ public sealed class UpdateApplicantCommandHandlerTests
             .With(c => c.Request, request)
             .Create();
 
-        var existingApplicant = TestFixtures.MakeApplicant(
+        var existingApplicant = TestsFixtures.MakeApplicant(
             id: applicantId,
             fullName: "Old Name",
             email: "old@test.com",

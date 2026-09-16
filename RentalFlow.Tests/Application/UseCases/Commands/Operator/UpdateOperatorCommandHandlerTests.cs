@@ -1,15 +1,4 @@
-﻿using AutoFixture;
-using FluentAssertions;
-using Moq;
-using RentalFlow.Application.Interfaces.Repositories;
-using RentalFlow.Application.Requests.Operator;
-using RentalFlow.Application.UseCases.Commands.Operator;
-using RentalFlow.Domain.Entities;
-using RentalFlow.Domain.Enums;
-using RentalFlow.Domain.Errors;
-using RentalFlow.Tests.Fixtures;
-
-namespace RentalFlow.Tests.Application.UseCases.Commands.Operator;
+﻿namespace RentalFlow.Tests.Application.UseCases.Commands.Operator;
 
 public sealed class UpdateOperatorCommandHandlerTests
 {
@@ -38,7 +27,7 @@ public sealed class UpdateOperatorCommandHandlerTests
             .With(c => c.Request, request)
             .Create();
 
-        var existingOperator = TestFixtures.MakeOperator(
+        var existingOperator = TestsFixtures.MakeOperator(
             id: operatorId,
             name: "Old Name",
             role: OperatorRole.Broker);

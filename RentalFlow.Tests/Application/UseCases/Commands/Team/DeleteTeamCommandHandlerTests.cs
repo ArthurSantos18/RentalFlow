@@ -1,12 +1,3 @@
-using AutoFixture;
-using FluentAssertions;
-using Moq;
-using RentalFlow.Application.Interfaces.Repositories;
-using RentalFlow.Application.UseCases.Commands.Team;
-using RentalFlow.Domain.Entities;
-using RentalFlow.Domain.Errors;
-using RentalFlow.Tests.Fixtures;
-
 namespace RentalFlow.Tests.Application.UseCases.Commands.Team;
 
 public sealed class DeleteTeamCommandHandlerTests
@@ -28,7 +19,7 @@ public sealed class DeleteTeamCommandHandlerTests
             .With(c => c.Id, teamId)
             .Create();
 
-        var team = TestFixtures.MakeTeam(id: teamId);
+        var team = TestsFixtures.MakeTeam(id: teamId);
 
         _repositoryMock
             .Setup(r => r.GetByIdAsync(teamId, It.IsAny<CancellationToken>()))

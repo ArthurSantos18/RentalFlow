@@ -1,9 +1,3 @@
-using AutoFixture;
-using FluentAssertions;
-using FluentValidation.TestHelper;
-using RentalFlow.Application.Requests.RentalApplication;
-using RentalFlow.Application.Validators.RentalApplication;
-
 namespace RentalFlow.Tests.Application.Validators.RentalApplication;
 
 public sealed class GetRentalApplicationRequestValidatorTests

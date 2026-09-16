@@ -1,14 +1,3 @@
-using AutoFixture;
-using FluentAssertions;
-using Moq;
-using RentalFlow.Application.Interfaces.Repositories;
-using RentalFlow.Application.Requests.RentalApplication;
-using RentalFlow.Application.UseCases.Commands.RentalApplication;
-using RentalFlow.Domain.Entities;
-using RentalFlow.Domain.Enums;
-using RentalFlow.Domain.Errors;
-using RentalFlow.Tests.Fixtures;
-
 namespace RentalFlow.Tests.Application.UseCases.Commands.RentalApplication;
 
 public sealed class UpdateRentalApplicationCommandHandlerTests
@@ -45,7 +34,7 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
         };
 
         var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestFixtures.MakeRentalApplication(id: id);
+        var existing = TestsFixtures.MakeRentalApplication(id: id);
 
         _rentalApplicationRepositoryMock
             .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
@@ -105,7 +94,7 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
             PropertyId = null
         };
         var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestFixtures.MakeRentalApplication(id: id, status: status);
+        var existing = TestsFixtures.MakeRentalApplication(id: id, status: status);
 
         _rentalApplicationRepositoryMock
             .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
@@ -126,7 +115,7 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
         var applicantId = _fixture.Create<Guid>();
         var request = new UpdateRentalApplicationRequest { ApplicantId = applicantId, OperatorId = null, PropertyId = null };
         var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestFixtures.MakeRentalApplication(id: id);
+        var existing = TestsFixtures.MakeRentalApplication(id: id);
 
         _rentalApplicationRepositoryMock.Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>())).ReturnsAsync(existing);
         _applicantRepositoryMock.Setup(r => r.GetByIdAsync(applicantId, It.IsAny<CancellationToken>())).ReturnsAsync((ApplicantEntity?)null);
@@ -143,10 +132,10 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
     public async Task HandleAsync_ShouldReturnApplicantIsInactive_WhenApplicantIsInactive()
     {
         var id = _fixture.Create<Guid>();
-        var applicant = TestFixtures.MakeApplicant(isActive: false);
+        var applicant = TestsFixtures.MakeApplicant(isActive: false);
         var request = new UpdateRentalApplicationRequest { ApplicantId = applicant.Id, OperatorId = null, PropertyId = null };
         var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestFixtures.MakeRentalApplication(id: id);
+        var existing = TestsFixtures.MakeRentalApplication(id: id);
 
         _rentalApplicationRepositoryMock.Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>())).ReturnsAsync(existing);
         _applicantRepositoryMock.Setup(r => r.GetByIdAsync(applicant.Id, It.IsAny<CancellationToken>())).ReturnsAsync(applicant);
@@ -163,10 +152,10 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
     public async Task HandleAsync_ShouldReturnApplicantAlreadyAssigned_WhenApplicantIsAlreadyAssigned()
     {
         var id = _fixture.Create<Guid>();
-        var applicant = TestFixtures.MakeApplicant();
+        var applicant = TestsFixtures.MakeApplicant();
         var request = new UpdateRentalApplicationRequest { ApplicantId = applicant.Id, OperatorId = null, PropertyId = null };
         var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestFixtures.MakeRentalApplication(id: id, applicant: applicant);
+        var existing = TestsFixtures.MakeRentalApplication(id: id, applicant: applicant);
 
         _rentalApplicationRepositoryMock.Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>())).ReturnsAsync(existing);
         _applicantRepositoryMock.Setup(r => r.GetByIdAsync(applicant.Id, It.IsAny<CancellationToken>())).ReturnsAsync(applicant);
@@ -183,10 +172,10 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
     public async Task HandleAsync_ShouldUpdateApplicant_WhenApplicantIsValid()
     {
         var id = _fixture.Create<Guid>();
-        var applicant = TestFixtures.MakeApplicant();
+        var applicant = TestsFixtures.MakeApplicant();
         var request = new UpdateRentalApplicationRequest { ApplicantId = applicant.Id, OperatorId = null, PropertyId = null };
         var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestFixtures.MakeRentalApplication(id: id);
+        var existing = TestsFixtures.MakeRentalApplication(id: id);
 
         _rentalApplicationRepositoryMock.Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>())).ReturnsAsync(existing);
         _applicantRepositoryMock.Setup(r => r.GetByIdAsync(applicant.Id, It.IsAny<CancellationToken>())).ReturnsAsync(applicant);
@@ -207,7 +196,7 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
         var operatorId = _fixture.Create<Guid>();
         var request = new UpdateRentalApplicationRequest { ApplicantId = null, OperatorId = operatorId, PropertyId = null };
         var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestFixtures.MakeRentalApplication(id: id);
+        var existing = TestsFixtures.MakeRentalApplication(id: id);
 
         _rentalApplicationRepositoryMock.Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>())).ReturnsAsync(existing);
         _operatorRepositoryMock.Setup(r => r.GetByIdAsync(operatorId, It.IsAny<CancellationToken>())).ReturnsAsync((OperatorEntity?)null);
@@ -224,10 +213,10 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
     public async Task HandleAsync_ShouldReturnOperatorIsInactive_WhenOperatorIsInactive()
     {
         var id = _fixture.Create<Guid>();
-        var @operator = TestFixtures.MakeOperator(isActive: false);
+        var @operator = TestsFixtures.MakeOperator(isActive: false);
         var request = new UpdateRentalApplicationRequest { ApplicantId = null, OperatorId = @operator.Id, PropertyId = null };
         var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestFixtures.MakeRentalApplication(id: id);
+        var existing = TestsFixtures.MakeRentalApplication(id: id);
 
         _rentalApplicationRepositoryMock.Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>())).ReturnsAsync(existing);
         _operatorRepositoryMock.Setup(r => r.GetByIdAsync(@operator.Id, It.IsAny<CancellationToken>())).ReturnsAsync(@operator);
@@ -244,10 +233,10 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
     public async Task HandleAsync_ShouldReturnOperatorAlreadyAssigned_WhenOperatorIsAlreadyAssigned()
     {
         var id = _fixture.Create<Guid>();
-        var @operator = TestFixtures.MakeOperator();
+        var @operator = TestsFixtures.MakeOperator();
         var request = new UpdateRentalApplicationRequest { ApplicantId = null, OperatorId = @operator.Id, PropertyId = null };
         var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestFixtures.MakeRentalApplication(id: id, @operator: @operator);
+        var existing = TestsFixtures.MakeRentalApplication(id: id, @operator: @operator);
 
         _rentalApplicationRepositoryMock.Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>())).ReturnsAsync(existing);
         _operatorRepositoryMock.Setup(r => r.GetByIdAsync(@operator.Id, It.IsAny<CancellationToken>())).ReturnsAsync(@operator);
@@ -264,10 +253,10 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
     public async Task HandleAsync_ShouldUpdateOperator_WhenOperatorIsValid()
     {
         var id = _fixture.Create<Guid>();
-        var @operator = TestFixtures.MakeOperator();
+        var @operator = TestsFixtures.MakeOperator();
         var request = new UpdateRentalApplicationRequest { ApplicantId = null, OperatorId = @operator.Id, PropertyId = null };
         var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestFixtures.MakeRentalApplication(id: id);
+        var existing = TestsFixtures.MakeRentalApplication(id: id);
 
         _rentalApplicationRepositoryMock.Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>())).ReturnsAsync(existing);
         _operatorRepositoryMock.Setup(r => r.GetByIdAsync(@operator.Id, It.IsAny<CancellationToken>())).ReturnsAsync(@operator);
@@ -288,7 +277,7 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
         var propertyId = _fixture.Create<Guid>();
         var request = new UpdateRentalApplicationRequest { ApplicantId = null, OperatorId = null, PropertyId = propertyId };
         var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestFixtures.MakeRentalApplication(id: id);
+        var existing = TestsFixtures.MakeRentalApplication(id: id);
 
         _rentalApplicationRepositoryMock.Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>())).ReturnsAsync(existing);
         _propertyRepositoryMock.Setup(r => r.GetByIdAsync(propertyId, It.IsAny<CancellationToken>())).ReturnsAsync((PropertyEntity?)null);
@@ -305,10 +294,10 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
     public async Task HandleAsync_ShouldReturnPropertyIsInactive_WhenPropertyIsInactive()
     {
         var id = _fixture.Create<Guid>();
-        var property = TestFixtures.MakeProperty(isActive: false, isAvailable: true);
+        var property = TestsFixtures.MakeProperty(isActive: false, isAvailable: true);
         var request = new UpdateRentalApplicationRequest { ApplicantId = null, OperatorId = null, PropertyId = property.Id };
         var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestFixtures.MakeRentalApplication(id: id);
+        var existing = TestsFixtures.MakeRentalApplication(id: id);
 
         _rentalApplicationRepositoryMock.Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>())).ReturnsAsync(existing);
         _propertyRepositoryMock.Setup(r => r.GetByIdAsync(property.Id, It.IsAny<CancellationToken>())).ReturnsAsync(property);
@@ -325,10 +314,10 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
     public async Task HandleAsync_ShouldReturnPropertyNotAvailable_WhenPropertyIsNotAvailable()
     {
         var id = _fixture.Create<Guid>();
-        var property = TestFixtures.MakeProperty(isActive: true, isAvailable: false);
+        var property = TestsFixtures.MakeProperty(isActive: true, isAvailable: false);
         var request = new UpdateRentalApplicationRequest { ApplicantId = null, OperatorId = null, PropertyId = property.Id };
         var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestFixtures.MakeRentalApplication(id: id);
+        var existing = TestsFixtures.MakeRentalApplication(id: id);
 
         _rentalApplicationRepositoryMock.Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>())).ReturnsAsync(existing);
         _propertyRepositoryMock.Setup(r => r.GetByIdAsync(property.Id, It.IsAny<CancellationToken>())).ReturnsAsync(property);
@@ -345,10 +334,10 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
     public async Task HandleAsync_ShouldReturnPropertyAlreadyAssigned_WhenPropertyIsAlreadyAssigned()
     {
         var id = _fixture.Create<Guid>();
-        var property = TestFixtures.MakeProperty();
+        var property = TestsFixtures.MakeProperty();
         var request = new UpdateRentalApplicationRequest { ApplicantId = null, OperatorId = null, PropertyId = property.Id };
         var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestFixtures.MakeRentalApplication(id: id, property: property);
+        var existing = TestsFixtures.MakeRentalApplication(id: id, property: property);
 
         _rentalApplicationRepositoryMock.Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>())).ReturnsAsync(existing);
         _propertyRepositoryMock.Setup(r => r.GetByIdAsync(property.Id, It.IsAny<CancellationToken>())).ReturnsAsync(property);
@@ -365,10 +354,10 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
     public async Task HandleAsync_ShouldUpdateProperty_WhenPropertyIsValid()
     {
         var id = _fixture.Create<Guid>();
-        var property = TestFixtures.MakeProperty();
+        var property = TestsFixtures.MakeProperty();
         var request = new UpdateRentalApplicationRequest { ApplicantId = null, OperatorId = null, PropertyId = property.Id };
         var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestFixtures.MakeRentalApplication(id: id);
+        var existing = TestsFixtures.MakeRentalApplication(id: id);
 
         _rentalApplicationRepositoryMock.Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>())).ReturnsAsync(existing);
         _propertyRepositoryMock.Setup(r => r.GetByIdAsync(property.Id, It.IsAny<CancellationToken>())).ReturnsAsync(property);

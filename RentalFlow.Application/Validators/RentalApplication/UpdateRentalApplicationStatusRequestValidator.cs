@@ -1,7 +1,4 @@
-﻿using FluentValidation;
-using RentalFlow.Application.Requests.RentalApplication;
-
-namespace RentalFlow.Application.Validators.RentalApplication;
+﻿namespace RentalFlow.Application.Validators.RentalApplication;
 
 public sealed class UpdateRentalApplicationStatusRequestValidator : AbstractValidator<UpdateRentalApplicationStatusRequest>
 {

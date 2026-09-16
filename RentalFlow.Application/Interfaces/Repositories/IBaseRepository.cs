@@ -1,6 +1,4 @@
-﻿using System.Linq.Expressions;
-
-namespace RentalFlow.Application.Interfaces.Repositories;
+﻿namespace RentalFlow.Application.Interfaces.Repositories;
 
 public interface IBaseRepository<T> where T : class
 {

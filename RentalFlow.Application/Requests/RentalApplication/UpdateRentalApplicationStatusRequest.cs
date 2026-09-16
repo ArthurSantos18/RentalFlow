@@ -1,6 +1,4 @@
-﻿using RentalFlow.Domain.Enums;
-
-namespace RentalFlow.Application.Requests.RentalApplication;
+﻿namespace RentalFlow.Application.Requests.RentalApplication;
 
 public record UpdateRentalApplicationStatusRequest
 {

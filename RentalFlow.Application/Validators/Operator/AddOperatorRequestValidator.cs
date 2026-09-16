@@ -1,8 +1,4 @@
-﻿using FluentValidation;
-using RentalFlow.Application.Requests.Operator;
-using RentalFlow.Domain.Enums;
-
-namespace RentalFlow.Application.Validators.Operator;
+﻿namespace RentalFlow.Application.Validators.Operator;
 
 public sealed class AddOperatorRequestValidator : AbstractValidator<AddOperatorRequest>
 {

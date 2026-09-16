@@ -1,11 +1,3 @@
-using AutoFixture;
-using FluentAssertions;
-using RentalFlow.Application.Mappers;
-using RentalFlow.Application.Requests.Team;
-using RentalFlow.Domain.Entities;
-using RentalFlow.Domain.Patterns.PagedResult;
-using RentalFlow.Tests.Fixtures;
-
 namespace RentalFlow.Tests.Application.Mappers;
 
 public sealed class TeamMapperTests
@@ -33,7 +25,7 @@ public sealed class TeamMapperTests
     [Fact]
     public void UpdateFrom_ShouldMapAllFieldsCorrectly_WhenRequestHasValues()
     {
-        var entity = TestFixtures.MakeTeam(name: "Old Name", description: "Old Description");
+        var entity = TestsFixtures.MakeTeam(name: "Old Name", description: "Old Description");
 
         var request = _fixture.Build<UpdateTeamRequest>()
             .With(r => r.Name, "Updated Name")
@@ -51,7 +43,7 @@ public sealed class TeamMapperTests
     [Fact]
     public void UpdateFrom_ShouldKeepExistingValues_WhenRequestFieldsAreNull()
     {
-        var entity = TestFixtures.MakeTeam(name: "Original Name", description: "Original Description");
+        var entity = TestsFixtures.MakeTeam(name: "Original Name", description: "Original Description");
 
         var request = _fixture.Build<UpdateTeamRequest>()
             .With(r => r.Name, (string?)null)
@@ -69,7 +61,7 @@ public sealed class TeamMapperTests
     [Fact]
     public void ToResponse_ShouldMapEntityToResponse()
     {
-        var entity = TestFixtures.MakeTeam(name: "Team Name", description: "Team Description");
+        var entity = TestsFixtures.MakeTeam(name: "Team Name", description: "Team Description");
 
         var response = entity.ToResponse();
 
@@ -84,8 +76,8 @@ public sealed class TeamMapperTests
     {
         var entities = new List<TeamEntity>
         {
-            TestFixtures.MakeTeam(name: "Team A"),
-            TestFixtures.MakeTeam(name: "Team B")
+            TestsFixtures.MakeTeam(name: "Team A"),
+            TestsFixtures.MakeTeam(name: "Team B")
         };
 
         var pagedResult = new PagedResult<TeamEntity>(entities, totalResults: 10, page: 2, pageSize: 2);

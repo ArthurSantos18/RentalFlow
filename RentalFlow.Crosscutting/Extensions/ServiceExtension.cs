@@ -1,9 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using RentalFlow.Application.Interfaces.Services;
-using RentalFlow.Infrastructure.Services;
-
-namespace RentalFlow.Crosscutting.Extensions;
+﻿namespace RentalFlow.Crosscutting.Extensions;
 
 public static class ServiceExtension
 {

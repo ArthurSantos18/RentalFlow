@@ -1,13 +1,4 @@
-﻿using AutoFixture;
-using FluentAssertions;
-using RentalFlow.Application.Mappers;
-using RentalFlow.Application.Requests.Property;
-using RentalFlow.Domain.Entities;
-using RentalFlow.Domain.Patterns.PagedResult;
-using RentalFlow.Domain.ValueObject;
-using RentalFlow.Tests.Fixtures;
-
-namespace RentalFlow.Tests.Application.Mappers;
+﻿namespace RentalFlow.Tests.Application.Mappers;
 
 public sealed class PropertyMapperTests
 {
@@ -16,7 +7,7 @@ public sealed class PropertyMapperTests
     [Fact]
     public void ToEntity_ShouldMapAllFieldsCorrectly()
     {
-        var address = TestFixtures.MakeAddress();
+        var address = TestsFixtures.MakeAddress();
 
         var request = _fixture.Build<AddPropertyRequest>()
             .With(r => r.Address, address)
@@ -40,8 +31,8 @@ public sealed class PropertyMapperTests
     [Fact]
     public void UpdateFrom_ShouldMapAllFieldsCorrectly_WhenRequestHasValues()
     {
-        var entity = TestFixtures.MakeProperty(rentPrice: 50m, bedrooms: 1, isAvailable: false);
-        var newAddress = TestFixtures.MakeAddress(street: "New Street");
+        var entity = TestsFixtures.MakeProperty(rentPrice: 50m, bedrooms: 1, isAvailable: false);
+        var newAddress = TestsFixtures.MakeAddress(street: "New Street");
 
         var request = _fixture.Build<UpdatePropertyRequest>()
             .With(r => r.Address, newAddress)
@@ -63,8 +54,8 @@ public sealed class PropertyMapperTests
     [Fact]
     public void UpdateFrom_ShouldKeepExistingValues_WhenRequestFieldsAreNull()
     {
-        var address = TestFixtures.MakeAddress();
-        var entity = TestFixtures.MakeProperty(address: address, rentPrice: 50m, bedrooms: 1, isAvailable: false);
+        var address = TestsFixtures.MakeAddress();
+        var entity = TestsFixtures.MakeProperty(address: address, rentPrice: 50m, bedrooms: 1, isAvailable: false);
 
         var request = _fixture.Build<UpdatePropertyRequest>()
             .With(r => r.Address, (Address?)null)
@@ -86,7 +77,7 @@ public sealed class PropertyMapperTests
     [Fact]
     public void ToResponse_ShouldMapEntityToResponse()
     {
-        var entity = TestFixtures.MakeProperty(rentPrice: 2500m, bedrooms: 3, isAvailable: true);
+        var entity = TestsFixtures.MakeProperty(rentPrice: 2500m, bedrooms: 3, isAvailable: true);
 
         var response = entity.ToResponse();
 
@@ -104,8 +95,8 @@ public sealed class PropertyMapperTests
     {
         var entities = new List<PropertyEntity>
         {
-            TestFixtures.MakeProperty(),
-            TestFixtures.MakeProperty(rentPrice: 3000m, bedrooms: 4)
+            TestsFixtures.MakeProperty(),
+            TestsFixtures.MakeProperty(rentPrice: 3000m, bedrooms: 4)
         };
 
         var pagedResult = new PagedResult<PropertyEntity>(entities, totalResults: 10, page: 2, pageSize: 2);

@@ -1,14 +1,3 @@
-using AutoFixture;
-using FluentAssertions;
-using Moq;
-using RentalFlow.Application.Interfaces.Repositories;
-using RentalFlow.Application.Requests.RentalApplication;
-using RentalFlow.Application.UseCases.Commands.RentalApplication;
-using RentalFlow.Domain.Entities;
-using RentalFlow.Domain.Enums;
-using RentalFlow.Domain.Errors;
-using RentalFlow.Tests.Fixtures;
-
 namespace RentalFlow.Tests.Application.UseCases.Commands.RentalApplication;
 
 public sealed class UpdateRentalApplicationStatusCommandHandlerTests
@@ -32,7 +21,7 @@ public sealed class UpdateRentalApplicationStatusCommandHandlerTests
             .With(c => c.Request, request)
             .Create();
 
-        var existing = TestFixtures.MakeRentalApplication(id: id, status: RentalStatus.Draft);
+        var existing = TestsFixtures.MakeRentalApplication(id: id, status: RentalStatus.Draft);
 
         _repositoryMock
             .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
@@ -84,7 +73,7 @@ public sealed class UpdateRentalApplicationStatusCommandHandlerTests
             .With(c => c.Request, request)
             .Create();
 
-        var existing = TestFixtures.MakeRentalApplication(id: id, status: RentalStatus.Approved);
+        var existing = TestsFixtures.MakeRentalApplication(id: id, status: RentalStatus.Approved);
 
         _repositoryMock
             .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))

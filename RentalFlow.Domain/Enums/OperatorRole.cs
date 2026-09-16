@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace RentalFlow.Domain.Enums;
+﻿namespace RentalFlow.Domain.Enums;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum OperatorRole

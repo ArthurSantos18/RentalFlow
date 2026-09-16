@@ -1,9 +1,4 @@
-﻿using LiteBus.Commands.Abstractions;
-using RentalFlow.Application.Interfaces.Repositories;
-using RentalFlow.Domain.Errors;
-using RentalFlow.Domain.Patterns.Result;
-
-namespace RentalFlow.Application.UseCases.Commands.Operator;
+﻿namespace RentalFlow.Application.UseCases.Commands.Operator;
 
 public sealed class DeleteOperatorCommandHandler(IOperatorRepository _operatorRepository) : ICommandHandler<DeleteOperatorCommand, Result>
 {

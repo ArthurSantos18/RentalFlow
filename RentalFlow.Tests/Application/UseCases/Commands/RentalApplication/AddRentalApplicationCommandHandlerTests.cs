@@ -1,13 +1,3 @@
-using AutoFixture;
-using FluentAssertions;
-using Moq;
-using RentalFlow.Application.Interfaces.Repositories;
-using RentalFlow.Application.Requests.RentalApplication;
-using RentalFlow.Application.UseCases.Commands.RentalApplication;
-using RentalFlow.Domain.Entities;
-using RentalFlow.Domain.Errors;
-using RentalFlow.Tests.Fixtures;
-
 namespace RentalFlow.Tests.Application.UseCases.Commands.RentalApplication;
 
 public sealed class AddRentalApplicationCommandHandlerTests
@@ -36,9 +26,9 @@ public sealed class AddRentalApplicationCommandHandlerTests
             .With(c => c.Request, request)
             .Create();
 
-        var applicant = TestFixtures.MakeApplicant(id: request.ApplicantId);
-        var property = TestFixtures.MakeProperty(id: request.PropertyId, isAvailable: true);
-        var @operator = TestFixtures.MakeOperator(id: request.OperatorId);
+        var applicant = TestsFixtures.MakeApplicant(id: request.ApplicantId);
+        var property = TestsFixtures.MakeProperty(id: request.PropertyId, isAvailable: true);
+        var @operator = TestsFixtures.MakeOperator(id: request.OperatorId);
 
         _applicantRepoMock.Setup(r => r.GetByIdAsync(request.ApplicantId, It.IsAny<CancellationToken>())).ReturnsAsync(applicant);
         _propertyRepoMock.Setup(r => r.GetByIdAsync(request.PropertyId, It.IsAny<CancellationToken>())).ReturnsAsync(property);
@@ -97,7 +87,7 @@ public sealed class AddRentalApplicationCommandHandlerTests
             .With(c => c.Request, request)
             .Create();
 
-        var applicant = TestFixtures.MakeApplicant(id: request.ApplicantId);
+        var applicant = TestsFixtures.MakeApplicant(id: request.ApplicantId);
 
         _applicantRepoMock
             .Setup(r => r.GetByIdAsync(request.ApplicantId, It.IsAny<CancellationToken>()))
@@ -132,8 +122,8 @@ public sealed class AddRentalApplicationCommandHandlerTests
             .With(c => c.Request, request)
             .Create();
 
-        var applicant = TestFixtures.MakeApplicant(id: request.ApplicantId);
-        var property = TestFixtures.MakeProperty(id: request.PropertyId, isAvailable: true);
+        var applicant = TestsFixtures.MakeApplicant(id: request.ApplicantId);
+        var property = TestsFixtures.MakeProperty(id: request.PropertyId, isAvailable: true);
 
         _applicantRepoMock
             .Setup(r => r.GetByIdAsync(request.ApplicantId, It.IsAny<CancellationToken>()))

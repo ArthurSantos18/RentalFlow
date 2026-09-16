@@ -1,13 +1,4 @@
-﻿using AutoFixture;
-using FluentAssertions;
-using Moq;
-using RentalFlow.Application.Interfaces.Repositories;
-using RentalFlow.Application.UseCases.Commands.Property;
-using RentalFlow.Domain.Entities;
-using RentalFlow.Domain.Errors;
-using RentalFlow.Tests.Fixtures;
-
-namespace RentalFlow.Tests.Application.UseCases.Commands.Property;
+﻿namespace RentalFlow.Tests.Application.UseCases.Commands.Property;
 
 public sealed class DeletePropertyCommandHandlerTests
 {
@@ -28,7 +19,7 @@ public sealed class DeletePropertyCommandHandlerTests
             .With(c => c.Id, propertyId)
             .Create();
 
-        var property = TestFixtures.MakeProperty(id: propertyId);
+        var property = TestsFixtures.MakeProperty(id: propertyId);
 
         _repositoryMock
             .Setup(r => r.GetByIdAsync(propertyId, It.IsAny<CancellationToken>()))

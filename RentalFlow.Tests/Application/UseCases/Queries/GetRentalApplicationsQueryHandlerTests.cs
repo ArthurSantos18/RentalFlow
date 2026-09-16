@@ -1,13 +1,3 @@
-using AutoFixture;
-using FluentAssertions;
-using Moq;
-using RentalFlow.Application.Interfaces.Repositories;
-using RentalFlow.Application.Requests.RentalApplication;
-using RentalFlow.Application.UseCases.Queries.RentalApplication;
-using RentalFlow.Domain.Entities;
-using RentalFlow.Domain.Patterns.PagedResult;
-using RentalFlow.Tests.Fixtures;
-
 namespace RentalFlow.Tests.Application.UseCases.Queries.RentalApplication;
 
 public sealed class GetRentalApplicationsQueryHandlerTests
@@ -31,8 +21,8 @@ public sealed class GetRentalApplicationsQueryHandlerTests
 
         var applications = new List<RentalApplicationEntity>
         {
-            TestFixtures.MakeRentalApplication(financedAmount: 50000m),
-            TestFixtures.MakeRentalApplication(financedAmount: 100000m, installments: 24)
+            TestsFixtures.MakeRentalApplication(financedAmount: 50000m),
+            TestsFixtures.MakeRentalApplication(financedAmount: 100000m, installments: 24)
         };
 
         var pagedResult = new PagedResult<RentalApplicationEntity>(

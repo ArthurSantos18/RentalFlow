@@ -1,6 +1,4 @@
-﻿using RentalFlow.Domain.Enums;
-
-namespace RentalFlow.Domain.Entities;
+﻿namespace RentalFlow.Domain.Entities;
 
 public sealed class OperatorEntity : BaseEntity<OperatorEntity>
 {

@@ -1,10 +1,4 @@
-﻿using AutoFixture;
-using FluentValidation.TestHelper;
-using RentalFlow.Application.Requests.Property;
-using RentalFlow.Application.Validators.Property;
-using RentalFlow.Domain.ValueObject;
-
-namespace RentalFlow.Tests.Application.Validators.Property;
+﻿namespace RentalFlow.Tests.Application.Validators.Property;
 
 public sealed class UpdatePropertyRequestValidatorTests
 {

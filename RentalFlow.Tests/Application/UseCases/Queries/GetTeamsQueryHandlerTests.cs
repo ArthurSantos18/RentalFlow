@@ -1,14 +1,3 @@
-using AutoFixture;
-using FluentAssertions;
-using Moq;
-using RentalFlow.Application.Interfaces.Repositories;
-using RentalFlow.Application.Mappers;
-using RentalFlow.Application.Requests.Team;
-using RentalFlow.Application.UseCases.Queries.Team;
-using RentalFlow.Domain.Entities;
-using RentalFlow.Domain.Patterns.PagedResult;
-using RentalFlow.Tests.Fixtures;
-
 namespace RentalFlow.Tests.Application.UseCases.Queries;
 
 public sealed class GetTeamsQueryHandlerTests
@@ -32,8 +21,8 @@ public sealed class GetTeamsQueryHandlerTests
 
         var teams = new List<TeamEntity>
         {
-            TestFixtures.MakeTeam(name: "Team A"),
-            TestFixtures.MakeTeam(name: "Team B")
+            TestsFixtures.MakeTeam(name: "Team A"),
+            TestsFixtures.MakeTeam(name: "Team B")
         };
 
         var pagedResult = new PagedResult<TeamEntity>(

@@ -1,6 +1,3 @@
-using FluentValidation;
-using RentalFlow.Application.Requests.RentalApplication;
-
 namespace RentalFlow.Application.Validators.RentalApplication;
 
 public sealed class GetRentalApplicationRequestValidator : AbstractValidator<GetRentalApplicationRequest>

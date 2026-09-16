@@ -1,6 +1,4 @@
-﻿using RentalFlow.Domain.Enums;
-
-namespace RentalFlow.Application.Responses;
+﻿namespace RentalFlow.Application.Responses;
 
 public record GetRentalApplicationResponse : BaseResponse
 {

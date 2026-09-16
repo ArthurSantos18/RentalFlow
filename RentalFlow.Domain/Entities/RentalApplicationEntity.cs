@@ -1,8 +1,4 @@
-﻿using RentalFlow.Domain.Enums;
-using RentalFlow.Domain.Errors;
-using RentalFlow.Domain.Patterns.Result;
-
-namespace RentalFlow.Domain.Entities;
+﻿namespace RentalFlow.Domain.Entities;
 
 public sealed class RentalApplicationEntity : BaseEntity<RentalApplicationEntity>
 {

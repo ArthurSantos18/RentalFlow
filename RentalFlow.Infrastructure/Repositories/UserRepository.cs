@@ -1,11 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using RentalFlow.Application.Interfaces.Repositories;
-using RentalFlow.Application.Requests.User;
-using RentalFlow.Domain.Entities;
-using RentalFlow.Domain.Patterns.PagedResult;
-using RentalFlow.Infrastructure.Data;
-
-namespace RentalFlow.Infrastructure.Repositories;
+﻿namespace RentalFlow.Infrastructure.Repositories;
 
 public sealed class UserRepository(AppDbContext context) : BaseRepository<UserEntity>(context), IUserRepository
 {

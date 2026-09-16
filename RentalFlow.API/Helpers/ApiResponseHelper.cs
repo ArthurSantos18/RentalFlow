@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using RentalFlow.Domain.Patterns.Result;
-
-namespace RentalFlow.API.Helpers;
+﻿namespace RentalFlow.API.Helpers;
 
 public class ApiResponseHelper
 {

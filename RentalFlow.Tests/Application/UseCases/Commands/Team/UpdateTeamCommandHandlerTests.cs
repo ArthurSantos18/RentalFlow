@@ -1,13 +1,3 @@
-using AutoFixture;
-using FluentAssertions;
-using Moq;
-using RentalFlow.Application.Interfaces.Repositories;
-using RentalFlow.Application.Requests.Team;
-using RentalFlow.Application.UseCases.Commands.Team;
-using RentalFlow.Domain.Entities;
-using RentalFlow.Domain.Errors;
-using RentalFlow.Tests.Fixtures;
-
 namespace RentalFlow.Tests.Application.UseCases.Commands.Team;
 
 public sealed class UpdateTeamCommandHandlerTests
@@ -37,7 +27,7 @@ public sealed class UpdateTeamCommandHandlerTests
             .With(c => c.Request, request)
             .Create();
 
-        var existingTeam = TestFixtures.MakeTeam(id: teamId, name: "Old Name", description: "Old Description");
+        var existingTeam = TestsFixtures.MakeTeam(id: teamId, name: "Old Name", description: "Old Description");
 
         _repositoryMock
             .Setup(r => r.GetByIdAsync(teamId, It.IsAny<CancellationToken>()))

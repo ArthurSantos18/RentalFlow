@@ -1,7 +1,4 @@
-﻿using FluentValidation;
-using RentalFlow.Application.Requests.Property;
-
-namespace RentalFlow.Application.Validators.Property;
+﻿namespace RentalFlow.Application.Validators.Property;
 
 public sealed class GetPropertiesRequestValidator : AbstractValidator<GetPropertyRequest>
 {

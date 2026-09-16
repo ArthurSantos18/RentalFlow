@@ -1,10 +1,4 @@
-﻿using LiteBus.Commands.Abstractions;
-using RentalFlow.Application.Interfaces.Repositories;
-using RentalFlow.Application.Mappers;
-using RentalFlow.Domain.Errors;
-using RentalFlow.Domain.Patterns.Result;
-
-namespace RentalFlow.Application.UseCases.Commands.Team;
+﻿namespace RentalFlow.Application.UseCases.Commands.Team;
 
 public sealed class UpdateTeamCommandHandler(ITeamRepository _teamRepository) : ICommandHandler<UpdateTeamCommand, Result>
 {

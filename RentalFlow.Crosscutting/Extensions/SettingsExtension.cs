@@ -1,8 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using RentalFlow.Infrastructure.Settings;
-
-namespace RentalFlow.Crosscutting.Extensions;
+﻿namespace RentalFlow.Crosscutting.Extensions;
 
 public static class SettingsExtension
 {

@@ -1,11 +1,4 @@
-﻿using LiteBus.Queries.Abstractions;
-using RentalFlow.Application.Interfaces.Repositories;
-using RentalFlow.Application.Mappers;
-using RentalFlow.Application.Responses;
-using RentalFlow.Domain.Patterns.PagedResult;
-using RentalFlow.Domain.Patterns.Result;
-
-namespace RentalFlow.Application.UseCases.Queries.Team;
+﻿namespace RentalFlow.Application.UseCases.Queries.Team;
 
 public sealed class GetTeamsQueryHandler(ITeamRepository _teamRepository) : IQueryHandler<GetTeamsQuery, Result<PagedResult<GetTeamResponse>>>
 {

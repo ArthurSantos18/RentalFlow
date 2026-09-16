@@ -1,12 +1,4 @@
-﻿using AutoFixture;
-using FluentAssertions;
-using RentalFlow.Application.Mappers;
-using RentalFlow.Application.Requests.Applicant;
-using RentalFlow.Domain.Entities;
-using RentalFlow.Domain.Patterns.PagedResult;
-using RentalFlow.Tests.Fixtures;
-
-namespace RentalFlow.Tests.Application.Mappers;
+﻿namespace RentalFlow.Tests.Application.Mappers;
 
 public sealed class ApplicantMapperTests
 {
@@ -36,7 +28,7 @@ public sealed class ApplicantMapperTests
     [Fact]
     public void UpdateFrom_ShouldMapAllFieldsCorrectly_WhenRequestHasValues()
     {
-        var entity = TestFixtures.MakeApplicant(
+        var entity = TestsFixtures.MakeApplicant(
             fullName: "Existing Name",
             cpf: "11122233344",
             email: "existing@test.com",
@@ -64,7 +56,7 @@ public sealed class ApplicantMapperTests
     [Fact]
     public void UpdateFrom_ShouldKeepExistingValues_WhenRequestFieldsAreNull()
     {
-        var entity = TestFixtures.MakeApplicant(
+        var entity = TestsFixtures.MakeApplicant(
             fullName: "Existing Name",
             cpf: "11122233344",
             email: "existing@test.com",
@@ -91,7 +83,7 @@ public sealed class ApplicantMapperTests
     [Fact]
     public void UpdateFrom_ShouldClearPhone_WhenRequestPhoneIsWhitespace()
     {
-        var entity = TestFixtures.MakeApplicant(phone: "123456789");
+        var entity = TestsFixtures.MakeApplicant(phone: "123456789");
 
         var request = _fixture.Build<UpdateApplicantRequest>()
             .With(r => r.Phone, "   ")
@@ -105,7 +97,7 @@ public sealed class ApplicantMapperTests
     [Fact]
     public void ToResponse_ShouldMapEntityToResponse()
     {
-        var entity = TestFixtures.MakeApplicant();
+        var entity = TestsFixtures.MakeApplicant();
 
         var response = entity.ToResponse();
 
@@ -124,8 +116,8 @@ public sealed class ApplicantMapperTests
     {
         var entities = new List<ApplicantEntity>
         {
-            TestFixtures.MakeApplicant(fullName: "John Doe"),
-            TestFixtures.MakeApplicant(fullName: "Jane Doe", cpf: "11122233344", email: "jane@test.com")
+            TestsFixtures.MakeApplicant(fullName: "John Doe"),
+            TestsFixtures.MakeApplicant(fullName: "Jane Doe", cpf: "11122233344", email: "jane@test.com")
         };
 
         var pagedResult = new PagedResult<ApplicantEntity>(entities, totalResults: 10, page: 2, pageSize: 2);

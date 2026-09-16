@@ -1,15 +1,4 @@
-﻿using AutoFixture;
-using FluentAssertions;
-using Moq;
-using RentalFlow.Application.Interfaces.Repositories;
-using RentalFlow.Application.Mappers;
-using RentalFlow.Application.Requests.Applicant;
-using RentalFlow.Application.UseCases.Queries.Applicant;
-using RentalFlow.Domain.Entities;
-using RentalFlow.Domain.Patterns.PagedResult;
-using RentalFlow.Tests.Fixtures;
-
-namespace RentalFlow.Tests.Application.UseCases.Queries;
+﻿namespace RentalFlow.Tests.Application.UseCases.Queries;
 
 public sealed class GetApplicantsQueryHandlerTests
 {
@@ -32,8 +21,8 @@ public sealed class GetApplicantsQueryHandlerTests
 
         var applicants = new List<ApplicantEntity>
         {
-            TestFixtures.MakeApplicant(fullName: "John Doe"),
-            TestFixtures.MakeApplicant(fullName: "Jane Doe", cpf: "11122233344", email: "jane@test.com")
+            TestsFixtures.MakeApplicant(fullName: "John Doe"),
+            TestsFixtures.MakeApplicant(fullName: "Jane Doe", cpf: "11122233344", email: "jane@test.com")
         };
 
         var pagedResult = new PagedResult<ApplicantEntity>(

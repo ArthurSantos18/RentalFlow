@@ -1,15 +1,4 @@
-﻿using AutoFixture;
-using FluentAssertions;
-using Moq;
-using RentalFlow.Application.Interfaces.Repositories;
-using RentalFlow.Application.Mappers;
-using RentalFlow.Application.Requests.Operator;
-using RentalFlow.Application.UseCases.Queries.Operator;
-using RentalFlow.Domain.Entities;
-using RentalFlow.Domain.Patterns.PagedResult;
-using RentalFlow.Tests.Fixtures;
-
-namespace RentalFlow.Tests.Application.UseCases.Queries;
+﻿namespace RentalFlow.Tests.Application.UseCases.Queries;
 
 public sealed class GetOperatorsQueryHandlerTests
 {
@@ -32,8 +21,8 @@ public sealed class GetOperatorsQueryHandlerTests
 
         var operators = new List<OperatorEntity>
         {
-            TestFixtures.MakeOperator(name: "Operator A"),
-            TestFixtures.MakeOperator(name: "Operator B")
+            TestsFixtures.MakeOperator(name: "Operator A"),
+            TestsFixtures.MakeOperator(name: "Operator B")
         };
 
         var pagedResult = new PagedResult<OperatorEntity>(

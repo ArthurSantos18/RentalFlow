@@ -1,13 +1,4 @@
-﻿using AutoFixture;
-using FluentAssertions;
-using Moq;
-using RentalFlow.Application.Interfaces.Repositories;
-using RentalFlow.Application.UseCases.Commands.Operator;
-using RentalFlow.Domain.Entities;
-using RentalFlow.Domain.Errors;
-using RentalFlow.Tests.Fixtures;
-
-namespace RentalFlow.Tests.Application.UseCases.Commands.Operator;
+﻿namespace RentalFlow.Tests.Application.UseCases.Commands.Operator;
 
 public sealed class AddOperatorCommandHandlerTests
 {
@@ -26,7 +17,7 @@ public sealed class AddOperatorCommandHandlerTests
     {
         var command = _fixture.Build<AddOperatorCommand>().Create();
 
-        var team = TestFixtures.MakeTeam(id: command.Request.TeamId);
+        var team = TestsFixtures.MakeTeam(id: command.Request.TeamId);
 
         _teamRepositoryMock
             .Setup(r => r.GetByIdAsync(command.Request.TeamId, It.IsAny<CancellationToken>()))
