@@ -8,7 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RentalFlow.Infrastructure\RentalFlow.Infrastructure.csproj" />
     <ProjectReference Include="..\RentalFlow.Application\RentalFlow.Application.csproj" />
     <ProjectReference Include="..\RentalFlow.Crosscutting\RentalFlow.Crosscutting.csproj" />
   </ItemGroup>

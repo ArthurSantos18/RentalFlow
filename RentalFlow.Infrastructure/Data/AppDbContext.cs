@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using RentalFlow.Domain.Entities;
-using RentalFlow.Infrastructure.Data.Configurations;
 
 namespace RentalFlow.Infrastructure.Data;
 
@@ -12,6 +10,8 @@ public sealed class AppDbContext : DbContext
     public DbSet<OperatorEntity> Operators { get; set; }
     public DbSet<RentalApplicationEntity> RentalApplications { get; set; }
     public DbSet<TeamEntity> Teams { get; set; }
+    public DbSet<UserEntity> Users { get; set; }
+    public DbSet<UserTokenEntity> UserTokens { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
@@ -21,10 +21,6 @@ public sealed class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.ApplyConfiguration(new ApplicantConfiguration());
-        modelBuilder.ApplyConfiguration(new PropertyConfiguration());
-        modelBuilder.ApplyConfiguration(new OperatorConfiguration());
-        modelBuilder.ApplyConfiguration(new RentalApplicationConfiguration());
-        modelBuilder.ApplyConfiguration(new TeamConfiguration());
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
     }
 }

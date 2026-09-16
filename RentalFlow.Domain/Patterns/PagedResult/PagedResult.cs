@@ -6,7 +6,7 @@ public sealed class PagedResult<T>
     public int PageSize { get; set; }
     public int TotalResults { get; set; }
     public int TotalPages => (TotalResults + PageSize - 1) / PageSize;
-    public IEnumerable<T> Results { get; set; } = Enumerable.Empty<T>();
+    public IEnumerable<T> Results { get; set; } = [];
 
     public bool HasPrevious => Page > 1;
     public bool HasNext => Page < TotalPages;

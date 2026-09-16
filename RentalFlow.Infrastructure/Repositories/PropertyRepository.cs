@@ -77,6 +77,7 @@ public sealed class PropertyRepository(AppDbContext context) : BaseRepository<Pr
             var neighborhoodsLower = neighborhoods.Select(n => n.ToLower()).ToList();
             return query.Where(p => neighborhoodsLower.Contains(p.Address.Neighborhood.ToLower()));
         }
+
         return query;
     }
 
@@ -87,6 +88,7 @@ public sealed class PropertyRepository(AppDbContext context) : BaseRepository<Pr
             var zipCodesClean = zipCodes.Select(z => z.Replace("-", "")).ToList();
             return query.Where(p => zipCodesClean.Contains(p.Address.ZipCode.Replace("-", "")));
         }
+
         return query;
     }
 
@@ -146,6 +148,7 @@ public sealed class PropertyRepository(AppDbContext context) : BaseRepository<Pr
         {
             return hasApplications.Value ? query.Where(p => p.Applications.Any()) : query.Where(p => !p.Applications.Any());
         }
+
         return query;
     }
 
@@ -155,6 +158,7 @@ public sealed class PropertyRepository(AppDbContext context) : BaseRepository<Pr
         {
             return query.Where(p => p.Applications.Any(a => applicationIds.Contains(a.Id)));
         }
+
         return query;
     }
 }

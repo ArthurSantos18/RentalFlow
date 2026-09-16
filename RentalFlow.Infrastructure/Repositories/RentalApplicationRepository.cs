@@ -123,12 +123,12 @@ public sealed class RentalApplicationRepository(AppDbContext context) : BaseRepo
         {
             query = query.Where(ra => ra.TotalAmount >= min.Value);
         }
-            
+
         if (max.HasValue)
         {
             query = query.Where(ra => ra.TotalAmount <= max.Value);
         }
-            
+
         return query;
     }
 
@@ -138,12 +138,12 @@ public sealed class RentalApplicationRepository(AppDbContext context) : BaseRepo
         {
             query = query.Where(ra => ra.CreatedAt >= min.Value);
         }
-            
+
         if (max.HasValue)
         {
             query = query.Where(ra => ra.CreatedAt <= max.Value);
         }
-            
+
         return query;
     }
 
@@ -153,12 +153,12 @@ public sealed class RentalApplicationRepository(AppDbContext context) : BaseRepo
         {
             query = query.Where(ra => ra.ContractDate >= min.Value);
         }
-            
+
         if (max.HasValue)
         {
             query = query.Where(ra => ra.ContractDate <= max.Value);
         }
-            
+
         return query;
     }
 
@@ -168,7 +168,7 @@ public sealed class RentalApplicationRepository(AppDbContext context) : BaseRepo
         {
             return query.Where(ra => ra.IsActive == isActive.Value);
         }
-            
+
         return query;
     }
 }

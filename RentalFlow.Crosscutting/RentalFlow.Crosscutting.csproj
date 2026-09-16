@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RentalFlow.Application\RentalFlow.Application.csproj" />
+    <ProjectReference Include="..\RentalFlow.Infrastructure\RentalFlow.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
