@@ -21,6 +21,7 @@ O projeto está sendo desenvolvido com foco em boas práticas de desenvolvimento
 | FluentValidation | Validação de dados |
 | Moq / AutoFixture / xUnit | Testes unitários |
 | SQL Server | Banco de dados relacional |
+| JSON Web Token (JWT) | Autenticação e Autorização |
 
 ---
 
@@ -32,6 +33,7 @@ RentalFlow/
 │   ├── Controllers/
 │   ├── Helpers/
 │   └── Program.cs
+│   └── Usings.cs
 ├── RentalFlow.Application/         # Camada de Aplicação (Handlers, Commands, Queries)
 │   ├── UseCases/
 │   │   ├── Commands/
@@ -41,6 +43,7 @@ RentalFlow/
 │   ├── Responses/
 │   ├── Interfaces/
 │   └── Validators/
+│   └── Usings.cs
 ├── RentalFlow.Domain/              # Camada de Domínio (Entidades, Enums, Value Objects)
 │   ├── Entities/
 │   ├── Enums/
@@ -48,14 +51,18 @@ RentalFlow/
 │   ├── Patterns/
 │   └── Helpers/
 │   └── ValueObject/
+│   └── Usings.cs
 ├── RentalFlow.Infrastructure/      # Camada de Infraestrutura (DbContext, Repositories)
 │   ├── Data/
 │   ├── Extensions/
 │   ├── Repositories/
+│   └── Usings.cs/
 ├── RentalFlow.Crosscutting/        # Preocupações Transversais (Validações, Configurações)
 │   ├── Extensions/
 └── RentalFlow.Tests/               # Testes Unitários
     ├── Application/
+    ├── Fixtures/
+│   └── Usings.cs
 ```
 
 ---
@@ -69,6 +76,8 @@ RentalFlow/
 | **Operator** | Operador (corretor/gerente/admin) |
 | **RentalApplication** | Proposta de locação (une Applicant, Property e Operator) |
 | **Team** | Times ao qual os operadores pertencem |
+| **User** | Usuário ao qual possuem as credenciais para login |
+| **UserToken** | Entidade que guarda os tokens e informações adicionais da autenticação do usuário |
 
 ---
 
@@ -80,7 +89,13 @@ RentalFlow/
 - [x] **Property** – Cadastro com endereço (Value Object), consulta, atualização, soft delete.
 - [x] **Operator** – Cadastro, papéis (`Broker`, `Manager`, `Administrator`), associação a time, consulta, atualização, soft delete.
 - [x] **RentalApplication** – Cadastro, consulta, atualização, mudança de status, soft delete.
-- [x] **Team** - Cadastro, consulta, atualização, soft delete
+- [x] **Team** - Cadastro, consulta, atualização, soft delete.
+
+### ✅ Autenticação
+
+- [x] **Login** - Login de usuário com geração de token Jwt.
+- [x] **Refresh** - Refresh token com endpoint para renovação do mesmo.
+- [ ] **Password** - Senha criptografada, com opção de mudança.
 
 ### 📦 Padrões e Boas Práticas
 
@@ -90,6 +105,7 @@ RentalFlow/
 - **Soft Delete** – Exclusão lógica com `IsDeleted`.
 - **Value Objects** – `Address` encapsulado.
 - **FluentValidation** – Validação centralizada.
+- **Global Using** - Utilização de global using para centralização.
 
 ---
 
@@ -110,37 +126,56 @@ git clone https://github.com/ArthurSantos18/RentalFlow.git
 cd RentalFlow
 ```
 
-2. **Configure a connection string**
+2. **Configure as credenciais de administrador**
 
    O projeto utiliza **User Secrets** para desenvolvimento. Inicialize e configure:
 
 ```bash
 dotnet user-secrets init --project RentalFlow.API
-dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=localhost;Database=RentalFlowDB;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True" --project RentalFlow.API
+dotnet user-secrets set "Seed:AdminEmail" "email-do-administrador" --project RentalFlow.API
+dotnet user-secrets set "Seed:AdminPassword" "senha-do-administrador" --project RentalFlow.API
+dotnet user-secrets set "Seed:AdminName" "nome-do-administrador" --project RentalFlow.API
+dotnet user-secrets set "Seed:TeamName" "nome-do-grupo-do-administrador" --project RentalFlow.API
 ```
 
-   > Ajuste o `Server` conforme sua instância do SQL Server (ex: `(localdb)\mssqllocaldb`).
+3. **Configure o appsettings com sua connection string e configurações jwt**
 
-3. **Restaure os pacotes e compile**
+```bash
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "sua-connection-string"
+  },
+  "Jwt": {
+    "Issuer": "sua-issuer",
+    "Audience": "sua-audience",
+    "SecretKey": "sua-secret-key",
+    "AccessTokenExpirationMinutes": 0, // Tempo em minutos de duração do access token
+    "RefreshTokenExpirationDays": 0 // Tempo em dias de duração do refresh token
+  }
+}
+```
+
+
+4. **Restaure os pacotes e compile**
 
 ```bash
 dotnet restore
 dotnet build
 ```
 
-4. **Execute as migrações (criação do banco)**
+5. **Execute as migrações (criação do banco)**
 
 ```bash
 dotnet ef database update --project RentalFlow.Infrastructure --startup-project RentalFlow.API
 ```
 
-5. **Execute a aplicação**
+6. **Execute a aplicação**
 
 ```bash
 dotnet run --project RentalFlow.API
 ```
 
-6. **Acesse a API (Scalar)**
+7. **Acesse a API (Scalar)**
 
    Abra o navegador em: `https://localhost:5001/scalar`
 
@@ -158,7 +193,7 @@ dotnet test RentalFlow.Tests/RentalFlow.Tests.csproj
 
 ## ✒️ Autor
 
-**Arthur Azevedo**  
+**Arthur Santos Azevedo**  
 - [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/arthurazevedo18/)  
 - [![GitHub](https://img.shields.io/badge/GitHub-181717?logo=github&logoColor=white)](https://github.com/ArthurSantos18)
 
