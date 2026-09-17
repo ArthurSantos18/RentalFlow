@@ -22,6 +22,7 @@ O projeto está sendo desenvolvido com foco em boas práticas de desenvolvimento
 | Moq / AutoFixture / xUnit | Testes unitários |
 | SQL Server | Banco de dados relacional |
 | JSON Web Token (JWT) | Autenticação e Autorização |
+| BCrypt | Criptografia de senhas |
 
 ---
 
