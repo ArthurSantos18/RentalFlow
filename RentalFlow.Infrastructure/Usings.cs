@@ -7,6 +7,8 @@ global using System.Text;
 global using BCrypt.Net;
 
 global using Microsoft.Extensions.Options;
+global using Microsoft.Extensions.DependencyInjection;
+
 global using Microsoft.IdentityModel.Tokens;
 
 global using Microsoft.EntityFrameworkCore;

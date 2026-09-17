@@ -14,10 +14,9 @@ public sealed class UserEntity : BaseEntity<UserEntity>
         string email,
         string passwordHash,
         bool mustChangePassword,
-        Guid operatorId,
         OperatorEntity @operator)
     {
-        OperatorId = operatorId;
+        OperatorId = @operator.Id;
         Email = email.ToLowerInvariant();
         PasswordHash = passwordHash;
         MustChangePassword = mustChangePassword;

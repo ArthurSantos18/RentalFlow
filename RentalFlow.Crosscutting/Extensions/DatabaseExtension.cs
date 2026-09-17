@@ -8,4 +8,9 @@ public static class DatabaseExtension
 
         return services;
     }
+    public static async Task<IHost> SeedDatabaseAsync(this IHost host)
+    {
+        await DatabaseSeeder.SeedAsync(host.Services);
+        return host;
+    }
 }
