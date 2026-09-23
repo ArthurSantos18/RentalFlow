@@ -30,6 +30,19 @@ public static class OperatorMapper
         return entity.Touch();
     }
 
+    public static AddOperatorResponse ToResponse(this OperatorEntity @operator, UserEntity user, string temporaryPassword)
+    {
+        return new AddOperatorResponse
+        {
+            Id = @operator.Id,
+            Name = @operator.Name,
+            Email = user.Email,
+            Role = @operator.Role.ToString(),
+            TemporaryPassword = temporaryPassword,
+            Message = "Operator created successfully. Share the temporary password with the operator."
+        };
+    }
+
     public static GetOperatorResponse ToResponse(this OperatorEntity entity)
     {
         return new GetOperatorResponse

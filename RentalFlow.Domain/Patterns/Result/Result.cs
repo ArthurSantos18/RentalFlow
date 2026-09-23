@@ -23,8 +23,7 @@ public class Result<T> : Result
         ? _value!
         : throw new InvalidOperationException($"Cannot access the value of a failed result. Error: {Error.Message}");
 
-    private Result(T? value, bool isSuccess, Error error)
-    : base(isSuccess, error)
+    private Result(T? value, bool isSuccess, Error error) : base(isSuccess, error)
     {
         _value = value;
     }

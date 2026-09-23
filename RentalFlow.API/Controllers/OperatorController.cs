@@ -1,10 +1,12 @@
 ﻿namespace RentalFlow.API.Controllers;
 
+[Authorize]
 [Route("api/operators")]
 [ApiController]
 public sealed class OperatorController(ICommandMediator _commandMediator, IQueryMediator _queryMediator) : ControllerBase
 {
     [HttpGet]
+    [Authorize(Roles = $"{nameof(OperatorRole.Administrator)},{nameof(OperatorRole.Manager)}")]
     public async Task<IActionResult> GetOperatorsAsync([FromQuery] GetOperatorRequest request, CancellationToken cancellationToken)
     {
         var query = new GetOperatorsQuery(request);
@@ -16,6 +18,7 @@ public sealed class OperatorController(ICommandMediator _commandMediator, IQuery
     }
 
     [HttpPost]
+    [Authorize(Roles = $"{nameof(OperatorRole.Administrator)},{nameof(OperatorRole.Manager)}")]
     public async Task<IActionResult> AddOperatorAsync([FromBody] AddOperatorRequest request, CancellationToken cancellationToken)
     {
         var command = new AddOperatorCommand(request);
@@ -27,6 +30,7 @@ public sealed class OperatorController(ICommandMediator _commandMediator, IQuery
     }
 
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles = nameof(OperatorRole.Administrator))]
     public async Task<IActionResult> DeleteOperatorAsync([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var command = new DeleteOperatorCommand(id);
@@ -38,6 +42,7 @@ public sealed class OperatorController(ICommandMediator _commandMediator, IQuery
     }
 
     [HttpPatch("{id:guid}")]
+    [Authorize(Roles = $"{nameof(OperatorRole.Administrator)},{nameof(OperatorRole.Manager)}")]
     public async Task<IActionResult> UpdateOperatorAsync([FromRoute] Guid id, [FromBody] UpdateOperatorRequest request, CancellationToken cancellationToken)
     {
         var command = new UpdateOperatorCommand(id, request);
@@ -49,6 +54,7 @@ public sealed class OperatorController(ICommandMediator _commandMediator, IQuery
     }
 
     [HttpPatch("{operatorId:guid}/team/{teamId:guid}")]
+    [Authorize(Roles = $"{nameof(OperatorRole.Administrator)},{nameof(OperatorRole.Manager)}")]
     public async Task<IActionResult> AssignOperatorAsync([FromRoute] Guid operatorId, [FromRoute] Guid teamId, CancellationToken cancellationToken)
     {
         var command = new AssignOperatorCommand(operatorId, teamId);

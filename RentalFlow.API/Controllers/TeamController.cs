@@ -1,5 +1,6 @@
 ﻿namespace RentalFlow.API.Controllers;
 
+[Authorize]
 [Route("api/teams")]
 [ApiController]
 public sealed class TeamController(ICommandMediator _commandMediator, IQueryMediator _queryMediator) : ControllerBase
@@ -28,6 +29,7 @@ public sealed class TeamController(ICommandMediator _commandMediator, IQueryMedi
     }
 
     [HttpPost]
+    [Authorize(Roles = nameof(OperatorRole.Administrator))]
     public async Task<IActionResult> AddTeamAsync([FromBody] AddTeamRequest request, CancellationToken cancellationToken)
     {
         var command = new AddTeamCommand(request);
@@ -39,6 +41,7 @@ public sealed class TeamController(ICommandMediator _commandMediator, IQueryMedi
     }
 
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles = nameof(OperatorRole.Administrator))]
     public async Task<IActionResult> DeleteTeamAsync([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var command = new DeleteTeamCommand(id);
@@ -50,6 +53,7 @@ public sealed class TeamController(ICommandMediator _commandMediator, IQueryMedi
     }
 
     [HttpPatch("{id:guid}")]
+    [Authorize(Roles = $"{nameof(OperatorRole.Administrator)},{nameof(OperatorRole.Manager)}")]
     public async Task<IActionResult> UpdateTeamAsync([FromRoute] Guid id, [FromBody] UpdateTeamRequest request, CancellationToken cancellationToken)
     {
         var command = new UpdateTeamCommand(id, request);

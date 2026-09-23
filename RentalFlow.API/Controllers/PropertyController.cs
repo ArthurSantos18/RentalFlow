@@ -1,5 +1,6 @@
 ﻿namespace RentalFlow.API.Controllers;
 
+[Authorize]
 [Route("api/properties")]
 [ApiController]
 public sealed class PropertyController(ICommandMediator _commandMediator, IQueryMediator _queryMediator) : ControllerBase
@@ -27,6 +28,7 @@ public sealed class PropertyController(ICommandMediator _commandMediator, IQuery
     }
 
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles = $"{nameof(OperatorRole.Administrator)},{nameof(OperatorRole.Manager)}")]
     public async Task<IActionResult> DeletePropertyAsync([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var command = new DeletePropertyCommand(id);

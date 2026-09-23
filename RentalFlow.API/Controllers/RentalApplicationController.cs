@@ -1,5 +1,6 @@
 ﻿namespace RentalFlow.API.Controllers;
 
+[Authorize]
 [Route("api/rental-applications")]
 [ApiController]
 public class RentalApplicationController(ICommandMediator _commandMediator, IQueryMediator _queryMediator) : ControllerBase
@@ -27,6 +28,7 @@ public class RentalApplicationController(ICommandMediator _commandMediator, IQue
     }
 
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles = $"{nameof(OperatorRole.Administrator)},{nameof(OperatorRole.Manager)}")]
     public async Task<IActionResult> DeleteRentalApplicationAsync([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var command = new DeleteRentalApplicationCommand(id);
@@ -49,6 +51,7 @@ public class RentalApplicationController(ICommandMediator _commandMediator, IQue
     }
 
     [HttpPatch("{id:guid}/status")]
+    [Authorize(Roles = $"{nameof(OperatorRole.Administrator)},{nameof(OperatorRole.Manager)}")]
     public async Task<IActionResult> UpdateRentalApplicationStatusAsync([FromRoute] Guid id, [FromBody] UpdateRentalApplicationStatusRequest request, CancellationToken cancellationToken)
     {
         var command = new UpdateRentalApplicationStatusCommand(id, request);

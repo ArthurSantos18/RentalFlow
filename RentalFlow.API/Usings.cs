@@ -13,7 +13,7 @@ global using RentalFlow.Crosscutting.Extensions;
 global using RentalFlow.API.Helpers;
 
 global using RentalFlow.Domain.Patterns.Result;
-
+global using RentalFlow.Domain.Enums;
 
 global using RentalFlow.Application.Requests.Applicant;
 global using RentalFlow.Application.UseCases.Commands.Applicant;
