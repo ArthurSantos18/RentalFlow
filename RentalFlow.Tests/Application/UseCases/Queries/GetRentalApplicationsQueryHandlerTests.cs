@@ -4,11 +4,12 @@ public sealed class GetRentalApplicationsQueryHandlerTests
 {
     private readonly Fixture _fixture = new();
     private readonly Mock<IRentalApplicationRepository> _repositoryMock = new();
+    private readonly Mock<IDataScopeService> _dataScopeServiceMock = new();
     private readonly GetRentalApplicationsQueryHandler _handler;
 
     public GetRentalApplicationsQueryHandlerTests()
     {
-        _handler = new GetRentalApplicationsQueryHandler(_repositoryMock.Object);
+        _handler = new GetRentalApplicationsQueryHandler(_repositoryMock.Object, _dataScopeServiceMock.Object);
     }
 
     [Fact]
@@ -18,6 +19,7 @@ public sealed class GetRentalApplicationsQueryHandlerTests
         var query = _fixture.Build<GetRentalApplicationsQuery>()
             .With(q => q.Request, request)
             .Create();
+        var scope = _fixture.Create<DataScope>();
 
         var applications = new List<RentalApplicationEntity>
         {
@@ -31,8 +33,12 @@ public sealed class GetRentalApplicationsQueryHandlerTests
             page: 1,
             pageSize: 60);
 
+        _dataScopeServiceMock
+            .Setup(s => s.GetScope())
+            .Returns(scope);
+
         _repositoryMock
-            .Setup(r => r.GetRentalApplicationsAsync(request, It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetRentalApplicationsAsync(request, scope, It.IsAny<CancellationToken>()))
             .ReturnsAsync(pagedResult);
 
         var result = await _handler.HandleAsync(query, CancellationToken.None);
@@ -43,7 +49,10 @@ public sealed class GetRentalApplicationsQueryHandlerTests
         result.Value.TotalResults.Should().Be(applications.Count);
         result.Value.Results.Should().HaveCount(applications.Count);
 
-        _repositoryMock.Verify(r => r.GetRentalApplicationsAsync(request, It.IsAny<CancellationToken>()), Times.Once);
+        _dataScopeServiceMock.Verify(r => r.GetScope(), Times.Once);
+        _repositoryMock.Verify(r => r.GetRentalApplicationsAsync(request, scope, It.IsAny<CancellationToken>()), Times.Once);
+
+        _dataScopeServiceMock.VerifyNoOtherCalls();
         _repositoryMock.VerifyNoOtherCalls();
     }
 }

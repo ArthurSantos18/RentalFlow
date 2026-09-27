@@ -12,10 +12,6 @@ public sealed class AddRentalApplicationRequestValidator : AbstractValidator<Add
             .NotEmpty()
             .WithMessage("PropertyId is required.");
 
-        RuleFor(x => x.OperatorId)
-            .NotEmpty()
-            .WithMessage("OperatorId is required.");
-
         RuleFor(x => x.FinancedAmount)
             .GreaterThan(0)
             .WithMessage("Financed amount must be greater than zero.");

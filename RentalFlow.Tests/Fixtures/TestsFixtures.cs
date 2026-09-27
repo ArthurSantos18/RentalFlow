@@ -23,6 +23,7 @@ public static class TestsFixtures
         bool isActive = true)
     {
         return new TeamEntity(name, description)
+            .SetId(id ?? Guid.NewGuid())
             .SetIsActive(isActive);
     }
 
@@ -59,10 +60,11 @@ public static class TestsFixtures
         string name = "Operator Alpha",
         OperatorRole role = OperatorRole.Broker,
         TeamEntity? team = null,
+        Guid? teamId = null,
         Guid? id = null,
         bool isActive = true)
     {
-        return new OperatorEntity(name, role, team ?? MakeTeam())
+        return new OperatorEntity(name, role, team ?? MakeTeam(id: teamId))
             .SetId(id ?? Guid.NewGuid())
             .SetIsActive(isActive);
     }

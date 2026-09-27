@@ -5,11 +5,17 @@ public sealed class AddOperatorCommandHandlerTests
     private readonly Fixture _fixture = new();
     private readonly Mock<IOperatorRepository> _repositoryMock = new();
     private readonly Mock<ITeamRepository> _teamRepositoryMock = new();
+    private readonly Mock<IUserRepository> _userRepositoryMock = new();
+    private readonly Mock<IPasswordService> _passwordServiceMock = new();
     private readonly AddOperatorCommandHandler _handler;
 
     public AddOperatorCommandHandlerTests()
     {
-        _handler = new AddOperatorCommandHandler(_repositoryMock.Object, _teamRepositoryMock.Object);
+        _handler = new AddOperatorCommandHandler(
+            _repositoryMock.Object,
+            _teamRepositoryMock.Object,
+            _userRepositoryMock.Object,
+            _passwordServiceMock.Object);
     }
 
     [Fact]
@@ -29,7 +35,7 @@ public sealed class AddOperatorCommandHandlerTests
 
         _teamRepositoryMock.Verify(r => r.GetByIdAsync(command.Request.TeamId, It.IsAny<CancellationToken>()), Times.Once);
         _repositoryMock.Verify(r => r.AddAsync(It.IsAny<OperatorEntity>(), It.IsAny<CancellationToken>()), Times.Once);
-        _repositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        _userRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
 
         _teamRepositoryMock.VerifyNoOtherCalls();
         _repositoryMock.VerifyNoOtherCalls();

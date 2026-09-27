@@ -8,6 +8,9 @@ global using Moq;
 global using System.Linq.Expressions;
 
 global using RentalFlow.Application.Interfaces.Repositories;
+global using RentalFlow.Application.Interfaces.Services;
+
+global using RentalFlow.Application.Models;
 
 global using RentalFlow.Application.Requests.Applicant;
 global using RentalFlow.Application.Requests.Operator;

@@ -24,9 +24,6 @@ public sealed class AddRentalApplicationRequestValidatorTests
 
         result.ShouldHaveValidationErrorFor(x => x.PropertyId)
             .WithErrorMessage("PropertyId is required.");
-
-        result.ShouldHaveValidationErrorFor(x => x.OperatorId)
-            .WithErrorMessage("OperatorId is required.");
     }
 
     [Fact]
@@ -262,7 +259,6 @@ public sealed class AddRentalApplicationRequestValidatorTests
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.ApplicantId);
         result.ShouldHaveValidationErrorFor(x => x.PropertyId);
-        result.ShouldHaveValidationErrorFor(x => x.OperatorId);
         result.ShouldHaveValidationErrorFor(x => x.FinancedAmount);
         result.ShouldHaveValidationErrorFor(x => x.TotalAmount);
         result.ShouldHaveValidationErrorFor(x => x.Installments);
