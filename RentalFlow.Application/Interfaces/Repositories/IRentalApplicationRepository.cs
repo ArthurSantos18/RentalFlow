@@ -2,5 +2,5 @@
 
 public interface IRentalApplicationRepository : IBaseRepository<RentalApplicationEntity>
 {
-    Task<PagedResult<RentalApplicationEntity>> GetRentalApplicationsAsync(GetRentalApplicationRequest request, CancellationToken cancellationToken);
+    Task<PagedResult<RentalApplicationEntity>> GetRentalApplicationsAsync(GetRentalApplicationRequest request, DataScope scope, CancellationToken cancellationToken);
 }

@@ -6,6 +6,8 @@ global using System.Text;
 
 global using BCrypt.Net;
 
+global using Microsoft.AspNetCore.Http;
+
 global using Microsoft.Extensions.Options;
 global using Microsoft.Extensions.DependencyInjection;
 
@@ -17,6 +19,7 @@ global using Microsoft.EntityFrameworkCore.Migrations;
 global using Microsoft.EntityFrameworkCore.Infrastructure;
 
 global using RentalFlow.Application.Interfaces.Repositories;
+global using RentalFlow.Application.Models;
 global using RentalFlow.Application.Interfaces.Services;
 
 global using RentalFlow.Application.Requests.Applicant;

@@ -6,6 +6,8 @@ public static class ServiceExtension
     {
         services.AddScoped<ITokenService, JwtTokenService>();
         services.AddScoped<IPasswordService, BCryptPasswordService>();
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
+        services.AddScoped<IDataScopeService, DataScopeService>();
 
         return services;
     }

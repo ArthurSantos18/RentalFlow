@@ -22,7 +22,7 @@ public class BaseRepository<T>(AppDbContext context) : IBaseRepository<T> where 
 
     public async Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
- return await _dbSet.FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
+        return await _dbSet.FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
     }
 
     public void HardDelete(T entity)

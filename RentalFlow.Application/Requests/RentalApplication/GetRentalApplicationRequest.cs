@@ -1,6 +1,6 @@
 ﻿namespace RentalFlow.Application.Requests.RentalApplication;
 
-public sealed record GetRentalApplicationRequest
+public sealed class GetRentalApplicationRequest
 {
     public GetRentalApplicationRequest() => PageFilter = new PageFilterRequest { Page = 1, PageSize = 60 };
 
@@ -11,6 +11,7 @@ public sealed record GetRentalApplicationRequest
     public IEnumerable<Guid>? ApplicantIds { get; set; }
     public IEnumerable<Guid>? PropertyIds { get; set; }
     public IEnumerable<Guid>? OperatorIds { get; set; }
+    public IEnumerable<Guid>? TeamIds { get; set; }
     public RentalStatus Status { get; set; }
     public decimal? MinFinancedAmount { get; set; }
     public decimal? MaxFinancedAmount { get; set; }

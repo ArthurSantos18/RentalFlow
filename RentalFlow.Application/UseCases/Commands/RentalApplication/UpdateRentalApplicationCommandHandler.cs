@@ -1,9 +1,12 @@
 ﻿namespace RentalFlow.Application.UseCases.Commands.RentalApplication;
 
-public sealed class UpdateRentalApplicationCommandHandler(IRentalApplicationRepository _rentalApplicationRepository,
+public sealed class UpdateRentalApplicationCommandHandler(
+    IRentalApplicationRepository _rentalApplicationRepository,
     IApplicantRepository _applicantRepository,
     IOperatorRepository _operatorRepository,
-    IPropertyRepository _propertyRepository) : ICommandHandler<UpdateRentalApplicationCommand, Result>
+    IPropertyRepository _propertyRepository,
+    ICurrentUserService _currentUserService
+) : ICommandHandler<UpdateRentalApplicationCommand, Result>
 {
     public async Task<Result> HandleAsync(UpdateRentalApplicationCommand command, CancellationToken cancellationToken)
     {
@@ -14,11 +17,16 @@ public sealed class UpdateRentalApplicationCommandHandler(IRentalApplicationRepo
             return Result.Failure(RentalApplicationErrors.RentalApplicationNotFound);
         }
 
-        var canBeEdited = rentalApplication.ValidateCanBeEdited();
-
-        if (canBeEdited.IsFailure)
+        if (!CanAccess(rentalApplication))
         {
-            return canBeEdited;
+            return Result.Failure(UserErrors.Forbidden);
+        }
+
+        var canEdit = EnsureCanBeEdited(rentalApplication);
+
+        if (canEdit.IsFailure)
+        {
+            return canEdit;
         }
 
         var applicantResult = await UpdateApplicantAsync(rentalApplication, command.Request.ApplicantId, cancellationToken);
@@ -47,6 +55,30 @@ public sealed class UpdateRentalApplicationCommandHandler(IRentalApplicationRepo
         await _rentalApplicationRepository.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
+    }
+
+    private bool CanAccess(RentalApplicationEntity rentalApplication)
+    {
+        return _currentUserService.Role switch
+        {
+            nameof(OperatorRole.Administrator) => true,
+
+            nameof(OperatorRole.Manager) => rentalApplication.Operator?.TeamId == _currentUserService.TeamId,
+
+            nameof(OperatorRole.Broker) => rentalApplication.OperatorId == _currentUserService.OperatorId,
+
+            _ => false
+        };
+    }
+
+    private Result EnsureCanBeEdited(RentalApplicationEntity rentalApplication)
+    {
+        if (_currentUserService.Role == nameof(OperatorRole.Broker))
+        {
+            return rentalApplication.Status == RentalStatus.Draft ? Result.Success() : Result.Failure(RentalApplicationErrors.RentalApplicationCannotBeEdited);
+        }
+
+        return rentalApplication.ValidateCanBeEdited();
     }
 
     private async Task<Result> UpdateApplicantAsync(RentalApplicationEntity rentalApplication, Guid? applicantId, CancellationToken cancellationToken)
@@ -78,6 +110,11 @@ public sealed class UpdateRentalApplicationCommandHandler(IRentalApplicationRepo
             return Result.Success();
         }
 
+        if (_currentUserService.Role == nameof(OperatorRole.Broker))
+        {
+            return Result.Failure(UserErrors.Forbidden);
+        }
+
         var @operator = await _operatorRepository.GetByIdAsync(operatorId.Value, cancellationToken);
 
         if (@operator is null)
@@ -88,6 +125,11 @@ public sealed class UpdateRentalApplicationCommandHandler(IRentalApplicationRepo
         if (!@operator.IsActive)
         {
             return Result.Failure(OperatorErrors.OperatorIsInactive);
+        }
+
+        if (_currentUserService.Role == nameof(OperatorRole.Manager) && @operator.TeamId != _currentUserService.TeamId)
+        {
+            return Result.Failure(UserErrors.Forbidden);
         }
 
         return rentalApplication.ChangeOperator(@operator);

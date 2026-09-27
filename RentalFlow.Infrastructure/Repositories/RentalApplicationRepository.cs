@@ -2,21 +2,27 @@
 
 public sealed class RentalApplicationRepository(AppDbContext context) : BaseRepository<RentalApplicationEntity>(context), IRentalApplicationRepository
 {
-    public async Task<PagedResult<RentalApplicationEntity>> GetRentalApplicationsAsync(GetRentalApplicationRequest request, CancellationToken cancellationToken)
+    public async Task<PagedResult<RentalApplicationEntity>> GetRentalApplicationsAsync(GetRentalApplicationRequest request, DataScope scope, CancellationToken cancellationToken)
     {
-        var query = _dbSet.AsNoTracking().AsQueryable();
+        var query = _dbSet
+            .AsNoTracking()
+            .Include(x => x.Applicant)
+            .Include(x => x.Property)
+            .Include(x => x.Operator).AsQueryable();
 
         query = ApplyIdsFilter(query, request.Ids);
         query = ApplyProposalNumbersFilter(query, request.ProposalNumbers);
         query = ApplyApplicantIdsFilter(query, request.ApplicantIds);
         query = ApplyPropertyIdsFilter(query, request.PropertyIds);
         query = ApplyOperatorIdsFilter(query, request.OperatorIds);
+        query = ApplyTeamIdsFilter(query, request.TeamIds);
         query = ApplyStatusFilter(query, request.Status);
         query = ApplyFinancedAmountFilter(query, request.MinFinancedAmount, request.MaxFinancedAmount);
         query = ApplyTotalAmountFilter(query, request.MinTotalAmount, request.MaxTotalAmount);
         query = ApplyCreatedAtFilter(query, request.MinCreatedAt, request.MaxCreatedAt);
         query = ApplyContractDateFilter(query, request.MinContractDate, request.MaxContractDate);
         query = ApplyIsActiveFilter(query, request.IsActive);
+        query = ApplyDataScope(query, scope);
 
         var page = request.PageFilter.Page > 0 ? request.PageFilter.Page : 1;
         var pageSize = request.PageFilter.PageSize > 0 ? request.PageFilter.PageSize : 60;
@@ -26,9 +32,6 @@ public sealed class RentalApplicationRepository(AppDbContext context) : BaseRepo
         var results = await query
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .Include(x => x.Applicant)
-            .Include(x => x.Property)
-            .Include(x => x.Operator)
             .ToListAsync(cancellationToken);
 
         return new PagedResult<RentalApplicationEntity>(results, total, page, pageSize);
@@ -79,6 +82,16 @@ public sealed class RentalApplicationRepository(AppDbContext context) : BaseRepo
         if (operatorIds?.Any() == true)
         {
             return query.Where(ra => operatorIds.Contains(ra.OperatorId));
+        }
+
+        return query;
+    }
+
+    private static IQueryable<RentalApplicationEntity> ApplyTeamIdsFilter(IQueryable<RentalApplicationEntity> query, IEnumerable<Guid>? teamIds)
+    {
+        if (teamIds?.Any() == true)
+        {
+            query = query.Where(ra => ra.Operator != null && teamIds.Contains(ra.Operator.TeamId));
         }
 
         return query;
@@ -159,6 +172,31 @@ public sealed class RentalApplicationRepository(AppDbContext context) : BaseRepo
         if (isActive.HasValue)
         {
             return query.Where(ra => ra.IsActive == isActive.Value);
+        }
+
+        return query;
+    }
+
+    private static IQueryable<RentalApplicationEntity> ApplyDataScope(IQueryable<RentalApplicationEntity> query, DataScope scope)
+    {
+        if (scope.IsGlobal)
+        {
+            return query;
+        }
+
+        if (scope.OperatorIds?.Any() == true)
+        {
+            query = query.Where(ra => scope.OperatorIds.Contains(ra.OperatorId));
+        }
+
+        if (scope.TeamIds?.Any() == true)
+        {
+            query = query.Where(ra => ra.Operator != null && scope.TeamIds.Contains(ra.Operator.TeamId));
+        }
+
+        if (scope.OperatorIds is null && scope.TeamIds is null)
+        {
+            query = query.Where(_ => false);
         }
 
         return query;

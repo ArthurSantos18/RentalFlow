@@ -11,7 +11,7 @@ global using RentalFlow.Application.Interfaces.Repositories;
 global using RentalFlow.Application.Interfaces.Services;
 
 global using RentalFlow.Application.Mappers;
-
+global using RentalFlow.Application.Models;
 global using RentalFlow.Application.Responses;
 
 global using RentalFlow.Application.Requests.Applicant;

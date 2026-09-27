@@ -15,7 +15,7 @@ public sealed class ChangePasswordCommandHandler(IUserRepository _userRepository
 
         if (!currentPasswordValid)
         {
-            return Result<string>.Failure(UserErrors.InvalidCredentials);
+            return Result<string>.Failure(UserErrors.InvalidPassword);
         }
 
         var newPasswordSameAsCurrent = _passwordService.Verify(command.Request.NewPassword, user.PasswordHash);
