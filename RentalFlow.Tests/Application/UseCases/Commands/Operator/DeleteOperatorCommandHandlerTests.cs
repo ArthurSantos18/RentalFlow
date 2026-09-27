@@ -3,6 +3,7 @@
 public sealed class DeleteOperatorCommandHandlerTests
 {
     private readonly Fixture _fixture = new();
+    private readonly TestsFixtures _testsFixtures = new(new Fixture());
     private readonly Mock<IOperatorRepository> _repositoryMock = new();
     private readonly DeleteOperatorCommandHandler _handler;
 
@@ -19,7 +20,7 @@ public sealed class DeleteOperatorCommandHandlerTests
             .With(c => c.Id, operatorId)
             .Create();
 
-        var @operator = TestsFixtures.MakeOperator(id: operatorId);
+        var @operator = _testsFixtures.MakeOperator(id: operatorId);
 
         _repositoryMock
             .Setup(r => r.GetByIdAsync(operatorId, It.IsAny<CancellationToken>()))

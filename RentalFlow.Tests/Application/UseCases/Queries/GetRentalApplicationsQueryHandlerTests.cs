@@ -3,6 +3,7 @@ namespace RentalFlow.Tests.Application.UseCases.Queries.RentalApplication;
 public sealed class GetRentalApplicationsQueryHandlerTests
 {
     private readonly Fixture _fixture = new();
+    private readonly TestsFixtures _testsFixtures = new(new Fixture());
     private readonly Mock<IRentalApplicationRepository> _repositoryMock = new();
     private readonly Mock<IDataScopeService> _dataScopeServiceMock = new();
     private readonly GetRentalApplicationsQueryHandler _handler;
@@ -23,8 +24,8 @@ public sealed class GetRentalApplicationsQueryHandlerTests
 
         var applications = new List<RentalApplicationEntity>
         {
-            TestsFixtures.MakeRentalApplication(financedAmount: 50000m),
-            TestsFixtures.MakeRentalApplication(financedAmount: 100000m, installments: 24)
+            _testsFixtures.MakeRentalApplication(),
+            _testsFixtures.MakeRentalApplication()
         };
 
         var pagedResult = new PagedResult<RentalApplicationEntity>(

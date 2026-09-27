@@ -1,98 +1,156 @@
-﻿namespace RentalFlow.Tests.Fixtures;
+﻿using System.Net.Mail;
 
-public static class TestsFixtures
+namespace RentalFlow.Tests.Fixtures;
+
+public sealed class TestsFixtures(Fixture fixture)
 {
-    public static ApplicantEntity MakeApplicant(
-        string fullName = "John Doe",
-        string cpf = "52998224725",
-        string email = "john.doe@test.com",
-        string? phone = "11999999999",
-        decimal monthlyIncome = 5000m,
+    public ApplicantEntity MakeApplicant(
+        string? fullName = null,
+        string? cpf = null,
+        string? email = null,
+        string? phone = null,
+        decimal? monthlyIncome = null,
         Guid? id = null,
-        bool isActive = true)
+        bool? isActive = null)
     {
-        return new ApplicantEntity(fullName, cpf, email, phone, monthlyIncome)
-            .SetId(id ?? Guid.NewGuid())
-            .SetIsActive(isActive);
+        return new ApplicantEntity(
+            fullName ?? fixture.Create<string>(),
+            cpf ?? GenerateCpf(),
+            email ?? fixture.Create<MailAddress>().Address,
+            phone ?? fixture.Create<string>(),
+            monthlyIncome ?? fixture.Create<decimal>())
+            .SetId(id ?? fixture.Create<Guid>())
+            .SetIsActive(isActive ?? fixture.Create<bool>());
     }
 
-    public static TeamEntity MakeTeam(
-        string name = "Team Alpha",
-        string description = "Default team description",
+    public TeamEntity MakeTeam(
+        string? name = null,
+        string? description = null,
         Guid? id = null,
-        bool isActive = true)
+        bool? isActive = null)
     {
-        return new TeamEntity(name, description)
-            .SetId(id ?? Guid.NewGuid())
-            .SetIsActive(isActive);
+        return new TeamEntity(
+            name ?? fixture.Create<string>(),
+            description ?? fixture.Create<string>())
+            .SetId(id ?? fixture.Create<Guid>())
+            .SetIsActive(isActive ?? fixture.Create<bool>());
     }
 
-    public static PropertyEntity MakeProperty(
+    public PropertyEntity MakeProperty(
         Address? address = null,
-        decimal rentPrice = 1500m,
-        int bedrooms = 2,
-        bool isAvailable = true,
+        decimal? rentPrice = null,
+        int? bedrooms = null,
+        bool? isAvailable = null,
         Guid? id = null,
-        bool isActive = true)
+        bool? isActive = null)
     {
         return new PropertyEntity(
             address ?? MakeAddress(),
-            rentPrice,
-            bedrooms,
-            isAvailable)
-            .SetId(id ?? Guid.NewGuid())
-            .SetIsActive(isActive);
+            rentPrice ?? fixture.Create<decimal>(),
+            bedrooms ?? fixture.Create<int>(),
+            isAvailable ?? fixture.Create<bool>())
+            .SetId(id ?? fixture.Create<Guid>())
+            .SetIsActive(isActive ?? fixture.Create<bool>());
     }
 
-    public static Address MakeAddress(
-        string street = "Main Street",
-        string number = "100",
-        string complement = "Complement",
-        string neighborhood = "Downtown",
-        string city = "São Paulo",
-        string state = "SP",
-        string zipCode = "01001000")
+    public Address MakeAddress(
+        string? street = null,
+        string? number = null,
+        string? complement = null,
+        string? neighborhood = null,
+        string? city = null,
+        string? state = null,
+        string? zipCode = null)
     {
-        return new Address(street, number, complement, neighborhood, city, state, zipCode);
+        return new Address(
+            street ?? fixture.Create<string>(),
+            number ?? fixture.Create<string>(),
+            complement ?? fixture.Create<string>(),
+            neighborhood ?? fixture.Create<string>(),
+            city ?? fixture.Create<string>(),
+            state ?? fixture.Create<string>(),
+            zipCode ?? fixture.Create<string>());
     }
 
-    public static OperatorEntity MakeOperator(
-        string name = "Operator Alpha",
-        OperatorRole role = OperatorRole.Broker,
+    public OperatorEntity MakeOperator(
+        string? name = null,
+        OperatorRole? role = null,
         TeamEntity? team = null,
         Guid? teamId = null,
         Guid? id = null,
-        bool isActive = true)
+        bool? isActive = null)
     {
-        return new OperatorEntity(name, role, team ?? MakeTeam(id: teamId))
-            .SetId(id ?? Guid.NewGuid())
-            .SetIsActive(isActive);
+        return new OperatorEntity(
+            name ?? fixture.Create<string>(),
+            role ?? fixture.Create<OperatorRole>(),
+            team ?? MakeTeam(id: teamId))
+            .SetId(id ?? fixture.Create<Guid>())
+            .SetIsActive(isActive ?? fixture.Create<bool>());
     }
 
-    public static RentalApplicationEntity MakeRentalApplication(
-        int installments = 12,
-        decimal financedAmount = 50000m,
-        decimal totalAmount = 60000m,
+    public RentalApplicationEntity MakeRentalApplication(
+        int? installments = null,
+        decimal? financedAmount = null,
+        decimal? totalAmount = null,
         DateTime? contractDate = null,
-        string proposalNumber = "PRO-TEST01",
+        string? proposalNumber = null,
         ApplicantEntity? applicant = null,
         PropertyEntity? property = null,
         OperatorEntity? @operator = null,
         Guid? id = null,
-        bool isActive = true,
-        RentalStatus status = RentalStatus.Draft)
+        bool? isActive = null,
+        RentalStatus? status = null)
     {
         return new RentalApplicationEntity(
-            installments,
-            financedAmount,
-            totalAmount,
-            contractDate ?? DateTime.UtcNow,
-            proposalNumber,
+            installments ?? fixture.Create<int>(),
+            financedAmount ?? fixture.Create<decimal>(),
+            totalAmount ?? fixture.Create<decimal>(),
+            contractDate ?? fixture.Create<DateTime>(),
+            proposalNumber ?? fixture.Create<string>(),
             applicant ?? MakeApplicant(),
             property ?? MakeProperty(),
             @operator ?? MakeOperator())
-            .SetId(id ?? Guid.NewGuid())
-            .SetIsActive(isActive)
-            .SetStatus(status);
+            .SetId(id ?? fixture.Create<Guid>())
+            .SetIsActive(isActive ?? fixture.Create<bool>())
+            .SetStatus(status ?? fixture.Create<RentalStatus>());
+    }
+
+    public UserEntity MakeUser(
+        string? email = null,
+        string? passwordHash = null,
+        bool? mustChangePassword = null,
+        OperatorEntity? @operator = null,
+        Guid? id = null,
+        bool? isActive = null)
+    {
+        return new UserEntity(
+            email ?? fixture.Create<MailAddress>().Address,
+            passwordHash ?? fixture.Create<string>(),
+            mustChangePassword ?? fixture.Create<bool>(),
+            @operator ?? MakeOperator(isActive: true))
+            .SetId(id ?? fixture.Create<Guid>())
+            .SetIsActive(isActive ?? fixture.Create<bool>());
+    }
+
+    public UserTokenEntity MakeUserToken(
+        UserEntity? user = null,
+        string? refreshToken = null,
+        DateTime? expiresAt = null,
+        DateTime? createdAt = null,
+        DateTime? revokedAt = null,
+        Guid? id = null)
+    {
+        return new UserTokenEntity(
+            user ?? MakeUser(),
+            refreshToken ?? fixture.Create<string>(),
+            expiresAt ?? fixture.Create<DateTime>(),
+            createdAt ?? fixture.Create<DateTime>(),
+            revokedAt)
+            .SetId(id ?? fixture.Create<Guid>());
+    }
+
+    private static string GenerateCpf()
+    {
+        return "52998224725";
     }
 }

@@ -3,6 +3,7 @@
 public sealed class DeletePropertyCommandHandlerTests
 {
     private readonly Fixture _fixture = new();
+    private readonly TestsFixtures _testsFixtures = new(new Fixture());
     private readonly Mock<IPropertyRepository> _repositoryMock = new();
     private readonly DeletePropertyCommandHandler _handler;
 
@@ -19,7 +20,7 @@ public sealed class DeletePropertyCommandHandlerTests
             .With(c => c.Id, propertyId)
             .Create();
 
-        var property = TestsFixtures.MakeProperty(id: propertyId);
+        var property = _testsFixtures.MakeProperty(id: propertyId);
 
         _repositoryMock
             .Setup(r => r.GetByIdAsync(propertyId, It.IsAny<CancellationToken>()))

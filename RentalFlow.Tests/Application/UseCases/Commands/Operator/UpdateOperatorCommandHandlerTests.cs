@@ -3,6 +3,7 @@
 public sealed class UpdateOperatorCommandHandlerTests
 {
     private readonly Fixture _fixture = new();
+    private readonly TestsFixtures _testsFixtures = new(new Fixture());
     private readonly Mock<IOperatorRepository> _repositoryMock = new();
     private readonly UpdateOperatorCommandHandler _handler;
 
@@ -27,7 +28,7 @@ public sealed class UpdateOperatorCommandHandlerTests
             .With(c => c.Request, request)
             .Create();
 
-        var existingOperator = TestsFixtures.MakeOperator(
+        var existingOperator = _testsFixtures.MakeOperator(
             id: operatorId,
             name: "Old Name",
             role: OperatorRole.Broker);

@@ -3,6 +3,7 @@
 public sealed class UpdateApplicantCommandHandlerTests
 {
     private readonly Fixture _fixture = new();
+    private readonly TestsFixtures _testsFixtures = new(new Fixture());
     private readonly Mock<IApplicantRepository> _repositoryMock = new();
     private readonly UpdateApplicantCommandHandler _handler;
 
@@ -29,7 +30,7 @@ public sealed class UpdateApplicantCommandHandlerTests
             .With(c => c.Request, request)
             .Create();
 
-        var existingApplicant = TestsFixtures.MakeApplicant(
+        var existingApplicant = _testsFixtures.MakeApplicant(
             id: applicantId,
             fullName: "Old Name",
             email: "old@test.com",

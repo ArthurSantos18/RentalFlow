@@ -3,6 +3,7 @@
 public sealed class GetApplicantsQueryHandlerTests
 {
     private readonly Fixture _fixture = new();
+    private readonly TestsFixtures _testsFixtures = new(new Fixture());
     private readonly Mock<IApplicantRepository> _repositoryMock = new();
     private readonly GetApplicantsQueryHandler _handler;
 
@@ -21,8 +22,8 @@ public sealed class GetApplicantsQueryHandlerTests
 
         var applicants = new List<ApplicantEntity>
         {
-            TestsFixtures.MakeApplicant(fullName: "John Doe"),
-            TestsFixtures.MakeApplicant(fullName: "Jane Doe", cpf: "11122233344", email: "jane@test.com")
+            _testsFixtures.MakeApplicant(fullName: "John Doe"),
+            _testsFixtures.MakeApplicant(fullName: "Jane Doe", cpf: "11122233344", email: "jane@test.com")
         };
 
         var pagedResult = new PagedResult<ApplicantEntity>(

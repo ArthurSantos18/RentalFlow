@@ -3,6 +3,7 @@
 public sealed class GetPropertiesQueryHandlerTests
 {
     private readonly Fixture _fixture = new();
+    private readonly TestsFixtures _testsFixtures = new(new Fixture());
     private readonly Mock<IPropertyRepository> _repositoryMock = new();
     private readonly GetPropertiesQueryHandler _handler;
 
@@ -21,8 +22,8 @@ public sealed class GetPropertiesQueryHandlerTests
 
         var properties = new List<PropertyEntity>
         {
-            TestsFixtures.MakeProperty(rentPrice: 1500m),
-            TestsFixtures.MakeProperty(rentPrice: 3000m, bedrooms: 4)
+            _testsFixtures.MakeProperty(rentPrice: 1500m),
+            _testsFixtures.MakeProperty(rentPrice: 3000m, bedrooms: 4)
         };
 
         var pagedResult = new PagedResult<PropertyEntity>(

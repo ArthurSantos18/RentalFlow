@@ -3,6 +3,7 @@
 public sealed class UpdatePropertyCommandHandlerTests
 {
     private readonly Fixture _fixture = new();
+    private readonly TestsFixtures _testsFixtures = new(new Fixture());
     private readonly Mock<IPropertyRepository> _repositoryMock = new();
     private readonly UpdatePropertyCommandHandler _handler;
 
@@ -15,7 +16,7 @@ public sealed class UpdatePropertyCommandHandlerTests
     public async Task HandleAsync_ShouldUpdateProperty_WhenExists()
     {
         var propertyId = _fixture.Create<Guid>();
-        var newAddress = TestsFixtures.MakeAddress(street: "New Street");
+        var newAddress = _testsFixtures.MakeAddress(street: "New Street");
 
         var request = _fixture.Build<UpdatePropertyRequest>()
             .With(r => r.Address, newAddress)
@@ -30,7 +31,7 @@ public sealed class UpdatePropertyCommandHandlerTests
             .With(c => c.Request, request)
             .Create();
 
-        var existingProperty = TestsFixtures.MakeProperty(id: propertyId, rentPrice: 1000m, bedrooms: 2);
+        var existingProperty = _testsFixtures.MakeProperty(id: propertyId, rentPrice: 1000m, bedrooms: 2);
 
         _repositoryMock
             .Setup(r => r.GetByIdAsync(propertyId, It.IsAny<CancellationToken>()))

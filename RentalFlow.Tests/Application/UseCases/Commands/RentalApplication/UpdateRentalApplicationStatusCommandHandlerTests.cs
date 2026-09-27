@@ -3,6 +3,7 @@ namespace RentalFlow.Tests.Application.UseCases.Commands.RentalApplication;
 public sealed class UpdateRentalApplicationStatusCommandHandlerTests
 {
     private readonly Fixture _fixture = new();
+    private readonly TestsFixtures _testsFixtures = new(new Fixture());
     private readonly Mock<IRentalApplicationRepository> _rentalApplicationRepositoryMock = new();
     private readonly Mock<ICurrentUserService> _currentUserServiceMock = new();
     private readonly UpdateRentalApplicationStatusCommandHandler _handler;
@@ -17,14 +18,14 @@ public sealed class UpdateRentalApplicationStatusCommandHandlerTests
     [Fact]
     public async Task HandleAsync_ShouldUpdateStatus_WhenUserIsAdministrator()
     {
-        var id = _fixture.Create<Guid>();
+        var id = Guid.NewGuid();
         var request = new UpdateRentalApplicationStatusRequest
         {
             RentalStatus = RentalStatus.Approved
         };
 
         var command = new UpdateRentalApplicationStatusCommand(id, request);
-        var existing = TestsFixtures.MakeRentalApplication(id: id, status: RentalStatus.Pending);
+        var existing = _testsFixtures.MakeRentalApplication(id: id, status: RentalStatus.Pending);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
@@ -52,7 +53,7 @@ public sealed class UpdateRentalApplicationStatusCommandHandlerTests
     [Fact]
     public async Task HandleAsync_ShouldUpdateStatus_WhenManagerBelongsToSameTeam()
     {
-        var id = _fixture.Create<Guid>();
+        var id = Guid.NewGuid();
         var request = new UpdateRentalApplicationStatusRequest
         {
             RentalStatus = RentalStatus.Approved
@@ -61,8 +62,8 @@ public sealed class UpdateRentalApplicationStatusCommandHandlerTests
         var command = new UpdateRentalApplicationStatusCommand(id, request);
 
         var teamId = Guid.NewGuid();
-        var @operator = TestsFixtures.MakeOperator(teamId: teamId);
-        var existing = TestsFixtures.MakeRentalApplication(id: id, @operator: @operator, status: RentalStatus.Pending);
+        var @operator = _testsFixtures.MakeOperator(teamId: teamId);
+        var existing = _testsFixtures.MakeRentalApplication(id: id, @operator: @operator, status: RentalStatus.Pending);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
@@ -90,7 +91,7 @@ public sealed class UpdateRentalApplicationStatusCommandHandlerTests
     [Fact]
     public async Task HandleAsync_ShouldReturnNotFound_WhenDoesNotExist()
     {
-        var id = _fixture.Create<Guid>();
+        var id = Guid.NewGuid();
         var request = _fixture.Create<UpdateRentalApplicationStatusRequest>();
         var command = new UpdateRentalApplicationStatusCommand(id, request);
 
@@ -120,10 +121,10 @@ public sealed class UpdateRentalApplicationStatusCommandHandlerTests
     [Fact]
     public async Task HandleAsync_ShouldReturnForbidden_WhenUserRoleIsInvalid()
     {
-        var id = _fixture.Create<Guid>();
+        var id = Guid.NewGuid();
         var request = _fixture.Create<UpdateRentalApplicationStatusRequest>();
         var command = new UpdateRentalApplicationStatusCommand(id, request);
-        var existing = TestsFixtures.MakeRentalApplication(id: id);
+        var existing = _testsFixtures.MakeRentalApplication(id: id);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
@@ -151,12 +152,12 @@ public sealed class UpdateRentalApplicationStatusCommandHandlerTests
     [Fact]
     public async Task HandleAsync_ShouldReturnForbidden_WhenUserIsBroker()
     {
-        var id = _fixture.Create<Guid>();
+        var id = Guid.NewGuid();
         var request = _fixture.Create<UpdateRentalApplicationStatusRequest>();
         var command = new UpdateRentalApplicationStatusCommand(id, request);
 
-        var @operator = TestsFixtures.MakeOperator();
-        var existing = TestsFixtures.MakeRentalApplication(id: id, @operator: @operator);
+        var @operator = _testsFixtures.MakeOperator();
+        var existing = _testsFixtures.MakeRentalApplication(id: id, @operator: @operator);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
@@ -184,14 +185,14 @@ public sealed class UpdateRentalApplicationStatusCommandHandlerTests
     [Fact]
     public async Task HandleAsync_ShouldReturnForbidden_WhenManagerBelongsToAnotherTeam()
     {
-        var id = _fixture.Create<Guid>();
+        var id = Guid.NewGuid();
         var request = _fixture.Create<UpdateRentalApplicationStatusRequest>();
         var command = new UpdateRentalApplicationStatusCommand(id, request);
 
         var teamId = Guid.NewGuid();
         var otherTeamId = Guid.NewGuid();
-        var @operator = TestsFixtures.MakeOperator(teamId: otherTeamId);
-        var existing = TestsFixtures.MakeRentalApplication(id: id, @operator: @operator);
+        var @operator = _testsFixtures.MakeOperator(teamId: otherTeamId);
+        var existing = _testsFixtures.MakeRentalApplication(id: id, @operator: @operator);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
@@ -222,14 +223,14 @@ public sealed class UpdateRentalApplicationStatusCommandHandlerTests
     [InlineData(RentalStatus.Pending)]
     public async Task HandleAsync_ShouldReturnFailure_WhenTransitionFromApprovedIsInvalid(RentalStatus targetStatus)
     {
-        var id = _fixture.Create<Guid>();
+        var id = Guid.NewGuid();
         var request = new UpdateRentalApplicationStatusRequest
         {
             RentalStatus = targetStatus
         };
 
         var command = new UpdateRentalApplicationStatusCommand(id, request);
-        var existing = TestsFixtures.MakeRentalApplication(id: id, status: RentalStatus.Approved);
+        var existing = _testsFixtures.MakeRentalApplication(id: id, status: RentalStatus.Approved);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
@@ -259,14 +260,14 @@ public sealed class UpdateRentalApplicationStatusCommandHandlerTests
     [InlineData(RentalStatus.Pending)]
     public async Task HandleAsync_ShouldReturnFailure_WhenTransitionFromRejectedIsInvalid(RentalStatus targetStatus)
     {
-        var id = _fixture.Create<Guid>();
+        var id = Guid.NewGuid();
         var request = new UpdateRentalApplicationStatusRequest
         {
             RentalStatus = targetStatus
         };
 
         var command = new UpdateRentalApplicationStatusCommand(id, request);
-        var existing = TestsFixtures.MakeRentalApplication(id: id, status: RentalStatus.Rejected);
+        var existing = _testsFixtures.MakeRentalApplication(id: id, status: RentalStatus.Rejected);
 
         _currentUserServiceMock
             .Setup(s => s.Role)

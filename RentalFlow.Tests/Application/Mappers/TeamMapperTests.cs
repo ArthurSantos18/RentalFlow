@@ -3,21 +3,19 @@ namespace RentalFlow.Tests.Application.Mappers;
 public sealed class TeamMapperTests
 {
     private readonly Fixture _fixture = new();
+    private readonly TestsFixtures _testsFixtures = new(new Fixture());
 
     [Fact]
     public void ToEntity_ShouldMapAllFieldsCorrectly()
     {
-        var request = _fixture.Build<AddTeamRequest>()
-            .With(r => r.Name, "Team Alpha")
-            .With(r => r.Description, "Description Alpha")
-            .Create();
+        var request = _fixture.Create<AddTeamRequest>();
 
         var entity = request.ToEntity();
 
         entity.Should().NotBeNull();
         entity.Id.Should().NotBeEmpty();
-        entity.Name.Should().Be("Team Alpha");
-        entity.Description.Should().Be("Description Alpha");
+        entity.Name.Should().Be(request.Name);
+        entity.Description.Should().Be(request.Description);
         entity.IsActive.Should().BeTrue();
         entity.Operators.Should().BeEmpty();
     }
@@ -25,50 +23,45 @@ public sealed class TeamMapperTests
     [Fact]
     public void UpdateFrom_ShouldMapAllFieldsCorrectly_WhenRequestHasValues()
     {
-        var entity = TestsFixtures.MakeTeam(name: "Old Name", description: "Old Description");
-
-        var request = _fixture.Build<UpdateTeamRequest>()
-            .With(r => r.Name, "Updated Name")
-            .With(r => r.Description, "Updated Description")
-            .With(r => r.IsActive, false)
-            .Create();
+        var entity = _testsFixtures.MakeTeam();
+        var request = _fixture.Create<UpdateTeamRequest>();
 
         entity.UpdateFrom(request);
 
-        entity.Name.Should().Be("Updated Name");
-        entity.Description.Should().Be("Updated Description");
-        entity.IsActive.Should().BeFalse();
+        entity.Name.Should().Be(request.Name);
+        entity.Description.Should().Be(request.Description);
+        entity.IsActive.Should().Be(request.IsActive!.Value);
     }
 
     [Fact]
     public void UpdateFrom_ShouldKeepExistingValues_WhenRequestFieldsAreNull()
     {
-        var entity = TestsFixtures.MakeTeam(name: "Original Name", description: "Original Description");
+        var entity = _testsFixtures.MakeTeam();
 
         var request = _fixture.Build<UpdateTeamRequest>()
-            .With(r => r.Name, (string?)null)
-            .With(r => r.Description, (string?)null)
-            .With(r => r.IsActive, (bool?)null)
+            .Without(r => r.Name)
+            .Without(r => r.Description)
+            .Without(r => r.IsActive)
             .Create();
 
         entity.UpdateFrom(request);
 
-        entity.Name.Should().Be("Original Name");
-        entity.Description.Should().Be("Original Description");
-        entity.IsActive.Should().BeTrue();
+        entity.Name.Should().Be(entity.Name);
+        entity.Description.Should().Be(entity.Description);
+        entity.IsActive.Should().Be(entity.IsActive);
     }
 
     [Fact]
     public void ToResponse_ShouldMapEntityToResponse()
     {
-        var entity = TestsFixtures.MakeTeam(name: "Team Name", description: "Team Description");
+        var entity = _testsFixtures.MakeTeam();
 
         var response = entity.ToResponse();
 
         response.Should().NotBeNull();
         response.Id.Should().Be(entity.Id);
-        response.Name.Should().Be("Team Name");
-        response.Description.Should().Be("Team Description");
+        response.Name.Should().Be(entity.Name);
+        response.Description.Should().Be(entity.Description);
     }
 
     [Fact]
@@ -76,8 +69,8 @@ public sealed class TeamMapperTests
     {
         var entities = new List<TeamEntity>
         {
-            TestsFixtures.MakeTeam(name: "Team A"),
-            TestsFixtures.MakeTeam(name: "Team B")
+            _testsFixtures.MakeTeam(),
+            _testsFixtures.MakeTeam()
         };
 
         var pagedResult = new PagedResult<TeamEntity>(entities, totalResults: 10, page: 2, pageSize: 2);
@@ -85,10 +78,10 @@ public sealed class TeamMapperTests
         var response = pagedResult.ToResponse();
 
         response.Should().NotBeNull();
-        response.Page.Should().Be(2);
-        response.PageSize.Should().Be(2);
-        response.TotalResults.Should().Be(10);
-        response.Results.Should().HaveCount(2);
+        response.Page.Should().Be(pagedResult.Page);
+        response.PageSize.Should().Be(pagedResult.PageSize);
+        response.TotalResults.Should().Be(pagedResult.TotalResults);
+        response.Results.Should().HaveCount(pagedResult.Results.Count());
         response.Results.Should().BeEquivalentTo(entities.Select(e => e.ToResponse()));
     }
 }

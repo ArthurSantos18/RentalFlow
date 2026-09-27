@@ -3,6 +3,7 @@
 public sealed class AddApplicantCommandHandlerTests
 {
     private readonly Fixture _fixture = new();
+    private readonly TestsFixtures _testsFixtures = new(new Fixture());
     private readonly Mock<IApplicantRepository> _repositoryMock = new();
     private readonly AddApplicantCommandHandler _handler;
 
@@ -48,7 +49,7 @@ public sealed class AddApplicantCommandHandlerTests
             .With(c => c.Request, request)
             .Create();
 
-        var existingApplicant = TestsFixtures.MakeApplicant(cpf: request.Cpf);
+        var existingApplicant = _testsFixtures.MakeApplicant(cpf: request.Cpf);
 
         _repositoryMock
             .Setup(r => r.GetByCpfAsync(request.Cpf, It.IsAny<CancellationToken>()))

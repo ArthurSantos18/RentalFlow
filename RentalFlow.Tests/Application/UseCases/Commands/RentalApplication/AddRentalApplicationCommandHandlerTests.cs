@@ -3,6 +3,7 @@ namespace RentalFlow.Tests.Application.UseCases.Commands.RentalApplication;
 public sealed class AddRentalApplicationCommandHandlerTests
 {
     private readonly Fixture _fixture = new();
+    private readonly TestsFixtures _testsFixtures = new(new Fixture());
     private readonly Mock<IRentalApplicationRepository> _rentalRepoMock = new();
     private readonly Mock<IApplicantRepository> _applicantRepoMock = new();
     private readonly Mock<IPropertyRepository> _propertyRepoMock = new();
@@ -28,9 +29,9 @@ public sealed class AddRentalApplicationCommandHandlerTests
             .With(c => c.Request, request)
             .Create();
 
-        var applicant = TestsFixtures.MakeApplicant(id: request.ApplicantId, isActive: true);
-        var property = TestsFixtures.MakeProperty(id: request.PropertyId, isActive: true, isAvailable: true);
-        var @operator = TestsFixtures.MakeOperator(id: request.OperatorId, isActive: true);
+        var applicant = _testsFixtures.MakeApplicant(id: request.ApplicantId, isActive: true);
+        var property = _testsFixtures.MakeProperty(id: request.PropertyId, isActive: true, isAvailable: true);
+        var @operator = _testsFixtures.MakeOperator(id: request.OperatorId, isActive: true);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
@@ -83,9 +84,9 @@ public sealed class AddRentalApplicationCommandHandlerTests
             .With(c => c.Request, request)
             .Create();
 
-        var applicant = TestsFixtures.MakeApplicant(id: request.ApplicantId, isActive: true);
-        var property = TestsFixtures.MakeProperty(id: request.PropertyId, isActive: true, isAvailable: true);
-        var @operator = TestsFixtures.MakeOperator(id: currentOperatorId, isActive: true);
+        var applicant = _testsFixtures.MakeApplicant(id: request.ApplicantId, isActive: true);
+        var property = _testsFixtures.MakeProperty(id: request.PropertyId, isActive: true, isAvailable: true);
+        var @operator = _testsFixtures.MakeOperator(id: currentOperatorId, isActive: true);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
@@ -136,9 +137,9 @@ public sealed class AddRentalApplicationCommandHandlerTests
             .With(c => c.Request, request)
             .Create();
 
-        var applicant = TestsFixtures.MakeApplicant(id: request.ApplicantId, isActive: true);
-        var property = TestsFixtures.MakeProperty(id: request.PropertyId, isActive: true, isAvailable: true);
-        var @operator = TestsFixtures.MakeOperator(id: request.OperatorId, isActive: true, teamId: teamId);
+        var applicant = _testsFixtures.MakeApplicant(id: request.ApplicantId, isActive: true);
+        var property = _testsFixtures.MakeProperty(id: request.PropertyId, isActive: true, isAvailable: true);
+        var @operator = _testsFixtures.MakeOperator(id: request.OperatorId, isActive: true, teamId: teamId);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
@@ -189,9 +190,9 @@ public sealed class AddRentalApplicationCommandHandlerTests
             .With(c => c.Request, request)
             .Create();
 
-        var applicant = TestsFixtures.MakeApplicant(id: request.ApplicantId, isActive: true);
-        var property = TestsFixtures.MakeProperty(id: request.PropertyId, isActive: true, isAvailable: true);
-        var @operator = TestsFixtures.MakeOperator(id: currentOperatorId, isActive: true);
+        var applicant = _testsFixtures.MakeApplicant(id: request.ApplicantId, isActive: true);
+        var property = _testsFixtures.MakeProperty(id: request.PropertyId, isActive: true, isAvailable: true);
+        var @operator = _testsFixtures.MakeOperator(id: currentOperatorId, isActive: true);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
@@ -319,7 +320,7 @@ public sealed class AddRentalApplicationCommandHandlerTests
             .With(c => c.Request, request)
             .Create();
 
-        var @operator = TestsFixtures.MakeOperator(id: request.OperatorId, isActive: false);
+        var @operator = _testsFixtures.MakeOperator(id: request.OperatorId, isActive: false);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
@@ -364,7 +365,7 @@ public sealed class AddRentalApplicationCommandHandlerTests
             .With(c => c.Request, request)
             .Create();
 
-        var @operator = TestsFixtures.MakeOperator(id: request.OperatorId, isActive: true, teamId: otherTeamId);
+        var @operator = _testsFixtures.MakeOperator(id: request.OperatorId, isActive: true, teamId: otherTeamId);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
@@ -407,7 +408,7 @@ public sealed class AddRentalApplicationCommandHandlerTests
             .With(c => c.Request, request)
             .Create();
 
-        var @operator = TestsFixtures.MakeOperator(id: request.OperatorId, isActive: true);
+        var @operator = _testsFixtures.MakeOperator(id: request.OperatorId, isActive: true);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
@@ -454,8 +455,8 @@ public sealed class AddRentalApplicationCommandHandlerTests
             .With(c => c.Request, request)
             .Create();
 
-        var applicant = TestsFixtures.MakeApplicant(id: request.ApplicantId, isActive: false);
-        var @operator = TestsFixtures.MakeOperator(id: request.OperatorId, isActive: true);
+        var applicant = _testsFixtures.MakeApplicant(id: request.ApplicantId, isActive: false);
+        var @operator = _testsFixtures.MakeOperator(id: request.OperatorId, isActive: true);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
@@ -502,8 +503,8 @@ public sealed class AddRentalApplicationCommandHandlerTests
             .With(c => c.Request, request)
             .Create();
 
-        var applicant = TestsFixtures.MakeApplicant(id: request.ApplicantId, isActive: true);
-        var @operator = TestsFixtures.MakeOperator(id: request.OperatorId, isActive: true);
+        var applicant = _testsFixtures.MakeApplicant(id: request.ApplicantId, isActive: true);
+        var @operator = _testsFixtures.MakeOperator(id: request.OperatorId, isActive: true);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
@@ -554,9 +555,9 @@ public sealed class AddRentalApplicationCommandHandlerTests
             .With(c => c.Request, request)
             .Create();
 
-        var applicant = TestsFixtures.MakeApplicant(id: request.ApplicantId, isActive: true);
-        var property = TestsFixtures.MakeProperty(id: request.PropertyId, isActive: false, isAvailable: true);
-        var @operator = TestsFixtures.MakeOperator(id: request.OperatorId, isActive: true);
+        var applicant = _testsFixtures.MakeApplicant(id: request.ApplicantId, isActive: true);
+        var property = _testsFixtures.MakeProperty(id: request.PropertyId, isActive: false, isAvailable: true);
+        var @operator = _testsFixtures.MakeOperator(id: request.OperatorId, isActive: true);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
@@ -607,9 +608,9 @@ public sealed class AddRentalApplicationCommandHandlerTests
             .With(c => c.Request, request)
             .Create();
 
-        var applicant = TestsFixtures.MakeApplicant(id: request.ApplicantId, isActive: true);
-        var property = TestsFixtures.MakeProperty(id: request.PropertyId, isActive: true, isAvailable: false);
-        var @operator = TestsFixtures.MakeOperator(id: request.OperatorId, isActive: true);
+        var applicant = _testsFixtures.MakeApplicant(id: request.ApplicantId, isActive: true);
+        var property = _testsFixtures.MakeProperty(id: request.PropertyId, isActive: true, isAvailable: false);
+        var @operator = _testsFixtures.MakeOperator(id: request.OperatorId, isActive: true);
 
         _currentUserServiceMock
             .Setup(s => s.Role)

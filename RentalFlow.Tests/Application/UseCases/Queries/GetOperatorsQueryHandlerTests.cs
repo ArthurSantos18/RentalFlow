@@ -3,6 +3,7 @@
 public sealed class GetOperatorsQueryHandlerTests
 {
     private readonly Fixture _fixture = new();
+    private readonly TestsFixtures _testsFixtures = new(new Fixture());
     private readonly Mock<IOperatorRepository> _repositoryMock = new();
     private readonly GetOperatorsQueryHandler _handler;
 
@@ -21,8 +22,8 @@ public sealed class GetOperatorsQueryHandlerTests
 
         var operators = new List<OperatorEntity>
         {
-            TestsFixtures.MakeOperator(name: "Operator A"),
-            TestsFixtures.MakeOperator(name: "Operator B")
+            _testsFixtures.MakeOperator(name: "Operator A"),
+            _testsFixtures.MakeOperator(name: "Operator B")
         };
 
         var pagedResult = new PagedResult<OperatorEntity>(

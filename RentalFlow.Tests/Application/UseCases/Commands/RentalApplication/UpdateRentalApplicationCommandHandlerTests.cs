@@ -3,10 +3,11 @@ namespace RentalFlow.Tests.Application.UseCases.Commands.RentalApplication;
 public sealed class UpdateRentalApplicationCommandHandlerTests
 {
     private readonly Fixture _fixture = new();
+    private readonly TestsFixtures _testsFixtures = new(new Fixture());
     private readonly Mock<IRentalApplicationRepository> _rentalApplicationRepositoryMock = new();
     private readonly Mock<IApplicantRepository> _applicantRepositoryMock = new();
-    private readonly Mock<IPropertyRepository> _propertyRepositoryMock = new();
     private readonly Mock<IOperatorRepository> _operatorRepositoryMock = new();
+    private readonly Mock<IPropertyRepository> _propertyRepositoryMock = new();
     private readonly Mock<ICurrentUserService> _currentUserServiceMock = new();
     private readonly UpdateRentalApplicationCommandHandler _handler;
 
@@ -21,76 +22,20 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldUpdateRentalApplication_WhenExists()
+    public async Task HandleAsync_ShouldReturnRentalApplicationNotFound_WhenRentalApplicationDoesNotExist()
     {
         var id = _fixture.Create<Guid>();
-        var request = new UpdateRentalApplicationRequest
-        {
-            Installments = 24,
-            FinancedAmount = 50000,
-            TotalAmount = 60000,
-            ContractDate = DateTime.UtcNow,
-            ApplicantId = null,
-            OperatorId = null,
-            PropertyId = null
-        };
+
+        var request = _fixture.Build<UpdateRentalApplicationRequest>()
+            .Without(r => r.ApplicantId)
+            .Without(r => r.OperatorId)
+            .Without(r => r.PropertyId)
+            .Create();
 
         var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestsFixtures.MakeRentalApplication(id: id);
-
-        _currentUserServiceMock
-            .Setup(s => s.Role)
-            .Returns(nameof(OperatorRole.Administrator));
-
-        _currentUserServiceMock
-            .Setup(s => s.TeamId)
-            .Returns(Guid.NewGuid());
-
-        _currentUserServiceMock
-            .Setup(s => s.OperatorId)
-            .Returns(Guid.NewGuid());
 
         _rentalApplicationRepositoryMock
-            .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existing);
-
-        var result = await _handler.HandleAsync(command, CancellationToken.None);
-
-        result.IsSuccess.Should().BeTrue();
-        existing.Installments.Should().Be(24);
-        existing.FinancedAmount.Should().Be(50000);
-        existing.TotalAmount.Should().Be(60000);
-
-        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()), Times.Once);
-        _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-
-        _rentalApplicationRepositoryMock.VerifyNoOtherCalls();
-        _applicantRepositoryMock.VerifyNoOtherCalls();
-        _operatorRepositoryMock.VerifyNoOtherCalls();
-        _propertyRepositoryMock.VerifyNoOtherCalls();
-    }
-
-    [Fact]
-    public async Task HandleAsync_ShouldReturnNotFound_WhenDoesNotExist()
-    {
-        var id = _fixture.Create<Guid>();
-        var request = _fixture.Create<UpdateRentalApplicationRequest>();
-        var command = new UpdateRentalApplicationCommand(id, request);
-
-        _currentUserServiceMock
-            .Setup(s => s.Role)
-            .Returns(nameof(OperatorRole.Administrator));
-
-        _currentUserServiceMock
-            .Setup(s => s.TeamId)
-            .Returns(Guid.NewGuid());
-
-        _currentUserServiceMock
-            .Setup(s => s.OperatorId)
-            .Returns(Guid.NewGuid());
-
-        _rentalApplicationRepositoryMock
-            .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync((RentalApplicationEntity?)null);
 
         var result = await _handler.HandleAsync(command, CancellationToken.None);
@@ -98,64 +43,67 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be(RentalApplicationErrors.RentalApplicationNotFound);
 
-        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()), Times.Once);
+        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
         _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
 
         _rentalApplicationRepositoryMock.VerifyNoOtherCalls();
         _applicantRepositoryMock.VerifyNoOtherCalls();
         _operatorRepositoryMock.VerifyNoOtherCalls();
         _propertyRepositoryMock.VerifyNoOtherCalls();
+        _currentUserServiceMock.VerifyNoOtherCalls();
     }
 
     [Fact]
     public async Task HandleAsync_ShouldReturnForbidden_WhenUserRoleIsInvalid()
     {
-        var id = _fixture.Create<Guid>();
-        var request = _fixture.Create<UpdateRentalApplicationRequest>();
-        var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestsFixtures.MakeRentalApplication(id: id);
+        var rentalApplication = _testsFixtures.MakeRentalApplication(
+            status: RentalStatus.Draft);
+
+        var request = _fixture.Build<UpdateRentalApplicationRequest>()
+            .Without(r => r.ApplicantId)
+            .Without(r => r.OperatorId)
+            .Without(r => r.PropertyId)
+            .Create();
+
+        var command = new UpdateRentalApplicationCommand(rentalApplication.Id, request);
+        var role = _fixture.Create<string>();
+
+        _rentalApplicationRepositoryMock
+            .Setup(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(rentalApplication);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
-            .Returns("InvalidRole");
-
-        _currentUserServiceMock
-            .Setup(s => s.TeamId)
-            .Returns(Guid.NewGuid());
-
-        _currentUserServiceMock
-            .Setup(s => s.OperatorId)
-            .Returns(Guid.NewGuid());
-
-        _rentalApplicationRepositoryMock
-            .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existing);
+            .Returns(role);
 
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be(UserErrors.Forbidden);
 
-        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()), Times.Once);
+        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _applicantRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _operatorRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _propertyRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        _currentUserServiceMock.Verify(c => c.Role, Times.Once);
+        _currentUserServiceMock.Verify(c => c.TeamId, Times.Never);
+        _currentUserServiceMock.Verify(c => c.OperatorId, Times.Never);
 
         _rentalApplicationRepositoryMock.VerifyNoOtherCalls();
         _applicantRepositoryMock.VerifyNoOtherCalls();
         _operatorRepositoryMock.VerifyNoOtherCalls();
         _propertyRepositoryMock.VerifyNoOtherCalls();
+        _currentUserServiceMock.VerifyNoOtherCalls();
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldReturnForbidden_WhenManagerBelongsToAnotherTeam()
+    public async Task HandleAsync_ShouldReturnForbidden_WhenManagerIsFromAnotherTeam()
     {
-        var id = _fixture.Create<Guid>();
-        var request = _fixture.Create<UpdateRentalApplicationRequest>();
-        var command = new UpdateRentalApplicationCommand(id, request);
+        var rentalApplication = _testsFixtures.MakeRentalApplication(
+            status: RentalStatus.Draft);
 
-        var teamId = Guid.NewGuid();
-        var otherTeamId = Guid.NewGuid();
-        var @operator = TestsFixtures.MakeOperator(teamId: otherTeamId);
-        var existing = TestsFixtures.MakeRentalApplication(id: id, @operator: @operator);
+        var teamId = _fixture.Create<Guid>();
 
         _currentUserServiceMock
             .Setup(s => s.Role)
@@ -165,293 +113,291 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
             .Setup(s => s.TeamId)
             .Returns(teamId);
 
-        _currentUserServiceMock
-            .Setup(s => s.OperatorId)
-            .Returns(Guid.NewGuid());
+        var request = _fixture.Build<UpdateRentalApplicationRequest>()
+            .Without(r => r.ApplicantId)
+            .Without(r => r.OperatorId)
+            .Without(r => r.PropertyId)
+            .Create();
+
+        var command = new UpdateRentalApplicationCommand(rentalApplication.Id, request);
 
         _rentalApplicationRepositoryMock
-            .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existing);
+            .Setup(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(rentalApplication);
 
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be(UserErrors.Forbidden);
 
-        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()), Times.Once);
+        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _applicantRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _operatorRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _propertyRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        _currentUserServiceMock.Verify(c => c.Role, Times.Once);
+        _currentUserServiceMock.Verify(c => c.TeamId, Times.Once);
+        _currentUserServiceMock.Verify(c => c.OperatorId, Times.Never);
 
         _rentalApplicationRepositoryMock.VerifyNoOtherCalls();
         _applicantRepositoryMock.VerifyNoOtherCalls();
         _operatorRepositoryMock.VerifyNoOtherCalls();
         _propertyRepositoryMock.VerifyNoOtherCalls();
+        _currentUserServiceMock.VerifyNoOtherCalls();
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldReturnForbidden_WhenBrokerIsNotTheOwner()
+    public async Task HandleAsync_ShouldReturnForbidden_WhenBrokerDoesNotOwnRentalApplication()
     {
-        var id = _fixture.Create<Guid>();
-        var request = _fixture.Create<UpdateRentalApplicationRequest>();
-        var command = new UpdateRentalApplicationCommand(id, request);
+        var rentalApplication = _testsFixtures.MakeRentalApplication(
+            status: RentalStatus.Draft);
 
-        var @operator = TestsFixtures.MakeOperator();
-        var existing = TestsFixtures.MakeRentalApplication(id: id, @operator: @operator);
+        var operatorId = _fixture.Create<Guid>();
 
         _currentUserServiceMock
             .Setup(s => s.Role)
             .Returns(nameof(OperatorRole.Broker));
 
         _currentUserServiceMock
-            .Setup(s => s.TeamId)
-            .Returns(Guid.NewGuid());
-
-        _currentUserServiceMock
             .Setup(s => s.OperatorId)
-            .Returns(Guid.NewGuid());
+            .Returns(operatorId);
+
+        var request = _fixture.Build<UpdateRentalApplicationRequest>()
+            .Without(r => r.ApplicantId)
+            .Without(r => r.OperatorId)
+            .Without(r => r.PropertyId)
+            .Create();
+
+        var command = new UpdateRentalApplicationCommand(rentalApplication.Id, request);
 
         _rentalApplicationRepositoryMock
-            .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existing);
+            .Setup(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(rentalApplication);
 
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be(UserErrors.Forbidden);
 
-        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()), Times.Once);
+        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _applicantRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _operatorRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _propertyRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        _currentUserServiceMock.Verify(c => c.Role, Times.Once);
+        _currentUserServiceMock.Verify(c => c.TeamId, Times.Never);
+        _currentUserServiceMock.Verify(c => c.OperatorId, Times.Once);
 
         _rentalApplicationRepositoryMock.VerifyNoOtherCalls();
         _applicantRepositoryMock.VerifyNoOtherCalls();
         _operatorRepositoryMock.VerifyNoOtherCalls();
         _propertyRepositoryMock.VerifyNoOtherCalls();
+        _currentUserServiceMock.VerifyNoOtherCalls();
     }
 
-    [Theory]
-    [InlineData(RentalStatus.Approved)]
-    [InlineData(RentalStatus.Rejected)]
-    public async Task HandleAsync_ShouldReturnCannotBeEdited_WhenStatusIsInvalid(RentalStatus status)
+    [Fact]
+    public async Task HandleAsync_ShouldReturnRentalApplicationCannotBeEdited_WhenAdministratorTriesToEditApprovedApplication()
     {
-        var id = _fixture.Create<Guid>();
-        var request = new UpdateRentalApplicationRequest
-        {
-            ApplicantId = null,
-            OperatorId = null,
-            PropertyId = null
-        };
+        var rentalApplication = _testsFixtures.MakeRentalApplication(
+            status: RentalStatus.Approved);
 
-        var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestsFixtures.MakeRentalApplication(id: id, status: status);
+        var request = _fixture.Build<UpdateRentalApplicationRequest>()
+            .Without(r => r.ApplicantId)
+            .Without(r => r.OperatorId)
+            .Without(r => r.PropertyId)
+            .Create();
+
+        var command = new UpdateRentalApplicationCommand(rentalApplication.Id, request);
+
+        _rentalApplicationRepositoryMock
+            .Setup(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(rentalApplication);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
             .Returns(nameof(OperatorRole.Administrator));
 
-        _currentUserServiceMock
-            .Setup(s => s.TeamId)
-            .Returns(Guid.NewGuid());
+        var result = await _handler.HandleAsync(command, CancellationToken.None);
 
-        _currentUserServiceMock
-            .Setup(s => s.OperatorId)
-            .Returns(Guid.NewGuid());
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().Be(RentalApplicationErrors.RentalApplicationCannotBeEdited);
+
+        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _applicantRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _operatorRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _propertyRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        _currentUserServiceMock.Verify(c => c.Role, Times.Exactly(2));
+        _currentUserServiceMock.Verify(c => c.TeamId, Times.Never);
+        _currentUserServiceMock.Verify(c => c.OperatorId, Times.Never);
+
+        _rentalApplicationRepositoryMock.VerifyNoOtherCalls();
+        _applicantRepositoryMock.VerifyNoOtherCalls();
+        _operatorRepositoryMock.VerifyNoOtherCalls();
+        _propertyRepositoryMock.VerifyNoOtherCalls();
+        _currentUserServiceMock.VerifyNoOtherCalls();
+    }
+
+    [Fact]
+    public async Task HandleAsync_ShouldReturnRentalApplicationCannotBeEdited_WhenAdministratorTriesToEditRejectedApplication()
+    {
+        var rentalApplication = _testsFixtures.MakeRentalApplication(
+            status: RentalStatus.Rejected);
+
+        var request = _fixture.Build<UpdateRentalApplicationRequest>()
+            .Without(r => r.ApplicantId)
+            .Without(r => r.OperatorId)
+            .Without(r => r.PropertyId)
+            .Create();
+
+        var command = new UpdateRentalApplicationCommand(rentalApplication.Id, request);
 
         _rentalApplicationRepositoryMock
-            .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existing);
+            .Setup(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(rentalApplication);
+
+        _currentUserServiceMock
+            .Setup(s => s.Role)
+            .Returns(nameof(OperatorRole.Administrator));
 
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be(RentalApplicationErrors.RentalApplicationCannotBeEdited);
 
-        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()), Times.Once);
+        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _applicantRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _operatorRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _propertyRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        _currentUserServiceMock.Verify(c => c.Role, Times.Exactly(2));
+        _currentUserServiceMock.Verify(c => c.TeamId, Times.Never);
+        _currentUserServiceMock.Verify(c => c.OperatorId, Times.Never);
 
         _rentalApplicationRepositoryMock.VerifyNoOtherCalls();
         _applicantRepositoryMock.VerifyNoOtherCalls();
         _operatorRepositoryMock.VerifyNoOtherCalls();
         _propertyRepositoryMock.VerifyNoOtherCalls();
+        _currentUserServiceMock.VerifyNoOtherCalls();
     }
 
-    [Theory]
-    [InlineData(RentalStatus.Approved)]
-    [InlineData(RentalStatus.Rejected)]
-    public async Task HandleAsync_ShouldReturnCannotBeEdited_WhenBrokerEditsNonDraftStatus(RentalStatus status)
+    [Fact]
+    public async Task HandleAsync_ShouldReturnRentalApplicationCannotBeEdited_WhenBrokerTriesToEditApprovedApplication()
     {
-        var id = _fixture.Create<Guid>();
-        var request = new UpdateRentalApplicationRequest
-        {
-            ApplicantId = null,
-            OperatorId = null,
-            PropertyId = null
-        };
-
-        var command = new UpdateRentalApplicationCommand(id, request);
-
-        var @operator = TestsFixtures.MakeOperator();
-        var existing = TestsFixtures.MakeRentalApplication(id: id, @operator: @operator, status: status);
+        var rentalApplication = _testsFixtures.MakeRentalApplication(
+            status: RentalStatus.Approved);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
             .Returns(nameof(OperatorRole.Broker));
 
         _currentUserServiceMock
-            .Setup(s => s.TeamId)
-            .Returns(Guid.NewGuid());
-
-        _currentUserServiceMock
             .Setup(s => s.OperatorId)
-            .Returns(@operator.Id);
+            .Returns(rentalApplication.OperatorId);
+
+        var request = _fixture.Build<UpdateRentalApplicationRequest>()
+            .Without(r => r.ApplicantId)
+            .Without(r => r.OperatorId)
+            .Without(r => r.PropertyId)
+            .Create();
+
+        var command = new UpdateRentalApplicationCommand(rentalApplication.Id, request);
 
         _rentalApplicationRepositoryMock
-            .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existing);
+            .Setup(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(rentalApplication);
 
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be(RentalApplicationErrors.RentalApplicationCannotBeEdited);
 
-        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()), Times.Once);
+        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _applicantRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _operatorRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _propertyRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        _currentUserServiceMock.Verify(c => c.Role, Times.Exactly(2));
+        _currentUserServiceMock.Verify(c => c.TeamId, Times.Never);
+        _currentUserServiceMock.Verify(c => c.OperatorId, Times.Once);
 
         _rentalApplicationRepositoryMock.VerifyNoOtherCalls();
         _applicantRepositoryMock.VerifyNoOtherCalls();
         _operatorRepositoryMock.VerifyNoOtherCalls();
         _propertyRepositoryMock.VerifyNoOtherCalls();
+        _currentUserServiceMock.VerifyNoOtherCalls();
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldUpdate_WhenBrokerEditsOwnDraftApplication()
+    public async Task HandleAsync_ShouldReturnRentalApplicationCannotBeEdited_WhenBrokerTriesToEditRejectedApplication()
     {
-        var id = _fixture.Create<Guid>();
-        var request = new UpdateRentalApplicationRequest
-        {
-            Installments = 24,
-            FinancedAmount = 50000,
-            TotalAmount = 60000,
-            ContractDate = DateTime.UtcNow,
-            ApplicantId = null,
-            OperatorId = null,
-            PropertyId = null
-        };
-
-        var command = new UpdateRentalApplicationCommand(id, request);
-
-        var @operator = TestsFixtures.MakeOperator();
-        var existing = TestsFixtures.MakeRentalApplication(id: id, @operator: @operator);
+        var rentalApplication = _testsFixtures.MakeRentalApplication(
+            status: RentalStatus.Rejected);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
             .Returns(nameof(OperatorRole.Broker));
 
         _currentUserServiceMock
-            .Setup(s => s.TeamId)
-            .Returns(Guid.NewGuid());
-
-        _currentUserServiceMock
             .Setup(s => s.OperatorId)
-            .Returns(@operator.Id);
+            .Returns(rentalApplication.OperatorId);
+
+        var request = _fixture.Build<UpdateRentalApplicationRequest>()
+            .Without(r => r.ApplicantId)
+            .Without(r => r.OperatorId)
+            .Without(r => r.PropertyId)
+            .Create();
+
+        var command = new UpdateRentalApplicationCommand(rentalApplication.Id, request);
 
         _rentalApplicationRepositoryMock
-            .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existing);
+            .Setup(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(rentalApplication);
 
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
-        result.IsSuccess.Should().BeTrue();
-        existing.Installments.Should().Be(24);
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().Be(RentalApplicationErrors.RentalApplicationCannotBeEdited);
 
-        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()), Times.Once);
-        _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _applicantRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _operatorRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _propertyRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        _currentUserServiceMock.Verify(c => c.Role, Times.Exactly(2));
+        _currentUserServiceMock.Verify(c => c.TeamId, Times.Never);
+        _currentUserServiceMock.Verify(c => c.OperatorId, Times.Once);
 
         _rentalApplicationRepositoryMock.VerifyNoOtherCalls();
         _applicantRepositoryMock.VerifyNoOtherCalls();
         _operatorRepositoryMock.VerifyNoOtherCalls();
         _propertyRepositoryMock.VerifyNoOtherCalls();
-    }
-
-    [Fact]
-    public async Task HandleAsync_ShouldUpdate_WhenManagerBelongsToSameTeam()
-    {
-        var id = _fixture.Create<Guid>();
-        var request = new UpdateRentalApplicationRequest
-        {
-            Installments = 24,
-            FinancedAmount = 50000,
-            TotalAmount = 60000,
-            ContractDate = DateTime.UtcNow,
-            ApplicantId = null,
-            OperatorId = null,
-            PropertyId = null
-        };
-
-        var command = new UpdateRentalApplicationCommand(id, request);
-
-        var teamId = Guid.NewGuid();
-        var @operator = TestsFixtures.MakeOperator(teamId: teamId);
-        var existing = TestsFixtures.MakeRentalApplication(id: id, @operator: @operator);
-
-        _currentUserServiceMock
-            .Setup(s => s.Role)
-            .Returns(nameof(OperatorRole.Manager));
-
-        _currentUserServiceMock
-            .Setup(s => s.TeamId)
-            .Returns(teamId);
-
-        _currentUserServiceMock
-            .Setup(s => s.OperatorId)
-            .Returns(Guid.NewGuid());
-
-        _rentalApplicationRepositoryMock
-            .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existing);
-
-        var result = await _handler.HandleAsync(command, CancellationToken.None);
-
-        result.IsSuccess.Should().BeTrue();
-        existing.Installments.Should().Be(24);
-
-        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()), Times.Once);
-        _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-
-        _rentalApplicationRepositoryMock.VerifyNoOtherCalls();
-        _applicantRepositoryMock.VerifyNoOtherCalls();
-        _operatorRepositoryMock.VerifyNoOtherCalls();
-        _propertyRepositoryMock.VerifyNoOtherCalls();
+        _currentUserServiceMock.VerifyNoOtherCalls();
     }
 
     [Fact]
     public async Task HandleAsync_ShouldReturnApplicantNotFound_WhenApplicantDoesNotExist()
     {
-        var id = _fixture.Create<Guid>();
-        var applicantId = _fixture.Create<Guid>();
-        var request = new UpdateRentalApplicationRequest
-        {
-            ApplicantId = applicantId,
-            OperatorId = null,
-            PropertyId = null
-        };
+        var rentalApplication = _testsFixtures.MakeRentalApplication(
+            status: RentalStatus.Draft);
 
-        var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestsFixtures.MakeRentalApplication(id: id);
+        var applicantId = _fixture.Create<Guid>();
+
+        var request = _fixture.Build<UpdateRentalApplicationRequest>()
+            .With(r => r.ApplicantId, applicantId)
+            .Without(r => r.OperatorId)
+            .Without(r => r.PropertyId)
+            .Create();
+
+        var command = new UpdateRentalApplicationCommand(rentalApplication.Id, request);
+
+        _rentalApplicationRepositoryMock
+            .Setup(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(rentalApplication);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
             .Returns(nameof(OperatorRole.Administrator));
-
-        _currentUserServiceMock
-            .Setup(s => s.TeamId)
-            .Returns(Guid.NewGuid());
-
-        _currentUserServiceMock
-            .Setup(s => s.OperatorId)
-            .Returns(Guid.NewGuid());
-
-        _rentalApplicationRepositoryMock
-            .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existing);
 
         _applicantRepositoryMock
             .Setup(r => r.GetByIdAsync(applicantId, It.IsAny<CancellationToken>()))
@@ -462,46 +408,46 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be(ApplicantErrors.ApplicantNotFound);
 
-        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()), Times.Once);
+        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
         _applicantRepositoryMock.Verify(r => r.GetByIdAsync(applicantId, It.IsAny<CancellationToken>()), Times.Once);
+        _operatorRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _propertyRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        _currentUserServiceMock.Verify(c => c.Role, Times.Exactly(2));
+        _currentUserServiceMock.Verify(c => c.TeamId, Times.Never);
+        _currentUserServiceMock.Verify(c => c.OperatorId, Times.Never);
 
         _rentalApplicationRepositoryMock.VerifyNoOtherCalls();
         _applicantRepositoryMock.VerifyNoOtherCalls();
         _operatorRepositoryMock.VerifyNoOtherCalls();
         _propertyRepositoryMock.VerifyNoOtherCalls();
+        _currentUserServiceMock.VerifyNoOtherCalls();
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldReturnApplicantIsInactive_WhenApplicantIsInactive()
+    public async Task HandleAsync_ShouldReturnApplicantInactive_WhenApplicantIsInactive()
     {
-        var id = _fixture.Create<Guid>();
-        var applicant = TestsFixtures.MakeApplicant(isActive: false);
-        var request = new UpdateRentalApplicationRequest
-        {
-            ApplicantId = applicant.Id,
-            OperatorId = null,
-            PropertyId = null
-        };
+        var rentalApplication = _testsFixtures.MakeRentalApplication(
+            status: RentalStatus.Draft);
 
-        var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestsFixtures.MakeRentalApplication(id: id);
+        var applicant = _testsFixtures.MakeApplicant(
+            isActive: false);
+
+        var request = _fixture.Build<UpdateRentalApplicationRequest>()
+            .With(r => r.ApplicantId, applicant.Id)
+            .Without(r => r.OperatorId)
+            .Without(r => r.PropertyId)
+            .Create();
+
+        var command = new UpdateRentalApplicationCommand(rentalApplication.Id, request);
+
+        _rentalApplicationRepositoryMock
+            .Setup(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(rentalApplication);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
             .Returns(nameof(OperatorRole.Administrator));
-
-        _currentUserServiceMock
-            .Setup(s => s.TeamId)
-            .Returns(Guid.NewGuid());
-
-        _currentUserServiceMock
-            .Setup(s => s.OperatorId)
-            .Returns(Guid.NewGuid());
-
-        _rentalApplicationRepositoryMock
-            .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existing);
 
         _applicantRepositoryMock
             .Setup(r => r.GetByIdAsync(applicant.Id, It.IsAny<CancellationToken>()))
@@ -512,46 +458,46 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be(ApplicantErrors.ApplicantIsInactive);
 
-        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()), Times.Once);
+        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
         _applicantRepositoryMock.Verify(r => r.GetByIdAsync(applicant.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _operatorRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _propertyRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        _currentUserServiceMock.Verify(c => c.Role, Times.Exactly(2));
+        _currentUserServiceMock.Verify(c => c.TeamId, Times.Never);
+        _currentUserServiceMock.Verify(c => c.OperatorId, Times.Never);
 
         _rentalApplicationRepositoryMock.VerifyNoOtherCalls();
         _applicantRepositoryMock.VerifyNoOtherCalls();
         _operatorRepositoryMock.VerifyNoOtherCalls();
         _propertyRepositoryMock.VerifyNoOtherCalls();
+        _currentUserServiceMock.VerifyNoOtherCalls();
     }
 
     [Fact]
     public async Task HandleAsync_ShouldReturnApplicantAlreadyAssigned_WhenApplicantIsAlreadyAssigned()
     {
-        var id = _fixture.Create<Guid>();
-        var applicant = TestsFixtures.MakeApplicant();
-        var request = new UpdateRentalApplicationRequest
-        {
-            ApplicantId = applicant.Id,
-            OperatorId = null,
-            PropertyId = null
-        };
+        var applicant = _testsFixtures.MakeApplicant();
 
-        var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestsFixtures.MakeRentalApplication(id: id, applicant: applicant);
+        var rentalApplication = _testsFixtures.MakeRentalApplication(
+            applicant: applicant,
+            status: RentalStatus.Draft);
+
+        var request = _fixture.Build<UpdateRentalApplicationRequest>()
+            .With(r => r.ApplicantId, applicant.Id)
+            .Without(r => r.OperatorId)
+            .Without(r => r.PropertyId)
+            .Create();
+
+        var command = new UpdateRentalApplicationCommand(rentalApplication.Id, request);
+
+        _rentalApplicationRepositoryMock
+            .Setup(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(rentalApplication);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
             .Returns(nameof(OperatorRole.Administrator));
-
-        _currentUserServiceMock
-            .Setup(s => s.TeamId)
-            .Returns(Guid.NewGuid());
-
-        _currentUserServiceMock
-            .Setup(s => s.OperatorId)
-            .Returns(Guid.NewGuid());
-
-        _rentalApplicationRepositoryMock
-            .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existing);
 
         _applicantRepositoryMock
             .Setup(r => r.GetByIdAsync(applicant.Id, It.IsAny<CancellationToken>()))
@@ -562,46 +508,50 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be(RentalApplicationErrors.ApplicantAlreadyAssigned);
 
-        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()), Times.Once);
+        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
         _applicantRepositoryMock.Verify(r => r.GetByIdAsync(applicant.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _operatorRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _propertyRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        _currentUserServiceMock.Verify(c => c.Role, Times.Exactly(2));
+        _currentUserServiceMock.Verify(c => c.TeamId, Times.Never);
+        _currentUserServiceMock.Verify(c => c.OperatorId, Times.Never);
 
         _rentalApplicationRepositoryMock.VerifyNoOtherCalls();
         _applicantRepositoryMock.VerifyNoOtherCalls();
         _operatorRepositoryMock.VerifyNoOtherCalls();
         _propertyRepositoryMock.VerifyNoOtherCalls();
+        _currentUserServiceMock.VerifyNoOtherCalls();
     }
 
     [Fact]
     public async Task HandleAsync_ShouldUpdateApplicant_WhenApplicantIsValid()
     {
-        var id = _fixture.Create<Guid>();
-        var applicant = TestsFixtures.MakeApplicant();
-        var request = new UpdateRentalApplicationRequest
-        {
-            ApplicantId = applicant.Id,
-            OperatorId = null,
-            PropertyId = null
-        };
+        var currentApplicant = _testsFixtures.MakeApplicant(
+            isActive: true);
 
-        var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestsFixtures.MakeRentalApplication(id: id);
+        var applicant = _testsFixtures.MakeApplicant(
+            isActive: true);
+
+        var rentalApplication = _testsFixtures.MakeRentalApplication(
+            applicant: currentApplicant,
+            status: RentalStatus.Draft);
+
+        var request = _fixture.Build<UpdateRentalApplicationRequest>()
+            .With(r => r.ApplicantId, applicant.Id)
+            .Without(r => r.OperatorId)
+            .Without(r => r.PropertyId)
+            .Create();
+
+        var command = new UpdateRentalApplicationCommand(rentalApplication.Id, request);
+
+        _rentalApplicationRepositoryMock
+            .Setup(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(rentalApplication);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
             .Returns(nameof(OperatorRole.Administrator));
-
-        _currentUserServiceMock
-            .Setup(s => s.TeamId)
-            .Returns(Guid.NewGuid());
-
-        _currentUserServiceMock
-            .Setup(s => s.OperatorId)
-            .Returns(Guid.NewGuid());
-
-        _rentalApplicationRepositoryMock
-            .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existing);
 
         _applicantRepositoryMock
             .Setup(r => r.GetByIdAsync(applicant.Id, It.IsAny<CancellationToken>()))
@@ -610,49 +560,48 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsSuccess.Should().BeTrue();
-        existing.ApplicantId.Should().Be(applicant.Id);
-        existing.Applicant.Should().Be(applicant);
+        rentalApplication.ApplicantId.Should().Be(applicant.Id);
+        rentalApplication.Applicant.Should().Be(applicant);
 
-        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()), Times.Once);
+        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
         _applicantRepositoryMock.Verify(r => r.GetByIdAsync(applicant.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _operatorRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _propertyRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        _currentUserServiceMock.Verify(c => c.Role, Times.Exactly(2));
+        _currentUserServiceMock.Verify(c => c.TeamId, Times.Never);
+        _currentUserServiceMock.Verify(c => c.OperatorId, Times.Never);
 
         _rentalApplicationRepositoryMock.VerifyNoOtherCalls();
         _applicantRepositoryMock.VerifyNoOtherCalls();
         _operatorRepositoryMock.VerifyNoOtherCalls();
         _propertyRepositoryMock.VerifyNoOtherCalls();
+        _currentUserServiceMock.VerifyNoOtherCalls();
     }
 
     [Fact]
     public async Task HandleAsync_ShouldReturnOperatorNotFound_WhenOperatorDoesNotExist()
     {
-        var id = _fixture.Create<Guid>();
-        var operatorId = _fixture.Create<Guid>();
-        var request = new UpdateRentalApplicationRequest
-        {
-            ApplicantId = null,
-            OperatorId = operatorId,
-            PropertyId = null
-        };
+        var rentalApplication = _testsFixtures.MakeRentalApplication(
+            status: RentalStatus.Draft);
 
-        var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestsFixtures.MakeRentalApplication(id: id);
+        var operatorId = _fixture.Create<Guid>();
+
+        var request = _fixture.Build<UpdateRentalApplicationRequest>()
+            .Without(r => r.ApplicantId)
+            .With(r => r.OperatorId, operatorId)
+            .Without(r => r.PropertyId)
+            .Create();
+
+        var command = new UpdateRentalApplicationCommand(rentalApplication.Id, request);
+
+        _rentalApplicationRepositoryMock
+            .Setup(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(rentalApplication);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
             .Returns(nameof(OperatorRole.Administrator));
-
-        _currentUserServiceMock
-            .Setup(s => s.TeamId)
-            .Returns(Guid.NewGuid());
-
-        _currentUserServiceMock
-            .Setup(s => s.OperatorId)
-            .Returns(Guid.NewGuid());
-
-        _rentalApplicationRepositoryMock
-            .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existing);
 
         _operatorRepositoryMock
             .Setup(r => r.GetByIdAsync(operatorId, It.IsAny<CancellationToken>()))
@@ -663,46 +612,46 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be(OperatorErrors.OperatorNotFound);
 
-        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()), Times.Once);
+        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _applicantRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         _operatorRepositoryMock.Verify(r => r.GetByIdAsync(operatorId, It.IsAny<CancellationToken>()), Times.Once);
+        _propertyRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        _currentUserServiceMock.Verify(c => c.Role, Times.Exactly(3));
+        _currentUserServiceMock.Verify(c => c.TeamId, Times.Never);
+        _currentUserServiceMock.Verify(c => c.OperatorId, Times.Never);
 
         _rentalApplicationRepositoryMock.VerifyNoOtherCalls();
         _applicantRepositoryMock.VerifyNoOtherCalls();
         _operatorRepositoryMock.VerifyNoOtherCalls();
         _propertyRepositoryMock.VerifyNoOtherCalls();
+        _currentUserServiceMock.VerifyNoOtherCalls();
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldReturnOperatorIsInactive_WhenOperatorIsInactive()
+    public async Task HandleAsync_ShouldReturnOperatorInactive_WhenOperatorIsInactive()
     {
-        var id = _fixture.Create<Guid>();
-        var @operator = TestsFixtures.MakeOperator(isActive: false);
-        var request = new UpdateRentalApplicationRequest
-        {
-            ApplicantId = null,
-            OperatorId = @operator.Id,
-            PropertyId = null
-        };
+        var rentalApplication = _testsFixtures.MakeRentalApplication(
+            status: RentalStatus.Draft);
 
-        var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestsFixtures.MakeRentalApplication(id: id);
+        var @operator = _testsFixtures.MakeOperator(
+            isActive: false);
+
+        var request = _fixture.Build<UpdateRentalApplicationRequest>()
+            .Without(r => r.ApplicantId)
+            .With(r => r.OperatorId, @operator.Id)
+            .Without(r => r.PropertyId)
+            .Create();
+
+        var command = new UpdateRentalApplicationCommand(rentalApplication.Id, request);
+
+        _rentalApplicationRepositoryMock
+            .Setup(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(rentalApplication);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
             .Returns(nameof(OperatorRole.Administrator));
-
-        _currentUserServiceMock
-            .Setup(s => s.TeamId)
-            .Returns(Guid.NewGuid());
-
-        _currentUserServiceMock
-            .Setup(s => s.OperatorId)
-            .Returns(Guid.NewGuid());
-
-        _rentalApplicationRepositoryMock
-            .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existing);
 
         _operatorRepositoryMock
             .Setup(r => r.GetByIdAsync(@operator.Id, It.IsAny<CancellationToken>()))
@@ -713,94 +662,156 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be(OperatorErrors.OperatorIsInactive);
 
-        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()), Times.Once);
+        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _applicantRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         _operatorRepositoryMock.Verify(r => r.GetByIdAsync(@operator.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _propertyRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        _currentUserServiceMock.Verify(c => c.Role, Times.Exactly(3));
+        _currentUserServiceMock.Verify(c => c.TeamId, Times.Never);
+        _currentUserServiceMock.Verify(c => c.OperatorId, Times.Never);
 
         _rentalApplicationRepositoryMock.VerifyNoOtherCalls();
         _applicantRepositoryMock.VerifyNoOtherCalls();
         _operatorRepositoryMock.VerifyNoOtherCalls();
         _propertyRepositoryMock.VerifyNoOtherCalls();
+        _currentUserServiceMock.VerifyNoOtherCalls();
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldReturnForbidden_WhenBrokerTriesToUpdateOperator()
+    public async Task HandleAsync_ShouldReturnForbidden_WhenBrokerTriesToChangeOperator()
     {
-        var id = _fixture.Create<Guid>();
-        var operatorId = _fixture.Create<Guid>();
-        var request = new UpdateRentalApplicationRequest
-        {
-            ApplicantId = null,
-            OperatorId = operatorId,
-            PropertyId = null
-        };
-
-        var command = new UpdateRentalApplicationCommand(id, request);
-
-        var ownerOperator = TestsFixtures.MakeOperator();
-        var existing = TestsFixtures.MakeRentalApplication(id: id, @operator: ownerOperator);
+        var rentalApplication = _testsFixtures.MakeRentalApplication(
+            status: RentalStatus.Draft);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
             .Returns(nameof(OperatorRole.Broker));
 
         _currentUserServiceMock
-            .Setup(s => s.TeamId)
-            .Returns(Guid.NewGuid());
-
-        _currentUserServiceMock
             .Setup(s => s.OperatorId)
-            .Returns(ownerOperator.Id);
+            .Returns(rentalApplication.OperatorId);
+
+        var request = _fixture.Build<UpdateRentalApplicationRequest>()
+            .Without(r => r.ApplicantId)
+            .With(r => r.OperatorId, _fixture.Create<Guid>())
+            .Without(r => r.PropertyId)
+            .Create();
+
+        var command = new UpdateRentalApplicationCommand(rentalApplication.Id, request);
 
         _rentalApplicationRepositoryMock
-            .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existing);
+            .Setup(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(rentalApplication);
 
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be(UserErrors.Forbidden);
 
-        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()), Times.Once);
+        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _applicantRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         _operatorRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _propertyRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        _currentUserServiceMock.Verify(c => c.Role, Times.Exactly(3));
+        _currentUserServiceMock.Verify(c => c.TeamId, Times.Never);
+        _currentUserServiceMock.Verify(c => c.OperatorId, Times.Once);
 
         _rentalApplicationRepositoryMock.VerifyNoOtherCalls();
         _applicantRepositoryMock.VerifyNoOtherCalls();
         _operatorRepositoryMock.VerifyNoOtherCalls();
         _propertyRepositoryMock.VerifyNoOtherCalls();
+        _currentUserServiceMock.VerifyNoOtherCalls();
+    }
+
+    [Fact]
+    public async Task HandleAsync_ShouldReturnForbidden_WhenManagerTriesToAssignOperatorFromAnotherTeam()
+    {
+        var teamId = _fixture.Create<Guid>();
+        var anotherTeamId = _fixture.Create<Guid>();
+
+        var currentOperator = _testsFixtures.MakeOperator(
+            teamId: teamId);
+
+        var rentalApplication = _testsFixtures.MakeRentalApplication(
+            @operator: currentOperator,
+            status: RentalStatus.Draft);
+
+        var @operator = _testsFixtures.MakeOperator(
+            teamId: anotherTeamId,
+            isActive: true);
+
+        _currentUserServiceMock
+            .Setup(s => s.Role)
+            .Returns(nameof(OperatorRole.Manager));
+
+        _currentUserServiceMock
+            .Setup(s => s.TeamId)
+            .Returns(teamId);
+
+        var request = _fixture.Build<UpdateRentalApplicationRequest>()
+            .Without(r => r.ApplicantId)
+            .With(r => r.OperatorId, @operator.Id)
+            .Without(r => r.PropertyId)
+            .Create();
+
+        var command = new UpdateRentalApplicationCommand(rentalApplication.Id, request);
+
+        _rentalApplicationRepositoryMock
+            .Setup(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(rentalApplication);
+
+        _operatorRepositoryMock
+            .Setup(r => r.GetByIdAsync(@operator.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(@operator);
+
+        var result = await _handler.HandleAsync(command, CancellationToken.None);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().Be(UserErrors.Forbidden);
+
+        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _applicantRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _operatorRepositoryMock.Verify(r => r.GetByIdAsync(@operator.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _propertyRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        _currentUserServiceMock.Verify(c => c.Role, Times.Exactly(4));
+        _currentUserServiceMock.Verify(c => c.TeamId, Times.Exactly(2));
+        _currentUserServiceMock.Verify(c => c.OperatorId, Times.Never);
+
+        _rentalApplicationRepositoryMock.VerifyNoOtherCalls();
+        _applicantRepositoryMock.VerifyNoOtherCalls();
+        _operatorRepositoryMock.VerifyNoOtherCalls();
+        _propertyRepositoryMock.VerifyNoOtherCalls();
+        _currentUserServiceMock.VerifyNoOtherCalls();
     }
 
     [Fact]
     public async Task HandleAsync_ShouldReturnOperatorAlreadyAssigned_WhenOperatorIsAlreadyAssigned()
     {
-        var id = _fixture.Create<Guid>();
-        var @operator = TestsFixtures.MakeOperator();
-        var request = new UpdateRentalApplicationRequest
-        {
-            ApplicantId = null,
-            OperatorId = @operator.Id,
-            PropertyId = null
-        };
+        var @operator = _testsFixtures.MakeOperator(
+            isActive: true);
 
-        var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestsFixtures.MakeRentalApplication(id: id, @operator: @operator);
+        var rentalApplication = _testsFixtures.MakeRentalApplication(
+            @operator: @operator,
+            status: RentalStatus.Draft);
+
+        var request = _fixture.Build<UpdateRentalApplicationRequest>()
+            .Without(r => r.ApplicantId)
+            .With(r => r.OperatorId, @operator.Id)
+            .Without(r => r.PropertyId)
+            .Create();
+
+        var command = new UpdateRentalApplicationCommand(rentalApplication.Id, request);
+
+        _rentalApplicationRepositoryMock
+            .Setup(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(rentalApplication);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
             .Returns(nameof(OperatorRole.Administrator));
-
-        _currentUserServiceMock
-            .Setup(s => s.TeamId)
-            .Returns(Guid.NewGuid());
-
-        _currentUserServiceMock
-            .Setup(s => s.OperatorId)
-            .Returns(Guid.NewGuid());
-
-        _rentalApplicationRepositoryMock
-            .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existing);
 
         _operatorRepositoryMock
             .Setup(r => r.GetByIdAsync(@operator.Id, It.IsAny<CancellationToken>()))
@@ -811,99 +822,50 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be(RentalApplicationErrors.OperatorAlreadyAssigned);
 
-        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()), Times.Once);
+        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _applicantRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         _operatorRepositoryMock.Verify(r => r.GetByIdAsync(@operator.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _propertyRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        _currentUserServiceMock.Verify(c => c.Role, Times.Exactly(4));
+        _currentUserServiceMock.Verify(c => c.TeamId, Times.Never);
+        _currentUserServiceMock.Verify(c => c.OperatorId, Times.Never);
 
         _rentalApplicationRepositoryMock.VerifyNoOtherCalls();
         _applicantRepositoryMock.VerifyNoOtherCalls();
         _operatorRepositoryMock.VerifyNoOtherCalls();
         _propertyRepositoryMock.VerifyNoOtherCalls();
-    }
-
-    [Fact]
-    public async Task HandleAsync_ShouldReturnForbidden_WhenManagerAssignsOperatorFromAnotherTeam()
-    {
-        var id = _fixture.Create<Guid>();
-        var teamId = Guid.NewGuid();
-        var otherTeamId = Guid.NewGuid();
-
-        var @operator = TestsFixtures.MakeOperator(teamId: otherTeamId);
-        var request = new UpdateRentalApplicationRequest
-        {
-            ApplicantId = null,
-            OperatorId = @operator.Id,
-            PropertyId = null
-        };
-
-        var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestsFixtures.MakeRentalApplication(id: id);
-
-        _currentUserServiceMock
-            .Setup(s => s.Role)
-            .Returns(nameof(OperatorRole.Manager));
-
-        _currentUserServiceMock
-            .Setup(s => s.TeamId)
-            .Returns(teamId);
-
-        _currentUserServiceMock
-            .Setup(s => s.OperatorId)
-            .Returns(Guid.NewGuid());
-
-        _rentalApplicationRepositoryMock
-            .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existing);
-
-        _operatorRepositoryMock
-            .Setup(r => r.GetByIdAsync(@operator.Id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(@operator);
-
-        var result = await _handler.HandleAsync(command, CancellationToken.None);
-
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(UserErrors.Forbidden);
-
-        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()), Times.Once);
-        _operatorRepositoryMock.Verify(r => r.GetByIdAsync(@operator.Id, It.IsAny<CancellationToken>()), Times.Never);
-        _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
-
-        _rentalApplicationRepositoryMock.VerifyNoOtherCalls();
-        _applicantRepositoryMock.VerifyNoOtherCalls();
-        _operatorRepositoryMock.VerifyNoOtherCalls();
-        _propertyRepositoryMock.VerifyNoOtherCalls();
+        _currentUserServiceMock.VerifyNoOtherCalls();
     }
 
     [Fact]
     public async Task HandleAsync_ShouldUpdateOperator_WhenOperatorIsValid()
     {
-        var id = _fixture.Create<Guid>();
-        var @operator = TestsFixtures.MakeOperator();
-        var request = new UpdateRentalApplicationRequest
-        {
-            ApplicantId = null,
-            OperatorId = @operator.Id,
-            PropertyId = null
-        };
+        var currentOperator = _testsFixtures.MakeOperator(
+            isActive: true);
 
-        var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestsFixtures.MakeRentalApplication(id: id);
+        var @operator = _testsFixtures.MakeOperator(
+            isActive: true);
+
+        var rentalApplication = _testsFixtures.MakeRentalApplication(
+            @operator: currentOperator,
+            status: RentalStatus.Draft);
+
+        var request = _fixture.Build<UpdateRentalApplicationRequest>()
+            .Without(r => r.ApplicantId)
+            .With(r => r.OperatorId, @operator.Id)
+            .Without(r => r.PropertyId)
+            .Create();
+
+        var command = new UpdateRentalApplicationCommand(rentalApplication.Id, request);
+
+        _rentalApplicationRepositoryMock
+            .Setup(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(rentalApplication);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
             .Returns(nameof(OperatorRole.Administrator));
-
-        _currentUserServiceMock
-            .Setup(s => s.TeamId)
-            .Returns(Guid.NewGuid());
-
-        _currentUserServiceMock
-            .Setup(s => s.OperatorId)
-            .Returns(Guid.NewGuid());
-
-        _rentalApplicationRepositoryMock
-            .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existing);
 
         _operatorRepositoryMock
             .Setup(r => r.GetByIdAsync(@operator.Id, It.IsAny<CancellationToken>()))
@@ -912,49 +874,48 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsSuccess.Should().BeTrue();
-        existing.OperatorId.Should().Be(@operator.Id);
-        existing.Operator.Should().Be(@operator);
+        rentalApplication.OperatorId.Should().Be(@operator.Id);
+        rentalApplication.Operator.Should().Be(@operator);
 
-        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()), Times.Once);
+        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _applicantRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         _operatorRepositoryMock.Verify(r => r.GetByIdAsync(@operator.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _propertyRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        _currentUserServiceMock.Verify(c => c.Role, Times.Exactly(4));
+        _currentUserServiceMock.Verify(c => c.TeamId, Times.Never);
+        _currentUserServiceMock.Verify(c => c.OperatorId, Times.Never);
 
         _rentalApplicationRepositoryMock.VerifyNoOtherCalls();
         _applicantRepositoryMock.VerifyNoOtherCalls();
         _operatorRepositoryMock.VerifyNoOtherCalls();
         _propertyRepositoryMock.VerifyNoOtherCalls();
+        _currentUserServiceMock.VerifyNoOtherCalls();
     }
 
     [Fact]
     public async Task HandleAsync_ShouldReturnPropertyNotFound_WhenPropertyDoesNotExist()
     {
-        var id = _fixture.Create<Guid>();
-        var propertyId = _fixture.Create<Guid>();
-        var request = new UpdateRentalApplicationRequest
-        {
-            ApplicantId = null,
-            OperatorId = null,
-            PropertyId = propertyId
-        };
+        var rentalApplication = _testsFixtures.MakeRentalApplication(
+            status: RentalStatus.Draft);
 
-        var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestsFixtures.MakeRentalApplication(id: id);
+        var propertyId = _fixture.Create<Guid>();
+
+        var request = _fixture.Build<UpdateRentalApplicationRequest>()
+            .Without(r => r.ApplicantId)
+            .Without(r => r.OperatorId)
+            .With(r => r.PropertyId, propertyId)
+            .Create();
+
+        var command = new UpdateRentalApplicationCommand(rentalApplication.Id, request);
+
+        _rentalApplicationRepositoryMock
+            .Setup(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(rentalApplication);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
             .Returns(nameof(OperatorRole.Administrator));
-
-        _currentUserServiceMock
-            .Setup(s => s.TeamId)
-            .Returns(Guid.NewGuid());
-
-        _currentUserServiceMock
-            .Setup(s => s.OperatorId)
-            .Returns(Guid.NewGuid());
-
-        _rentalApplicationRepositoryMock
-            .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existing);
 
         _propertyRepositoryMock
             .Setup(r => r.GetByIdAsync(propertyId, It.IsAny<CancellationToken>()))
@@ -965,46 +926,46 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be(PropertyErrors.PropertyNotFound);
 
-        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()), Times.Once);
+        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _applicantRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _operatorRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         _propertyRepositoryMock.Verify(r => r.GetByIdAsync(propertyId, It.IsAny<CancellationToken>()), Times.Once);
         _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        _currentUserServiceMock.Verify(c => c.Role, Times.Exactly(2));
+        _currentUserServiceMock.Verify(c => c.TeamId, Times.Never);
+        _currentUserServiceMock.Verify(c => c.OperatorId, Times.Never);
 
         _rentalApplicationRepositoryMock.VerifyNoOtherCalls();
         _applicantRepositoryMock.VerifyNoOtherCalls();
         _operatorRepositoryMock.VerifyNoOtherCalls();
         _propertyRepositoryMock.VerifyNoOtherCalls();
+        _currentUserServiceMock.VerifyNoOtherCalls();
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldReturnPropertyIsInactive_WhenPropertyIsInactive()
+    public async Task HandleAsync_ShouldReturnPropertyInactive_WhenPropertyIsInactive()
     {
-        var id = _fixture.Create<Guid>();
-        var property = TestsFixtures.MakeProperty(isActive: false, isAvailable: true);
-        var request = new UpdateRentalApplicationRequest
-        {
-            ApplicantId = null,
-            OperatorId = null,
-            PropertyId = property.Id
-        };
+        var rentalApplication = _testsFixtures.MakeRentalApplication(
+            status: RentalStatus.Draft);
 
-        var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestsFixtures.MakeRentalApplication(id: id);
+        var property = _testsFixtures.MakeProperty(
+            isActive: false);
+
+        var request = _fixture.Build<UpdateRentalApplicationRequest>()
+            .Without(r => r.ApplicantId)
+            .Without(r => r.OperatorId)
+            .With(r => r.PropertyId, property.Id)
+            .Create();
+
+        var command = new UpdateRentalApplicationCommand(rentalApplication.Id, request);
+
+        _rentalApplicationRepositoryMock
+            .Setup(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(rentalApplication);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
             .Returns(nameof(OperatorRole.Administrator));
-
-        _currentUserServiceMock
-            .Setup(s => s.TeamId)
-            .Returns(Guid.NewGuid());
-
-        _currentUserServiceMock
-            .Setup(s => s.OperatorId)
-            .Returns(Guid.NewGuid());
-
-        _rentalApplicationRepositoryMock
-            .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existing);
 
         _propertyRepositoryMock
             .Setup(r => r.GetByIdAsync(property.Id, It.IsAny<CancellationToken>()))
@@ -1015,46 +976,46 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be(PropertyErrors.PropertyIsInactive);
 
-        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()), Times.Once);
+        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _applicantRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _operatorRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         _propertyRepositoryMock.Verify(r => r.GetByIdAsync(property.Id, It.IsAny<CancellationToken>()), Times.Once);
         _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        _currentUserServiceMock.Verify(c => c.Role, Times.Exactly(2));
+        _currentUserServiceMock.Verify(c => c.TeamId, Times.Never);
+        _currentUserServiceMock.Verify(c => c.OperatorId, Times.Never);
 
         _rentalApplicationRepositoryMock.VerifyNoOtherCalls();
         _applicantRepositoryMock.VerifyNoOtherCalls();
         _operatorRepositoryMock.VerifyNoOtherCalls();
         _propertyRepositoryMock.VerifyNoOtherCalls();
+        _currentUserServiceMock.VerifyNoOtherCalls();
     }
 
     [Fact]
     public async Task HandleAsync_ShouldReturnPropertyNotAvailable_WhenPropertyIsNotAvailable()
     {
-        var id = _fixture.Create<Guid>();
-        var property = TestsFixtures.MakeProperty(isActive: true, isAvailable: false);
-        var request = new UpdateRentalApplicationRequest
-        {
-            ApplicantId = null,
-            OperatorId = null,
-            PropertyId = property.Id
-        };
+        var rentalApplication = _testsFixtures.MakeRentalApplication(
+            status: RentalStatus.Draft);
 
-        var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestsFixtures.MakeRentalApplication(id: id);
+        var property = _testsFixtures.MakeProperty(
+            isAvailable: false);
+
+        var request = _fixture.Build<UpdateRentalApplicationRequest>()
+            .Without(r => r.ApplicantId)
+            .Without(r => r.OperatorId)
+            .With(r => r.PropertyId, property.Id)
+            .Create();
+
+        var command = new UpdateRentalApplicationCommand(rentalApplication.Id, request);
+
+        _rentalApplicationRepositoryMock
+            .Setup(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(rentalApplication);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
             .Returns(nameof(OperatorRole.Administrator));
-
-        _currentUserServiceMock
-            .Setup(s => s.TeamId)
-            .Returns(Guid.NewGuid());
-
-        _currentUserServiceMock
-            .Setup(s => s.OperatorId)
-            .Returns(Guid.NewGuid());
-
-        _rentalApplicationRepositoryMock
-            .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existing);
 
         _propertyRepositoryMock
             .Setup(r => r.GetByIdAsync(property.Id, It.IsAny<CancellationToken>()))
@@ -1065,46 +1026,48 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be(PropertyErrors.PropertyNotAvailable);
 
-        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()), Times.Once);
+        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _applicantRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _operatorRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         _propertyRepositoryMock.Verify(r => r.GetByIdAsync(property.Id, It.IsAny<CancellationToken>()), Times.Once);
         _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        _currentUserServiceMock.Verify(c => c.Role, Times.Exactly(2));
+        _currentUserServiceMock.Verify(c => c.TeamId, Times.Never);
+        _currentUserServiceMock.Verify(c => c.OperatorId, Times.Never);
 
         _rentalApplicationRepositoryMock.VerifyNoOtherCalls();
         _applicantRepositoryMock.VerifyNoOtherCalls();
         _operatorRepositoryMock.VerifyNoOtherCalls();
         _propertyRepositoryMock.VerifyNoOtherCalls();
+        _currentUserServiceMock.VerifyNoOtherCalls();
     }
 
     [Fact]
     public async Task HandleAsync_ShouldReturnPropertyAlreadyAssigned_WhenPropertyIsAlreadyAssigned()
     {
-        var id = _fixture.Create<Guid>();
-        var property = TestsFixtures.MakeProperty();
-        var request = new UpdateRentalApplicationRequest
-        {
-            ApplicantId = null,
-            OperatorId = null,
-            PropertyId = property.Id
-        };
+        var property = _testsFixtures.MakeProperty(
+            isActive: true,
+            isAvailable: true);
 
-        var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestsFixtures.MakeRentalApplication(id: id, property: property);
+        var rentalApplication = _testsFixtures.MakeRentalApplication(
+            property: property,
+            status: RentalStatus.Draft);
+
+        var request = _fixture.Build<UpdateRentalApplicationRequest>()
+            .Without(r => r.ApplicantId)
+            .Without(r => r.OperatorId)
+            .With(r => r.PropertyId, property.Id)
+            .Create();
+
+        var command = new UpdateRentalApplicationCommand(rentalApplication.Id, request);
+
+        _rentalApplicationRepositoryMock
+            .Setup(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(rentalApplication);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
             .Returns(nameof(OperatorRole.Administrator));
-
-        _currentUserServiceMock
-            .Setup(s => s.TeamId)
-            .Returns(Guid.NewGuid());
-
-        _currentUserServiceMock
-            .Setup(s => s.OperatorId)
-            .Returns(Guid.NewGuid());
-
-        _rentalApplicationRepositoryMock
-            .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existing);
 
         _propertyRepositoryMock
             .Setup(r => r.GetByIdAsync(property.Id, It.IsAny<CancellationToken>()))
@@ -1115,46 +1078,52 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be(RentalApplicationErrors.PropertyAlreadyAssigned);
 
-        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()), Times.Once);
+        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _applicantRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _operatorRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         _propertyRepositoryMock.Verify(r => r.GetByIdAsync(property.Id, It.IsAny<CancellationToken>()), Times.Once);
         _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        _currentUserServiceMock.Verify(c => c.Role, Times.Exactly(2));
+        _currentUserServiceMock.Verify(c => c.TeamId, Times.Never);
+        _currentUserServiceMock.Verify(c => c.OperatorId, Times.Never);
 
         _rentalApplicationRepositoryMock.VerifyNoOtherCalls();
         _applicantRepositoryMock.VerifyNoOtherCalls();
         _operatorRepositoryMock.VerifyNoOtherCalls();
         _propertyRepositoryMock.VerifyNoOtherCalls();
+        _currentUserServiceMock.VerifyNoOtherCalls();
     }
 
     [Fact]
     public async Task HandleAsync_ShouldUpdateProperty_WhenPropertyIsValid()
     {
-        var id = _fixture.Create<Guid>();
-        var property = TestsFixtures.MakeProperty();
-        var request = new UpdateRentalApplicationRequest
-        {
-            ApplicantId = null,
-            OperatorId = null,
-            PropertyId = property.Id
-        };
+        var currentProperty = _testsFixtures.MakeProperty(
+            isActive: true,
+            isAvailable: true);
 
-        var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestsFixtures.MakeRentalApplication(id: id);
+        var property = _testsFixtures.MakeProperty(
+            isActive: true,
+            isAvailable: true);
+
+        var rentalApplication = _testsFixtures.MakeRentalApplication(
+            property: currentProperty,
+            status: RentalStatus.Draft);
+
+        var request = _fixture.Build<UpdateRentalApplicationRequest>()
+            .Without(r => r.ApplicantId)
+            .Without(r => r.OperatorId)
+            .With(r => r.PropertyId, property.Id)
+            .Create();
+
+        var command = new UpdateRentalApplicationCommand(rentalApplication.Id, request);
+
+        _rentalApplicationRepositoryMock
+            .Setup(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(rentalApplication);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
             .Returns(nameof(OperatorRole.Administrator));
-
-        _currentUserServiceMock
-            .Setup(s => s.TeamId)
-            .Returns(Guid.NewGuid());
-
-        _currentUserServiceMock
-            .Setup(s => s.OperatorId)
-            .Returns(Guid.NewGuid());
-
-        _rentalApplicationRepositoryMock
-            .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existing);
 
         _propertyRepositoryMock
             .Setup(r => r.GetByIdAsync(property.Id, It.IsAny<CancellationToken>()))
@@ -1163,56 +1132,69 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsSuccess.Should().BeTrue();
-        existing.PropertyId.Should().Be(property.Id);
-        existing.Property.Should().Be(property);
+        rentalApplication.PropertyId.Should().Be(property.Id);
+        rentalApplication.Property.Should().Be(property);
 
-        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()), Times.Once);
+        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _applicantRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _operatorRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         _propertyRepositoryMock.Verify(r => r.GetByIdAsync(property.Id, It.IsAny<CancellationToken>()), Times.Once);
         _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        _currentUserServiceMock.Verify(c => c.Role, Times.Exactly(2));
+        _currentUserServiceMock.Verify(c => c.TeamId, Times.Never);
+        _currentUserServiceMock.Verify(c => c.OperatorId, Times.Never);
 
         _rentalApplicationRepositoryMock.VerifyNoOtherCalls();
         _applicantRepositoryMock.VerifyNoOtherCalls();
         _operatorRepositoryMock.VerifyNoOtherCalls();
         _propertyRepositoryMock.VerifyNoOtherCalls();
+        _currentUserServiceMock.VerifyNoOtherCalls();
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldUpdateAllFields_WhenAllDependenciesAreValid()
+    public async Task HandleAsync_ShouldUpdateRentalApplication_WhenAllFieldsAreValid()
     {
-        var id = _fixture.Create<Guid>();
-        var applicant = TestsFixtures.MakeApplicant();
-        var @operator = TestsFixtures.MakeOperator();
-        var property = TestsFixtures.MakeProperty();
+        var currentApplicant = _testsFixtures.MakeApplicant(
+            isActive: true);
 
-        var request = new UpdateRentalApplicationRequest
-        {
-            Installments = 36,
-            FinancedAmount = 75000,
-            TotalAmount = 90000,
-            ContractDate = DateTime.UtcNow,
-            ApplicantId = applicant.Id,
-            OperatorId = @operator.Id,
-            PropertyId = property.Id
-        };
+        var applicant = _testsFixtures.MakeApplicant(
+            isActive: true);
 
-        var command = new UpdateRentalApplicationCommand(id, request);
-        var existing = TestsFixtures.MakeRentalApplication(id: id);
+        var currentOperator = _testsFixtures.MakeOperator(
+            isActive: true);
+
+        var @operator = _testsFixtures.MakeOperator(
+            isActive: true);
+
+        var currentProperty = _testsFixtures.MakeProperty(
+            isActive: true,
+            isAvailable: true);
+
+        var property = _testsFixtures.MakeProperty(
+            isActive: true,
+            isAvailable: true);
+
+        var rentalApplication = _testsFixtures.MakeRentalApplication(
+            applicant: currentApplicant,
+            @operator: currentOperator,
+            property: currentProperty,
+            status: RentalStatus.Draft);
+
+        var request = _fixture.Build<UpdateRentalApplicationRequest>()
+            .With(r => r.ApplicantId, applicant.Id)
+            .With(r => r.OperatorId, @operator.Id)
+            .With(r => r.PropertyId, property.Id)
+            .Create();
+
+        var command = new UpdateRentalApplicationCommand(rentalApplication.Id, request);
+
+        _rentalApplicationRepositoryMock
+            .Setup(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(rentalApplication);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
             .Returns(nameof(OperatorRole.Administrator));
-
-        _currentUserServiceMock
-            .Setup(s => s.TeamId)
-            .Returns(Guid.NewGuid());
-
-        _currentUserServiceMock
-            .Setup(s => s.OperatorId)
-            .Returns(Guid.NewGuid());
-
-        _rentalApplicationRepositoryMock
-            .Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existing);
 
         _applicantRepositoryMock
             .Setup(r => r.GetByIdAsync(applicant.Id, It.IsAny<CancellationToken>()))
@@ -1229,25 +1211,31 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsSuccess.Should().BeTrue();
-        existing.Installments.Should().Be(36);
-        existing.FinancedAmount.Should().Be(75000);
-        existing.TotalAmount.Should().Be(90000);
-        existing.ApplicantId.Should().Be(applicant.Id);
-        existing.Applicant.Should().Be(applicant);
-        existing.OperatorId.Should().Be(@operator.Id);
-        existing.Operator.Should().Be(@operator);
-        existing.PropertyId.Should().Be(property.Id);
-        existing.Property.Should().Be(property);
 
-        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()), Times.Once);
+        rentalApplication.ApplicantId.Should().Be(applicant.Id);
+        rentalApplication.Applicant.Should().Be(applicant);
+        rentalApplication.OperatorId.Should().Be(@operator.Id);
+        rentalApplication.Operator.Should().Be(@operator);
+        rentalApplication.PropertyId.Should().Be(property.Id);
+        rentalApplication.Property.Should().Be(property);
+        rentalApplication.Installments.Should().Be(request.Installments);
+        rentalApplication.FinancedAmount.Should().Be(request.FinancedAmount);
+        rentalApplication.TotalAmount.Should().Be(request.TotalAmount);
+        rentalApplication.ContractDate.Should().Be(request.ContractDate);
+
+        _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
         _applicantRepositoryMock.Verify(r => r.GetByIdAsync(applicant.Id, It.IsAny<CancellationToken>()), Times.Once);
         _operatorRepositoryMock.Verify(r => r.GetByIdAsync(@operator.Id, It.IsAny<CancellationToken>()), Times.Once);
         _propertyRepositoryMock.Verify(r => r.GetByIdAsync(property.Id, It.IsAny<CancellationToken>()), Times.Once);
         _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        _currentUserServiceMock.Verify(c => c.Role, Times.Exactly(4));
+        _currentUserServiceMock.Verify(c => c.TeamId, Times.Never);
+        _currentUserServiceMock.Verify(c => c.OperatorId, Times.Never);
 
         _rentalApplicationRepositoryMock.VerifyNoOtherCalls();
         _applicantRepositoryMock.VerifyNoOtherCalls();
         _operatorRepositoryMock.VerifyNoOtherCalls();
         _propertyRepositoryMock.VerifyNoOtherCalls();
+        _currentUserServiceMock.VerifyNoOtherCalls();
     }
 }

@@ -3,6 +3,7 @@
 public sealed class AddOperatorCommandHandlerTests
 {
     private readonly Fixture _fixture = new();
+    private readonly TestsFixtures _testsFixtures = new(new Fixture());
     private readonly Mock<IOperatorRepository> _repositoryMock = new();
     private readonly Mock<ITeamRepository> _teamRepositoryMock = new();
     private readonly Mock<IUserRepository> _userRepositoryMock = new();
@@ -23,7 +24,7 @@ public sealed class AddOperatorCommandHandlerTests
     {
         var command = _fixture.Build<AddOperatorCommand>().Create();
 
-        var team = TestsFixtures.MakeTeam(id: command.Request.TeamId);
+        var team = _testsFixtures.MakeTeam(id: command.Request.TeamId);
 
         _teamRepositoryMock
             .Setup(r => r.GetByIdAsync(command.Request.TeamId, It.IsAny<CancellationToken>()))

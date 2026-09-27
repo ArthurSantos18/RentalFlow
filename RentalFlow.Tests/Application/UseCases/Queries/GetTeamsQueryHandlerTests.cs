@@ -3,6 +3,7 @@ namespace RentalFlow.Tests.Application.UseCases.Queries;
 public sealed class GetTeamsQueryHandlerTests
 {
     private readonly Fixture _fixture = new();
+    private readonly TestsFixtures _testsFixtures = new(new Fixture());
     private readonly Mock<ITeamRepository> _repositoryMock = new();
     private readonly GetTeamsQueryHandler _handler;
 
@@ -21,8 +22,8 @@ public sealed class GetTeamsQueryHandlerTests
 
         var teams = new List<TeamEntity>
         {
-            TestsFixtures.MakeTeam(name: "Team A"),
-            TestsFixtures.MakeTeam(name: "Team B")
+            _testsFixtures.MakeTeam(name: "Team A"),
+            _testsFixtures.MakeTeam(name: "Team B")
         };
 
         var pagedResult = new PagedResult<TeamEntity>(

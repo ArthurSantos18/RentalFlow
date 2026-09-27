@@ -3,6 +3,7 @@ namespace RentalFlow.Tests.Application.UseCases.Commands.Team;
 public sealed class DeleteTeamCommandHandlerTests
 {
     private readonly Fixture _fixture = new();
+    private readonly TestsFixtures _testsFixtures = new(new Fixture());
     private readonly Mock<ITeamRepository> _repositoryMock = new();
     private readonly DeleteTeamCommandHandler _handler;
 
@@ -19,7 +20,7 @@ public sealed class DeleteTeamCommandHandlerTests
             .With(c => c.Id, teamId)
             .Create();
 
-        var team = TestsFixtures.MakeTeam(id: teamId);
+        var team = _testsFixtures.MakeTeam(id: teamId);
 
         _repositoryMock
             .Setup(r => r.GetByIdAsync(teamId, It.IsAny<CancellationToken>()))

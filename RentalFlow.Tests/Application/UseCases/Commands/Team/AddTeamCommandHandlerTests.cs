@@ -3,6 +3,7 @@ namespace RentalFlow.Tests.Application.UseCases.Commands.Team;
 public sealed class AddTeamCommandHandlerTests
 {
     private readonly Fixture _fixture = new();
+    private readonly TestsFixtures _testsFixtures = new(new Fixture());
     private readonly Mock<ITeamRepository> _repositoryMock = new();
     private readonly AddTeamCommandHandler _handler;
 
@@ -50,7 +51,7 @@ public sealed class AddTeamCommandHandlerTests
             .With(c => c.Request, request)
             .Create();
 
-        var existingTeam = TestsFixtures.MakeTeam(name: request.Name);
+        var existingTeam = _testsFixtures.MakeTeam(name: request.Name);
 
         _repositoryMock
             .Setup(r => r.FindAsync(It.IsAny<Expression<Func<TeamEntity, bool>>>(), It.IsAny<CancellationToken>()))

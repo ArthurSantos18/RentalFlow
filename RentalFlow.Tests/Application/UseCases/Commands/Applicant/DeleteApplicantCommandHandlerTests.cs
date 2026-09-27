@@ -3,6 +3,7 @@
 public sealed class DeleteApplicantCommandHandlerTests
 {
     private readonly Fixture _fixture = new();
+    private readonly TestsFixtures _testsFixtures = new(new Fixture());
     private readonly Mock<IApplicantRepository> _repositoryMock = new();
     private readonly DeleteApplicantCommandHandler _handler;
 
@@ -19,7 +20,7 @@ public sealed class DeleteApplicantCommandHandlerTests
             .With(c => c.Id, applicantId)
             .Create();
 
-        var applicant = TestsFixtures.MakeApplicant(id: applicantId);
+        var applicant = _testsFixtures.MakeApplicant(id: applicantId);
 
         _repositoryMock
             .Setup(r => r.GetByIdAsync(applicantId, It.IsAny<CancellationToken>()))

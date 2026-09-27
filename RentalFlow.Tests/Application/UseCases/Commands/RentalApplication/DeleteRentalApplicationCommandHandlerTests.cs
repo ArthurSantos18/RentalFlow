@@ -3,6 +3,7 @@ namespace RentalFlow.Tests.Application.UseCases.Commands.RentalApplication;
 public sealed class DeleteRentalApplicationCommandHandlerTests
 {
     private readonly Fixture _fixture = new();
+    private readonly TestsFixtures _testsFixtures = new(new Fixture());
     private readonly Mock<IRentalApplicationRepository> _rentalRepoMock = new();
     private readonly Mock<ICurrentUserService> _currentUserServiceMock = new();
     private readonly DeleteRentalApplicationCommandHandler _handler;
@@ -19,7 +20,7 @@ public sealed class DeleteRentalApplicationCommandHandlerTests
     {
         var command = _fixture.Create<DeleteRentalApplicationCommand>();
 
-        var rentalApplication = TestsFixtures.MakeRentalApplication(id: command.Id, isActive: true);
+        var rentalApplication = _testsFixtures.MakeRentalApplication(id: command.Id, isActive: true);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
@@ -49,8 +50,8 @@ public sealed class DeleteRentalApplicationCommandHandlerTests
         var command = _fixture.Create<DeleteRentalApplicationCommand>();
 
         var teamId = Guid.NewGuid();
-        var @operator = TestsFixtures.MakeOperator(teamId: teamId);
-        var rentalApplication = TestsFixtures.MakeRentalApplication(id: command.Id, @operator: @operator, isActive: true);
+        var @operator = _testsFixtures.MakeOperator(teamId: teamId);
+        var rentalApplication = _testsFixtures.MakeRentalApplication(id: command.Id, @operator: @operator, isActive: true);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
@@ -79,7 +80,7 @@ public sealed class DeleteRentalApplicationCommandHandlerTests
     {
         var command = _fixture.Create<DeleteRentalApplicationCommand>();
 
-        var rentalApplication = TestsFixtures.MakeRentalApplication(id: command.Id, isActive: false);
+        var rentalApplication = _testsFixtures.MakeRentalApplication(id: command.Id, isActive: false);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
@@ -128,7 +129,7 @@ public sealed class DeleteRentalApplicationCommandHandlerTests
     {
         var command = _fixture.Create<DeleteRentalApplicationCommand>();
 
-        var rentalApplication = TestsFixtures.MakeRentalApplication(id: command.Id, isActive: true);
+        var rentalApplication = _testsFixtures.MakeRentalApplication(id: command.Id, isActive: true);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
@@ -158,7 +159,7 @@ public sealed class DeleteRentalApplicationCommandHandlerTests
     {
         var command = _fixture.Create<DeleteRentalApplicationCommand>();
 
-        var rentalApplication = TestsFixtures.MakeRentalApplication(id: command.Id, isActive: true);
+        var rentalApplication = _testsFixtures.MakeRentalApplication(id: command.Id, isActive: true);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
@@ -190,8 +191,8 @@ public sealed class DeleteRentalApplicationCommandHandlerTests
 
         var teamId = Guid.NewGuid();
         var otherTeamId = Guid.NewGuid();
-        var @operator = TestsFixtures.MakeOperator(teamId: otherTeamId);
-        var rentalApplication = TestsFixtures.MakeRentalApplication(id: command.Id, @operator: @operator, isActive: true);
+        var @operator = _testsFixtures.MakeOperator(teamId: otherTeamId);
+        var rentalApplication = _testsFixtures.MakeRentalApplication(id: command.Id, @operator: @operator, isActive: true);
 
         _currentUserServiceMock
             .Setup(s => s.Role)
