@@ -1,6 +1,9 @@
 ﻿namespace RentalFlow.Application.UseCases.Queries.RentalApplication;
 
-public sealed class GetRentalApplicationsQueryHandler(IRentalApplicationRepository _repository, IDataScopeService _dataScopeService) : IQueryHandler<GetRentalApplicationsQuery, Result<PagedResult<GetRentalApplicationResponse>>>
+public sealed class GetRentalApplicationsQueryHandler(
+    IRentalApplicationRepository _repository,
+    IDataScopeService _dataScopeService
+    ) : IQueryHandler<GetRentalApplicationsQuery, Result<PagedResult<GetRentalApplicationResponse>>>
 {
     public async Task<Result<PagedResult<GetRentalApplicationResponse>>> HandleAsync(GetRentalApplicationsQuery query, CancellationToken cancellationToken)
     {

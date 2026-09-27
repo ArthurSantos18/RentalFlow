@@ -2,9 +2,23 @@
 
 public sealed class OperatorRepository(AppDbContext context) : BaseRepository<OperatorEntity>(context), IOperatorRepository
 {
-    public async Task<PagedResult<OperatorEntity>> GetOperatorsAsync(GetOperatorRequest request, CancellationToken cancellationToken)
+    public async Task<int> CountActiveAdminsAsync(CancellationToken cancellationToken)
     {
-        var query = _context.Operators.AsNoTracking().AsQueryable();
+        return await _dbSet.CountAsync(o => o.Role == OperatorRole.Administrator && o.IsActive && !o.IsDeleted, cancellationToken);
+    }
+
+    public async Task<OperatorEntity?> GetByIdWithDetailsAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return await _dbSet.Include(o => o.Team).Include(o => o.User).FirstOrDefaultAsync(o => o.Id == id, cancellationToken);
+    }
+
+    public async Task<PagedResult<OperatorEntity>> GetOperatorsAsync(GetOperatorRequest request, DataScope scope, CancellationToken cancellationToken)
+    {
+        var query = _context.Operators
+            .AsNoTracking()
+            .Include(o => o.Team)
+            .Include(o => o.User)
+            .AsQueryable();
 
         query = ApplyIdsFilter(query, request.Ids);
         query = ApplyNamesFilter(query, request.Names);
@@ -13,6 +27,7 @@ public sealed class OperatorRepository(AppDbContext context) : BaseRepository<Op
         query = ApplyHasApplicationsFilter(query, request.HasApplications);
         query = ApplyApplicationIdsFilter(query, request.ApplicationIds);
         query = ApplyTeamIdsFilter(query, request.TeamIds);
+        query = ApplyDataScope(query, scope);
 
         var page = request.PageFilter.Page > 0 ? request.PageFilter.Page : 1;
         var pageSize = request.PageFilter.PageSize > 0 ? request.PageFilter.PageSize : 60;
@@ -22,7 +37,6 @@ public sealed class OperatorRepository(AppDbContext context) : BaseRepository<Op
         var results = await query
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .Include(o => o.Team)
             .ToListAsync(cancellationToken);
 
         return new PagedResult<OperatorEntity>(results, total, page, pageSize);
@@ -94,6 +108,26 @@ public sealed class OperatorRepository(AppDbContext context) : BaseRepository<Op
         if (teamIds?.Any() == true)
         {
             return query.Where(o => teamIds.Contains(o.TeamId));
+        }
+
+        return query;
+    }
+
+    private static IQueryable<OperatorEntity> ApplyDataScope(IQueryable<OperatorEntity> query, DataScope scope)
+    {
+        if (scope.IsGlobal)
+        {
+            return query;
+        }
+
+        if (scope.OperatorIds is null && scope.TeamIds is null)
+        {
+            return query.Where(_ => false);
+        }
+
+        if (scope.TeamIds?.Any() == true)
+        {
+            query = query.Where(o => scope.TeamIds.Contains(o.TeamId));
         }
 
         return query;

@@ -72,6 +72,34 @@ public sealed class OperatorMapperTests
         response.IsActive.Should().Be(entity.IsActive);
         response.TeamId.Should().Be(team.Id);
         response.TeamName.Should().Be(team.Name);
+        response.CreatedAt.Should().Be(entity.CreatedAt);
+        response.Email.Should().Be(entity.User.Email);
+        response.MustChangePassword.Should().Be(entity.User.MustChangePassword);
+    }
+
+    [Fact]
+    public void ToDetailedResponse_ShouldMapGetOperatorByIdResponse()
+    {
+        var team = _testsFixtures.MakeTeam();
+        var entity = _testsFixtures.MakeOperator(team: team);
+
+        entity.AddApplication(_fixture.Create<RentalApplicationEntity>());
+
+        var response = entity.ToDetailedResponse(entity.Applications.Count());
+
+        response.Should().NotBeNull();
+        response.Id.Should().Be(entity.Id);
+        response.IsActive.Should().Be(entity.IsActive);
+        response.CreatedAt.Should().Be(entity.CreatedAt);
+        response.UpdatedAt.Should().Be(entity.UpdatedAt);
+        response.Name.Should().Be(entity.Name);
+        response.Role.Should().Be(entity.Role);
+        response.TeamId.Should().Be(entity.TeamId);
+        response.TeamName.Should().Be(entity.Team.Name);
+        response.Email.Should().Be(entity.User.Email);
+        response.MustChangePassword.Should().Be(entity.User.MustChangePassword);
+        response.UserId.Should().Be(entity.User.Id);
+        response.ApplicationsCount.Should().Be(entity.Applications.Count());
     }
 
     [Fact]
@@ -83,11 +111,7 @@ public sealed class OperatorMapperTests
             _testsFixtures.MakeOperator()
         };
 
-        var pagedResult = new PagedResult<OperatorEntity>(
-            entities,
-            totalResults: 10,
-            page: 2,
-            pageSize: 2);
+        var pagedResult = new PagedResult<OperatorEntity>(entities, totalResults: 10, page: 2, pageSize: 2);
 
         var response = pagedResult.ToResponse();
 

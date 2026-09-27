@@ -17,6 +17,18 @@ public sealed class OperatorController(ICommandMediator _commandMediator, IQuery
             : ApiResponseHelper.HandleError(result.Error);
     }
 
+    [HttpGet("{id:guid}")]
+    [Authorize]
+    public async Task<IActionResult> GetOperatorByIdAsync([FromRoute] Guid id, CancellationToken cancellationToken)
+    {
+        var query = new GetOperatorByIdQuery(id);
+        var result = await _queryMediator.QueryAsync(query, cancellationToken);
+
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : ApiResponseHelper.HandleError(result.Error);
+    }
+
     [HttpPost]
     [Authorize(Roles = $"{nameof(OperatorRole.Administrator)},{nameof(OperatorRole.Manager)}")]
     public async Task<IActionResult> AddOperatorAsync([FromBody] AddOperatorRequest request, CancellationToken cancellationToken)

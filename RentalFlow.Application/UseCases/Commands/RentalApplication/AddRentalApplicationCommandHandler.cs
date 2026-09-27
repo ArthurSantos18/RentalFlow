@@ -6,7 +6,7 @@ public sealed class AddRentalApplicationCommandHandler(
     IPropertyRepository _propertyRepository,
     IOperatorRepository _operatorRepository,
     ICurrentUserService _currentUserService
-) : ICommandHandler<AddRentalApplicationCommand, Result<Guid>>
+    ) : ICommandHandler<AddRentalApplicationCommand, Result<Guid>>
 {
     public async Task<Result<Guid>> HandleAsync(AddRentalApplicationCommand command, CancellationToken cancellationToken)
     {

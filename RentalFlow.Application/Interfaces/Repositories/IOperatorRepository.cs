@@ -2,5 +2,7 @@
 
 public interface IOperatorRepository : IBaseRepository<OperatorEntity>
 {
-    Task<PagedResult<OperatorEntity>> GetOperatorsAsync(GetOperatorRequest request, CancellationToken cancellationToken);
+    Task<PagedResult<OperatorEntity>> GetOperatorsAsync(GetOperatorRequest request, DataScope scope, CancellationToken cancellationToken);
+    Task<OperatorEntity?> GetByIdWithDetailsAsync(Guid id, CancellationToken cancellationToken);
+    Task<int> CountActiveAdminsAsync(CancellationToken cancellationToken);
 }

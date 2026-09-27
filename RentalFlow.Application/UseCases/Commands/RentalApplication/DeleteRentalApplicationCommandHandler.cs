@@ -3,7 +3,7 @@
 public sealed class DeleteRentalApplicationCommandHandler(
     IRentalApplicationRepository _rentalApplicationRepository,
     ICurrentUserService _currentUserService
-) : ICommandHandler<DeleteRentalApplicationCommand, Result>
+    ) : ICommandHandler<DeleteRentalApplicationCommand, Result>
 {
     public async Task<Result> HandleAsync(DeleteRentalApplicationCommand command, CancellationToken cancellationToken)
     {

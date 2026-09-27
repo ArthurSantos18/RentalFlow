@@ -41,6 +41,12 @@ public sealed class OperatorEntity : BaseEntity<OperatorEntity>
         return this;
     }
 
+    public OperatorEntity SetUser(UserEntity user)
+    {
+        User = user;
+        return this;
+    }
+
     public OperatorEntity AddApplication(RentalApplicationEntity application)
     {
         Applications.Add(application);

@@ -53,8 +53,29 @@ public static class OperatorMapper
             IsActive = entity.IsActive,
             TeamId = entity.TeamId,
             TeamName = entity.Team.Name,
+            Email = entity.User.Email,
+            MustChangePassword = entity.User.MustChangePassword,
             CreatedAt = entity.CreatedAt,
             UpdatedAt = entity.UpdatedAt,
+        };
+    }
+
+    public static GetOperatorByIdResponse ToDetailedResponse(this OperatorEntity entity, int rentalApplicationsCount)
+    {
+        return new GetOperatorByIdResponse
+        {
+            Id = entity.Id,
+            IsActive = entity.IsActive,
+            CreatedAt = entity.CreatedAt,
+            UpdatedAt = entity.UpdatedAt,
+            Name = entity.Name,
+            Role = entity.Role,
+            TeamId = entity.TeamId,
+            TeamName = entity.Team?.Name ?? string.Empty,
+            Email = entity.User?.Email ?? string.Empty,
+            MustChangePassword = entity.User?.MustChangePassword ?? false,
+            UserId = entity.User?.Id ?? Guid.Empty,
+            ApplicationsCount = rentalApplicationsCount
         };
     }
 

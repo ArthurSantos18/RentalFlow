@@ -3,7 +3,7 @@
 public sealed class UpdateRentalApplicationStatusCommandHandler(
     IRentalApplicationRepository _rentalApplicationRepository,
     ICurrentUserService _currentUserService
-) : ICommandHandler<UpdateRentalApplicationStatusCommand, Result>
+    ) : ICommandHandler<UpdateRentalApplicationStatusCommand, Result>
 {
     public async Task<Result> HandleAsync(UpdateRentalApplicationStatusCommand command, CancellationToken cancellationToken)
     {

@@ -1,4 +1,5 @@
-﻿using System.Net.Mail;
+﻿using Azure;
+using System.Net.Mail;
 
 namespace RentalFlow.Tests.Fixtures;
 
@@ -78,14 +79,17 @@ public sealed class TestsFixtures(Fixture fixture)
         TeamEntity? team = null,
         Guid? teamId = null,
         Guid? id = null,
-        bool? isActive = null)
+        bool? isActive = null,
+        UserEntity? user = null)
     {
-        return new OperatorEntity(
+        var @operator = new OperatorEntity(
             name ?? fixture.Create<string>(),
             role ?? fixture.Create<OperatorRole>(),
             team ?? MakeTeam(id: teamId))
             .SetId(id ?? fixture.Create<Guid>())
             .SetIsActive(isActive ?? fixture.Create<bool>());
+
+        return @operator.SetUser(user ?? MakeUser(@operator: @operator));
     }
 
     public RentalApplicationEntity MakeRentalApplication(
