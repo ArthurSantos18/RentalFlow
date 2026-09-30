@@ -1,32 +1,12 @@
-﻿global using Scalar.AspNetCore;
-
-global using LiteBus.Commands;
+﻿global using LiteBus.Commands;
 global using LiteBus.Messaging;
 global using LiteBus.Queries;
 
 global using LiteBus.Extensions.Microsoft.DependencyInjection;
 
-global using Microsoft.EntityFrameworkCore;
-global using Microsoft.OpenApi;
-
-global using Microsoft.AspNetCore.Authentication.JwtBearer;
-global using Microsoft.AspNetCore.Builder;
-
-global using Microsoft.IdentityModel.Tokens;
-
-global using System.Text;
-
 global using FluentValidation;
-global using FluentValidation.AspNetCore;
 
-global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.Extensions.Hosting;
-
-global using RentalFlow.Infrastructure.Data;
-global using RentalFlow.Infrastructure.Repositories;
-global using RentalFlow.Infrastructure.Services;
-global using RentalFlow.Infrastructure.Settings;
 
 global using RentalFlow.Application.UseCases.Commands.Applicant;
 global using RentalFlow.Application.UseCases.Queries.Applicant;
@@ -40,8 +20,7 @@ global using RentalFlow.Application.Requests.Property;
 global using RentalFlow.Application.Requests.RentalApplication;
 
 global using RentalFlow.Application.Validators.RentalApplication;
-global using RentalFlow.Application.Validators.Applicant;
-global using RentalFlow.Application.Validators.Operator;
+global using RentalFlow.Application.Validators.Applicant;global using RentalFlow.Application.Validators.Operator;
 global using RentalFlow.Application.Validators.Property;
 
 global using RentalFlow.Application.Services;

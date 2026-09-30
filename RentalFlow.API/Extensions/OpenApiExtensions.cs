@@ -1,4 +1,4 @@
-﻿namespace RentalFlow.Crosscutting.Extensions;
+﻿namespace RentalFlow.API.Extensions;
 
 public static class OpenApiExtensions
 {

@@ -1,8 +1,8 @@
 ﻿namespace RentalFlow.Application.Validators.Operator;
 
-public sealed class GetOperatorsRequestValidator : AbstractValidator<GetOperatorRequest>
+public sealed class GetOperatorRequestValidator : AbstractValidator<GetOperatorRequest>
 {
-    public GetOperatorsRequestValidator()
+    public GetOperatorRequestValidator()
     {
         RuleForEach(x => x.Ids)
             .NotEmpty()

@@ -1,9 +1,9 @@
 ﻿namespace RentalFlow.Tests.Application.Validators.Operator;
 
-public sealed class GetOperatorsRequestValidatorTests
+public sealed class GetOperatorRequestValidatorTests
 {
     private readonly Fixture _fixture = new();
-    private readonly GetOperatorsRequestValidator _validator = new();
+    private readonly GetOperatorRequestValidator _validator = new();
 
     [Fact]
     public void Validate_Ids_ShouldHaveError_WhenEmpty()

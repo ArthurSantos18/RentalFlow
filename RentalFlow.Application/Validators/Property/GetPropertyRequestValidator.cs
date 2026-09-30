@@ -1,8 +1,8 @@
 ﻿namespace RentalFlow.Application.Validators.Property;
 
-public sealed class GetPropertiesRequestValidator : AbstractValidator<GetPropertyRequest>
+public sealed class GetPropertyRequestValidator : AbstractValidator<GetPropertyRequest>
 {
-    public GetPropertiesRequestValidator()
+    public GetPropertyRequestValidator()
     {
         RuleFor(x => x.MinRentPrice)
             .GreaterThanOrEqualTo(0)

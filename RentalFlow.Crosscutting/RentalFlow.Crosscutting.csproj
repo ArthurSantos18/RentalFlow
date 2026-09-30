@@ -2,20 +2,14 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RentalFlow.Application\RentalFlow.Application.csproj" />
-    <ProjectReference Include="..\RentalFlow.Infrastructure\RentalFlow.Infrastructure.csproj" />
+    <ProjectReference Include="..\RentalFlow.Domain\RentalFlow.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="12.1.1" />
-    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
-    <PackageReference Include="LiteBus.Commands.Extensions.Microsoft.DependencyInjection" Version="6.0.2" />
+    <PackageReference Include="LiteBus" Version="6.0.2" />
     <PackageReference Include="LiteBus.Extensions.Microsoft.DependencyInjection" Version="6.0.2" />
-    <PackageReference Include="LiteBus.Messaging.Extensions.Microsoft.DependencyInjection" Version="6.0.2" />
-    <PackageReference Include="LiteBus.Queries.Extensions.Microsoft.DependencyInjection" Version="6.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.12" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.11" />
-    <PackageReference Include="Scalar.AspNetCore" Version="2.17.1" />
   </ItemGroup>
 
   <PropertyGroup>

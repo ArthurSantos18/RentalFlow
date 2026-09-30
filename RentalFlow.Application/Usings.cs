@@ -1,6 +1,8 @@
 ﻿global using LiteBus.Commands.Abstractions;
 global using LiteBus.Queries.Abstractions;
 
+global using Microsoft.Extensions.DependencyInjection;
+
 global using FluentValidation;
 
 global using System.Linq.Expressions;
@@ -11,6 +13,7 @@ global using RentalFlow.Application.Interfaces.Repositories;
 global using RentalFlow.Application.Interfaces.Services;
 
 global using RentalFlow.Application.Mappers;
+global using RentalFlow.Application.Services;
 global using RentalFlow.Application.Models;
 global using RentalFlow.Application.Responses;
 

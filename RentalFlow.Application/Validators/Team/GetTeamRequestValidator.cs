@@ -1,8 +1,8 @@
 ﻿namespace RentalFlow.Application.Validators.Team;
 
-public sealed class GetTeamsRequestValidator : AbstractValidator<GetTeamRequest>
+public sealed class GetTeamRequestValidator : AbstractValidator<GetTeamRequest>
 {
-    public GetTeamsRequestValidator()
+    public GetTeamRequestValidator()
     {
         RuleForEach(x => x.Ids)
             .NotEmpty()

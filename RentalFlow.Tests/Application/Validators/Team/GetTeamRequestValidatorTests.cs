@@ -1,9 +1,9 @@
 namespace RentalFlow.Tests.Application.Validators.Team;
 
-public sealed class GetTeamsRequestValidatorTests
+public sealed class GetTeamRequestValidatorTests
 {
     private readonly Fixture _fixture = new();
-    private readonly GetTeamsRequestValidator _validator = new();
+    private readonly GetTeamRequestValidator _validator = new();
 
     [Fact]
     public void Validate_Ids_ShouldHaveError_WhenContainsEmptyId()

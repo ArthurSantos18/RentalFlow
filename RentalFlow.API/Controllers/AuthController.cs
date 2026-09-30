@@ -4,6 +4,13 @@
 [ApiController]
 public class AuthController(ICommandMediator _commandMediator) : ControllerBase
 {
+
+    [HttpGet("throw")]
+    public IActionResult Throw()
+    {
+        throw new InvalidOperationException("Testando o handler global.");
+    }
+
     [HttpPost("login")]
     [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] LoginRequest request, CancellationToken cancellationToken)

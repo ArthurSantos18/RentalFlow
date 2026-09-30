@@ -1,4 +1,4 @@
-﻿namespace RentalFlow.Infrastructure.Services;
+﻿namespace RentalFlow.API.Services;
 
 public sealed class CurrentUserService(IHttpContextAccessor httpContextAccessor) : ICurrentUserService
 {

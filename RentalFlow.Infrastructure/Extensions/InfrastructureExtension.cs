@@ -1,4 +1,4 @@
-﻿namespace RentalFlow.Crosscutting.Extensions;
+﻿namespace RentalFlow.Infrastructure.Extensions;
 
 public static class InfrastructureExtension
 {
@@ -7,7 +7,7 @@ public static class InfrastructureExtension
         services.AddDatabase(configuration.GetConnectionString("DefaultConnection")!);
         services.AddRepositories();
         services.AddSettings(configuration);
-        services.AddServices();
+        services.AddInfraServices();
 
         return services;
     }

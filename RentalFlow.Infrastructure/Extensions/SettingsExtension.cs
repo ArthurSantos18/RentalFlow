@@ -1,4 +1,4 @@
-﻿namespace RentalFlow.Crosscutting.Extensions;
+﻿namespace RentalFlow.Infrastructure.Extensions;
 
 public static class SettingsExtension
 {

@@ -1,9 +1,9 @@
 ﻿namespace RentalFlow.Tests.Application.Validators.Property;
 
-public sealed class GetPropertiesRequestValidatorTests
+public sealed class GetPropertyRequestValidatorTests
 {
     private readonly Fixture _fixture = new();
-    private readonly GetPropertiesRequestValidator _validator = new();
+    private readonly GetPropertyRequestValidator _validator = new();
 
     [Theory]
     [InlineData(-1, "Minimum rent price cannot be negative.")]

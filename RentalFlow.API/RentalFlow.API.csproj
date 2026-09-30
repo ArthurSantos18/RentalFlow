@@ -8,8 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\RentalFlow.Domain\RentalFlow.Domain.csproj" />
     <ProjectReference Include="..\RentalFlow.Application\RentalFlow.Application.csproj" />
     <ProjectReference Include="..\RentalFlow.Crosscutting\RentalFlow.Crosscutting.csproj" />
+    <ProjectReference Include="..\RentalFlow.Infrastructure\RentalFlow.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,6 +19,9 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.11" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.17.1" />
   </ItemGroup>
 
 </Project>
