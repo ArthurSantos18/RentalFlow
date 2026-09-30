@@ -66,7 +66,7 @@ public sealed class GetOperatorByIdQueryHandlerTests
         result.Error.Should().Be(UserErrors.Forbidden);
 
         _repositoryMock.Verify(r => r.GetByIdWithDetailsAsync(query.Id, It.IsAny<CancellationToken>()), Times.Once);
-        _currentUserServiceMock.Verify(s => s.Role, Times.Once);
+        _currentUserServiceMock.Verify(s => s.Role, Times.Exactly(2));
         _currentUserServiceMock.Verify(s => s.TeamId, Times.Never);
         _currentUserServiceMock.Verify(s => s.OperatorId, Times.Never);
 
@@ -193,7 +193,7 @@ public sealed class GetOperatorByIdQueryHandlerTests
         result.Error.Should().Be(UserErrors.Forbidden);
 
         _repositoryMock.Verify(r => r.GetByIdWithDetailsAsync(query.Id, It.IsAny<CancellationToken>()), Times.Once);
-        _currentUserServiceMock.Verify(s => s.Role, Times.Once);
+        _currentUserServiceMock.Verify(s => s.Role, Times.Exactly(2));
         _currentUserServiceMock.Verify(s => s.TeamId, Times.Once);
         _currentUserServiceMock.Verify(s => s.OperatorId, Times.Never);
 
@@ -276,7 +276,7 @@ public sealed class GetOperatorByIdQueryHandlerTests
         result.Error.Should().Be(UserErrors.Forbidden);
 
         _repositoryMock.Verify(r => r.GetByIdWithDetailsAsync(query.Id, It.IsAny<CancellationToken>()), Times.Once);
-        _currentUserServiceMock.Verify(s => s.Role, Times.Once);
+        _currentUserServiceMock.Verify(s => s.Role, Times.Exactly(2));
         _currentUserServiceMock.Verify(s => s.OperatorId, Times.Once);
         _currentUserServiceMock.Verify(s => s.TeamId, Times.Never);
 
