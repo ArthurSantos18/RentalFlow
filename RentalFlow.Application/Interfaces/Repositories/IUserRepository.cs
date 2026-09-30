@@ -2,9 +2,9 @@
 
 public interface IUserRepository : IBaseRepository<UserEntity>
 {
-    Task<UserEntity?> GetByEmailAsync(string email, CancellationToken cancellationToken = default);
-    Task<UserEntity?> GetByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default);
-    Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken = default);
-    Task<UserEntity?> GetByOperatorIdAsync(Guid operatorId, CancellationToken cancellationToken = default);
-    Task<PagedResult<UserEntity>> GetUsersAsync(GetUserRequest request, CancellationToken cancellationToken = default);
+    Task<UserEntity?> GetByEmailAsync(string email, CancellationToken cancellationToken);
+    Task<UserEntity?> GetByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken);
+    Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken);
+    Task<UserEntity?> GetByOperatorIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<PagedResult<UserEntity>> GetUsersAsync(GetUserRequest request, CancellationToken cancellationToken);
 }

@@ -2,16 +2,16 @@
 
 public sealed class UserTokenRepository(AppDbContext context) : BaseRepository<UserTokenEntity>(context), IUserTokenRepository
 {
-    public async Task<UserTokenEntity?> GetByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default)
+    public async Task<UserTokenEntity?> GetByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken)
     {
         return await _dbSet
             .Include(t => t.User).ThenInclude(u => u.Operator)
             .FirstOrDefaultAsync(t => t.RefreshToken == refreshToken, cancellationToken);
     }
 
-    public async Task RevokeAllByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
+    public async Task RevokeAllByUserIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        var tokens = await _dbSet.Where(t => t.UserId == userId && t.RevokedAt == null).ToListAsync(cancellationToken);
+        var tokens = await _dbSet.Where(t => t.UserId == id && t.RevokedAt == null).ToListAsync(cancellationToken);
 
         foreach (var token in tokens)
         {
@@ -19,13 +19,13 @@ public sealed class UserTokenRepository(AppDbContext context) : BaseRepository<U
         }
     }
 
-    public async Task<int> CountActiveByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
+    public async Task<int> CountActiveByUserIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return await _dbSet
-            .CountAsync(t => t.UserId == userId && t.RevokedAt == null && t.ExpiresAt > DateTime.UtcNow, cancellationToken);
+            .CountAsync(t => t.UserId == id && t.RevokedAt == null && t.ExpiresAt > DateTime.UtcNow, cancellationToken);
     }
 
-    public async Task<PagedResult<UserTokenEntity>> GetTokensAsync(GetUserTokenRequest request, CancellationToken cancellationToken = default)
+    public async Task<PagedResult<UserTokenEntity>> GetTokensAsync(GetUserTokenRequest request, CancellationToken cancellationToken)
     {
         var query = _dbSet.AsNoTracking().Include(t => t.User).AsQueryable();
 

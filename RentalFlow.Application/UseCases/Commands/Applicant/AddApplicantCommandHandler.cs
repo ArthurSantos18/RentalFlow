@@ -8,7 +8,7 @@ public sealed class AddApplicantCommandHandler(IApplicantRepository _applicantRe
 
         if (applicant is not null)
         {
-            return Result<Guid>.Failure(ApplicantErrors.ApplicantDoesExist);
+            return Result<Guid>.Failure(ApplicantErrors.ApplicantAlreadyExists);
         }
 
         var newApplicant = command.Request.ToEntity();

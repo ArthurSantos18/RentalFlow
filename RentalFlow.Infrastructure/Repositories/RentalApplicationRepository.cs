@@ -2,9 +2,19 @@
 
 public sealed class RentalApplicationRepository(AppDbContext context) : BaseRepository<RentalApplicationEntity>(context), IRentalApplicationRepository
 {
-    public async Task<int> CountByOperatorAsync(Guid operatorId, CancellationToken cancellationToken)
+    public async Task<int> CountByOperatorAsync(Guid id, CancellationToken cancellationToken)
     {
-        return await _dbSet.CountAsync(ra => ra.OperatorId == operatorId, cancellationToken);
+        return await _dbSet.CountAsync(ra => ra.OperatorId == id, cancellationToken);
+    }
+
+    public async Task<bool> PropertyHasApplicationsAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return await _dbSet.AnyAsync(ra => ra.PropertyId == id, cancellationToken);
+    }
+
+    public async Task<bool> ApplicantHasApplicationsAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return await _dbSet.AnyAsync(ra => ra.ApplicantId == id, cancellationToken);
     }
 
     public async Task<PagedResult<RentalApplicationEntity>> GetRentalApplicationsAsync(GetRentalApplicationRequest request, DataScope scope, CancellationToken cancellationToken)

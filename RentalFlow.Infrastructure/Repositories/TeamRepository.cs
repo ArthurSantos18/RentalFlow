@@ -2,6 +2,11 @@
 
 public sealed class TeamRepository(AppDbContext context) : BaseRepository<TeamEntity>(context), ITeamRepository
 {
+    public async Task<bool> NameExistsAsync(string name, CancellationToken cancellationToken)
+    {
+        return await _dbSet.AnyAsync(t => t.Name == name, cancellationToken);
+    }
+
     public async Task<PagedResult<TeamEntity>> GetTeamsAsync(GetTeamRequest request, CancellationToken cancellationToken)
     {
         var query = _context.Teams.AsNoTracking().AsQueryable();

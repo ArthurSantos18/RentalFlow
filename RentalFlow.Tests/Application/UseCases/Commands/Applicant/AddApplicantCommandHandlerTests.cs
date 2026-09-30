@@ -58,7 +58,7 @@ public sealed class AddApplicantCommandHandlerTests
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(ApplicantErrors.ApplicantDoesExist);
+        result.Error.Should().Be(ApplicantErrors.ApplicantAlreadyExists);
 
         _repositoryMock.Verify(r => r.GetByCpfAsync(request.Cpf, It.IsAny<CancellationToken>()), Times.Once);
         _repositoryMock.Verify(r => r.AddAsync(It.IsAny<ApplicantEntity>(), It.IsAny<CancellationToken>()), Times.Never);

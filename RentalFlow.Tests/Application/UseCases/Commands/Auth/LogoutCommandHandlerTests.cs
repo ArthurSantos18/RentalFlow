@@ -11,8 +11,7 @@ public sealed class LogoutCommandHandlerTests
 
     public LogoutCommandHandlerTests()
     {
-        _handler = new LogoutCommandHandler(
-            _userTokenRepositoryMock.Object);
+        _handler = new LogoutCommandHandler(_userTokenRepositoryMock.Object);
     }
 
     [Fact]

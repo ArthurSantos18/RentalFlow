@@ -4,48 +4,24 @@ public sealed class DeleteApplicantCommandHandlerTests
 {
     private readonly Fixture _fixture = new();
     private readonly TestsFixtures _testsFixtures = new(new Fixture());
-    private readonly Mock<IApplicantRepository> _repositoryMock = new();
+    private readonly Mock<IApplicantRepository> _applicantRepositoryMock = new();
+    private readonly Mock<IRentalApplicationRepository> _rentalApplicationRepositoryMock = new();
     private readonly DeleteApplicantCommandHandler _handler;
 
     public DeleteApplicantCommandHandlerTests()
     {
-        _handler = new DeleteApplicantCommandHandler(_repositoryMock.Object);
+        _handler = new DeleteApplicantCommandHandler(
+            _applicantRepositoryMock.Object,
+            _rentalApplicationRepositoryMock.Object);
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldSoftDeleteApplicant_WhenApplicantExists()
-    {
-        var applicantId = Guid.NewGuid();
-        var command = _fixture.Build<DeleteApplicantCommand>()
-            .With(c => c.Id, applicantId)
-            .Create();
-
-        var applicant = _testsFixtures.MakeApplicant(id: applicantId);
-
-        _repositoryMock
-            .Setup(r => r.GetByIdAsync(applicantId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(applicant);
-
-        var result = await _handler.HandleAsync(command, CancellationToken.None);
-
-        result.IsSuccess.Should().BeTrue();
-        applicant.IsDeleted.Should().BeTrue();
-        applicant.DeletedAt.Should().NotBeNull();
-        applicant.DeletedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
-
-        _repositoryMock.Verify(r => r.GetByIdAsync(applicantId, It.IsAny<CancellationToken>()), Times.Once);
-        _repositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-
-        _repositoryMock.VerifyNoOtherCalls();
-    }
-
-    [Fact]
-    public async Task HandleAsync_ShouldReturnFailure_WhenApplicantNotFound()
+    public async Task HandleAsync_ShouldReturnApplicantNotFound_WhenApplicantDoesNotExist()
     {
         var command = _fixture.Create<DeleteApplicantCommand>();
 
-        _repositoryMock
-            .Setup(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+        _applicantRepositoryMock
+            .Setup(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync((ApplicantEntity?)null);
 
         var result = await _handler.HandleAsync(command, CancellationToken.None);
@@ -53,9 +29,73 @@ public sealed class DeleteApplicantCommandHandlerTests
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be(ApplicantErrors.ApplicantNotFound);
 
-        _repositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
-        _repositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        _applicantRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _rentalApplicationRepositoryMock.Verify(r => r.ApplicantHasApplicationsAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _applicantRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
 
-        _repositoryMock.VerifyNoOtherCalls();
+        _applicantRepositoryMock.VerifyNoOtherCalls();
+        _rentalApplicationRepositoryMock.VerifyNoOtherCalls();
+    }
+
+    [Fact]
+    public async Task HandleAsync_ShouldReturnApplicantHasApplications_WhenApplicantHasApplications()
+    {
+        var applicant = _testsFixtures.MakeApplicant();
+        var command = _fixture.Build<DeleteApplicantCommand>()
+            .With(c => c.Id, applicant.Id)
+            .Create();
+
+        _applicantRepositoryMock
+            .Setup(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(applicant);
+
+        _rentalApplicationRepositoryMock
+            .Setup(r => r.ApplicantHasApplicationsAsync(applicant.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
+
+        var result = await _handler.HandleAsync(command, CancellationToken.None);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().Be(ApplicantErrors.ApplicantHasApplications);
+
+        _applicantRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _rentalApplicationRepositoryMock.Verify(r => r.ApplicantHasApplicationsAsync(applicant.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _applicantRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+
+        _applicantRepositoryMock.VerifyNoOtherCalls();
+        _rentalApplicationRepositoryMock.VerifyNoOtherCalls();
+    }
+
+    [Fact]
+    public async Task HandleAsync_ShouldDeleteApplicant_WhenApplicantHasNoApplications()
+    {
+        var applicant = _testsFixtures.MakeApplicant(isActive: false);
+        var command = _fixture.Build<DeleteApplicantCommand>()
+            .With(c => c.Id, applicant.Id)
+            .Create();
+
+        _applicantRepositoryMock
+            .Setup(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(applicant);
+
+        _rentalApplicationRepositoryMock
+            .Setup(r => r.ApplicantHasApplicationsAsync(applicant.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
+
+        _applicantRepositoryMock
+            .Setup(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        var result = await _handler.HandleAsync(command, CancellationToken.None);
+
+        result.IsSuccess.Should().BeTrue();
+        applicant.IsActive.Should().BeFalse();
+
+        _applicantRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _rentalApplicationRepositoryMock.Verify(r => r.ApplicantHasApplicationsAsync(applicant.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _applicantRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+
+        _applicantRepositoryMock.VerifyNoOtherCalls();
+        _rentalApplicationRepositoryMock.VerifyNoOtherCalls();
     }
 }

@@ -1,6 +1,9 @@
 ﻿namespace RentalFlow.Application.UseCases.Commands.Team;
 
-public sealed class DeleteTeamCommandHandler(ITeamRepository _teamRepository) : ICommandHandler<DeleteTeamCommand, Result>
+public sealed class DeleteTeamCommandHandler(
+    ITeamRepository _teamRepository,
+    IOperatorRepository _operatorRepository
+    ) : ICommandHandler<DeleteTeamCommand, Result>
 {
     public async Task<Result> HandleAsync(DeleteTeamCommand command, CancellationToken cancellationToken)
     {
@@ -9,6 +12,13 @@ public sealed class DeleteTeamCommandHandler(ITeamRepository _teamRepository) : 
         if (team is null)
         {
             return Result.Failure(TeamErrors.TeamNotFound);
+        }
+
+        var activeOperatorsCount = await _operatorRepository.CountActiveByTeamAsync(team.Id, cancellationToken);
+
+        if (activeOperatorsCount > 0)
+        {
+            return Result.Failure(TeamErrors.TeamHasActiveOperators);
         }
 
         team.MarkAsDeleted();

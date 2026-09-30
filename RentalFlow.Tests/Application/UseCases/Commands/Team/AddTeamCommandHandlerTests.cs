@@ -3,69 +3,61 @@ namespace RentalFlow.Tests.Application.UseCases.Commands.Team;
 public sealed class AddTeamCommandHandlerTests
 {
     private readonly Fixture _fixture = new();
-    private readonly TestsFixtures _testsFixtures = new(new Fixture());
-    private readonly Mock<ITeamRepository> _repositoryMock = new();
+    private readonly Mock<ITeamRepository> _teamRepositoryMock = new();
     private readonly AddTeamCommandHandler _handler;
 
     public AddTeamCommandHandlerTests()
     {
-        _handler = new AddTeamCommandHandler(_repositoryMock.Object);
+        _handler = new AddTeamCommandHandler(_teamRepositoryMock.Object);
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldAddTeam_WhenNameIsUnique()
+    public async Task HandleAsync_ShouldReturnTeamAlreadyExists_WhenTeamNameAlreadyExists()
     {
-        var request = _fixture.Build<AddTeamRequest>()
-            .With(r => r.Name, "Team Alpha")
-            .With(r => r.Description, "Description Alpha")
-            .Create();
+        var command = _fixture.Create<AddTeamCommand>();
 
-        var command = _fixture.Build<AddTeamCommand>()
-            .With(c => c.Request, request)
-            .Create();
-
-        _repositoryMock
-            .Setup(r => r.FindAsync(It.IsAny<Expression<Func<TeamEntity, bool>>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Enumerable.Empty<TeamEntity>());
-
-        var result = await _handler.HandleAsync(command, CancellationToken.None);
-
-        result.IsSuccess.Should().BeTrue();
-
-        _repositoryMock.Verify(r => r.FindAsync(It.IsAny<Expression<Func<TeamEntity, bool>>>(), It.IsAny<CancellationToken>()), Times.Once);
-        _repositoryMock.Verify(r => r.AddAsync(It.IsAny<TeamEntity>(), It.IsAny<CancellationToken>()), Times.Once);
-        _repositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-
-        _repositoryMock.VerifyNoOtherCalls();
-    }
-
-    [Fact]
-    public async Task HandleAsync_ShouldReturnConflict_WhenNameAlreadyExists()
-    {
-        var request = _fixture.Build<AddTeamRequest>()
-            .With(r => r.Name, "Team Existing")
-            .With(r => r.Description, "Description Existing")
-            .Create();
-
-        var command = _fixture.Build<AddTeamCommand>()
-            .With(c => c.Request, request)
-            .Create();
-
-        var existingTeam = _testsFixtures.MakeTeam(name: request.Name);
-
-        _repositoryMock
-            .Setup(r => r.FindAsync(It.IsAny<Expression<Func<TeamEntity, bool>>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new[] { existingTeam });
+        _teamRepositoryMock
+            .Setup(r => r.NameExistsAsync(command.Request.Name, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
 
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(TeamErrors.TeamDoesExist);
+        result.Error.Should().Be(TeamErrors.TeamAlreadyExists);
 
-        _repositoryMock.Verify(r => r.FindAsync(It.IsAny<Expression<Func<TeamEntity, bool>>>(), It.IsAny<CancellationToken>()), Times.Once);
-        _repositoryMock.Verify(r => r.AddAsync(It.IsAny<TeamEntity>(), It.IsAny<CancellationToken>()), Times.Never);
-        _repositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        _teamRepositoryMock.Verify(r => r.NameExistsAsync(command.Request.Name, It.IsAny<CancellationToken>()), Times.Once);
+        _teamRepositoryMock.Verify(r => r.AddAsync(It.IsAny<TeamEntity>(), It.IsAny<CancellationToken>()), Times.Never);
+        _teamRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
 
-        _repositoryMock.VerifyNoOtherCalls();
+        _teamRepositoryMock.VerifyNoOtherCalls();
+    }
+
+    [Fact]
+    public async Task HandleAsync_ShouldAddTeam_WhenTeamNameDoesNotExist()
+    {
+        var command = _fixture.Create<AddTeamCommand>();
+
+        _teamRepositoryMock
+            .Setup(r => r.NameExistsAsync(command.Request.Name, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
+
+        _teamRepositoryMock
+            .Setup(r => r.AddAsync(It.IsAny<TeamEntity>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        _teamRepositoryMock
+            .Setup(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        var result = await _handler.HandleAsync(command, CancellationToken.None);
+
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().NotBeEmpty();
+
+        _teamRepositoryMock.Verify(r => r.NameExistsAsync(command.Request.Name, It.IsAny<CancellationToken>()), Times.Once);
+        _teamRepositoryMock.Verify(r => r.AddAsync(It.Is<TeamEntity>(t => t.Name == command.Request.Name), It.IsAny<CancellationToken>()), Times.Once);
+        _teamRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+
+        _teamRepositoryMock.VerifyNoOtherCalls();
     }
 }

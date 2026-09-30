@@ -11,7 +11,7 @@ public sealed class DeleteOperatorCommandHandlerTests
 
     public DeleteOperatorCommandHandlerTests()
     {
-        _handler = new(
+        _handler = new DeleteOperatorCommandHandler(
             _operatorRepositoryMock.Object,
             _userTokenRepositoryMock.Object,
             _currentUserServiceMock.Object);

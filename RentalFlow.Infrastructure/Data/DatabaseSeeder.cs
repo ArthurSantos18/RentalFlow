@@ -20,7 +20,7 @@ public static class DatabaseSeeder
             throw new InvalidOperationException("Seed credentials are not configured.");
         }
 
-        var existingUser = await userRepository.GetByEmailAsync(settings.AdminEmail);
+        var existingUser = await userRepository.GetByEmailAsync(settings.AdminEmail, CancellationToken.None);
 
         if (existingUser is not null)
         {

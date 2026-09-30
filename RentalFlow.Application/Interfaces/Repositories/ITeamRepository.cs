@@ -3,4 +3,5 @@
 public interface ITeamRepository : IBaseRepository<TeamEntity>
 {
     Task<PagedResult<TeamEntity>> GetTeamsAsync(GetTeamRequest request, CancellationToken cancellationToken);
+    Task<bool> NameExistsAsync(string name, CancellationToken cancellationToken);
 }

@@ -7,6 +7,11 @@ public sealed class OperatorRepository(AppDbContext context) : BaseRepository<Op
         return await _dbSet.CountAsync(o => o.Role == OperatorRole.Administrator && o.IsActive && !o.IsDeleted, cancellationToken);
     }
 
+    public async Task<int> CountActiveByTeamAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return await _dbSet.CountAsync(o => o.TeamId == id && o.IsActive && !o.IsDeleted, cancellationToken);
+    }
+
     public async Task<OperatorEntity?> GetByIdWithDetailsAsync(Guid id, CancellationToken cancellationToken)
     {
         return await _dbSet.Include(o => o.Team).Include(o => o.User).FirstOrDefaultAsync(o => o.Id == id, cancellationToken);

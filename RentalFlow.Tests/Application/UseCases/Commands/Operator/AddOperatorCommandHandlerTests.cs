@@ -4,7 +4,6 @@ public sealed class AddOperatorCommandHandlerTests
 {
     private readonly Fixture _fixture = new();
     private readonly TestsFixtures _testsFixtures = new(new Fixture());
-
     private readonly Mock<IOperatorRepository> _operatorRepositoryMock = new();
     private readonly Mock<ITeamRepository> _teamRepositoryMock = new();
     private readonly Mock<IUserRepository> _userRepositoryMock = new();

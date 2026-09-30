@@ -25,7 +25,7 @@ public sealed class TeamController(ICommandMediator _commandMediator, IQueryMedi
 
         return result.IsSuccess
             ? Ok(result.Value)
-            : BadRequest(result.Error);
+            : ApiResponseHelper.HandleError(result.Error);
     }
 
     [HttpPost]

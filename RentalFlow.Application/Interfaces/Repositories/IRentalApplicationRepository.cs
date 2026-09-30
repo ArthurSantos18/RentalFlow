@@ -4,4 +4,6 @@ public interface IRentalApplicationRepository : IBaseRepository<RentalApplicatio
 {
     Task<PagedResult<RentalApplicationEntity>> GetRentalApplicationsAsync(GetRentalApplicationRequest request, DataScope scope, CancellationToken cancellationToken);
     Task<int> CountByOperatorAsync(Guid id, CancellationToken cancellationToken);
+    Task<bool> PropertyHasApplicationsAsync(Guid id, CancellationToken cancellationToken);
+    Task<bool> ApplicantHasApplicationsAsync(Guid id, CancellationToken cancellationToken);
 }

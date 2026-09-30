@@ -40,7 +40,7 @@ public sealed class PropertyController(ICommandMediator _commandMediator, IQuery
     }
 
     [HttpPatch("{id:guid}")]
-    public async Task<IActionResult> UpdateApplicantAsync([FromRoute] Guid id, [FromBody] UpdatePropertyRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdatePropertyAsync([FromRoute] Guid id, [FromBody] UpdatePropertyRequest request, CancellationToken cancellationToken)
     {
         var command = new UpdatePropertyCommand(id, request);
         var result = await _commandMediator.SendAsync(command, cancellationToken);
