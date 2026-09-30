@@ -14,15 +14,17 @@ O projeto está sendo desenvolvido com foco em boas práticas de desenvolvimento
 
 | Tecnologia | Finalidade |
 |------------|------------|
-| .NET | Plataforma de desenvolvimento |
+| .NET 10 | Plataforma de desenvolvimento |
 | C# | Linguagem principal |
 | Entity Framework Core | ORM para acesso a dados (SQL Server) |
 | LiteBus | Barramento de mensagens para CQRS |
 | FluentValidation | Validação de dados |
-| Moq / AutoFixture / xUnit | Testes unitários |
 | SQL Server | Banco de dados relacional |
 | JSON Web Token (JWT) | Autenticação e Autorização |
 | BCrypt | Criptografia de senhas |
+| Scalar | Documentação interativa da API |
+| xUnit / Moq / AutoFixture | Testes unitários |
+| Serilog | Logging estruturado (console e arquivo) |
 
 ---
 
@@ -32,38 +34,49 @@ O projeto está sendo desenvolvido com foco em boas práticas de desenvolvimento
 RentalFlow/
 ├── RentalFlow.API/                 # Camada de Apresentação (Controllers, Middleware)
 │   ├── Controllers/
+│   ├── Extensions/
+│   ├── Filters/
+│   ├── Handlers/
 │   ├── Helpers/
+│   ├── Middlewares/
+│   ├── Services/
 │   └── Program.cs
 │   └── Usings.cs
 ├── RentalFlow.Application/         # Camada de Aplicação (Handlers, Commands, Queries)
+│   ├── Extensions/
+│   ├── Interfaces/
+│   ├── Mappers/
+│   ├── Models/
+│   ├── Requests/
+│   ├── Responses/
+│   ├── Services/
 │   ├── UseCases/
 │   │   ├── Commands/
 │   │   └── Queries/
-│   ├── Mappers/
-│   ├── Requests/
-│   ├── Responses/
-│   ├── Interfaces/
 │   └── Validators/
 │   └── Usings.cs
 ├── RentalFlow.Domain/              # Camada de Domínio (Entidades, Enums, Value Objects)
 │   ├── Entities/
 │   ├── Enums/
 │   ├── Errors/
-│   ├── Patterns/
 │   └── Helpers/
+│   ├── Patterns/
 │   └── ValueObject/
 │   └── Usings.cs
 ├── RentalFlow.Infrastructure/      # Camada de Infraestrutura (DbContext, Repositories)
 │   ├── Data/
 │   ├── Extensions/
+│   ├── Migrations/
 │   ├── Repositories/
+│   ├── Services/
+│   ├── Settings/
 │   └── Usings.cs/
 ├── RentalFlow.Crosscutting/        # Preocupações Transversais (Validações, Configurações)
 │   ├── Extensions/
 └── RentalFlow.Tests/               # Testes Unitários
     ├── Application/
     ├── Fixtures/
-│   └── Usings.cs
+    └── Usings.cs
 ```
 
 ---
@@ -92,21 +105,40 @@ RentalFlow/
 - [x] **RentalApplication** – Cadastro, consulta, atualização, mudança de status, soft delete.
 - [x] **Team** - Cadastro, consulta, atualização, soft delete.
 
-### ✅ Autenticação
+### 🔒 Autenticação
 
 - [x] **Login** - Login de usuário com geração de token Jwt.
 - [x] **Refresh** - Refresh token com endpoint para renovação do mesmo.
-- [ ] **Password** - Senha criptografada, com opção de mudança.
+- [x] **Password** - Senha criptografada, com opção de mudança.
+- [x] **Logout** - Revogação de refresh token.
+- [x] **Autorização por papéis** – `Broker`, `Manager`, `Administrator` com regras específicas de acesso.
+- [x] **Data Scope** – Filtro automático de dados por time/operador conforme o papel do usuário.
+
+### 📊 Observabilidade
+
+- [x] **Serilog** – Logging estruturado com saída para console e arquivo.
+- [x] **LogContext por request** – `UserId` e `Role` injetados automaticamente nos logs via middleware.
+- [x] **Logs de Commands** – Início, sucesso e warnings com `ErrorCode` + `ErrorMessage`.
+
+### 🌐 API
+
+- [x] **Scalar** – Documentação interativa em `/scalar`.
+- [x] **OpenAPI** – Especificação gerada automaticamente.
+- [x] **JWT Bearer** – Autenticação via `Authorization: Bearer <token>`.
 
 ### 📦 Padrões e Boas Práticas
 
 - **Clean Architecture** – Separação clara de responsabilidades.
 - **CQRS** – Commands (escrita) e Queries (leitura) separados.
 - **Result Pattern** – Tratamento explícito de sucesso/erro.
+- **Repository Pattern** – Abstração do acesso a dados por agregado.
 - **Soft Delete** – Exclusão lógica com `IsDeleted`.
 - **Value Objects** – `Address` encapsulado.
 - **FluentValidation** – Validação centralizada.
 - **Global Using** - Utilização de global using para centralização.
+- **User Secrets** – Credenciais sensíveis fora do versionamento.
+- **Migrations** – Versionamento do schema via EF Core Migrations.
+- **Global Exception Handler** – Tratamento centralizado de exceções.
 
 ---
 
@@ -114,7 +146,7 @@ RentalFlow/
 
 ### Pré‑requisitos
 
-- [.NET 8.0 SDK](https://dotnet.microsoft.com/download)
+- [.NET 10.0 SDK](https://dotnet.microsoft.com/download)
 - [SQL Server 2022](https://www.microsoft.com/pt-br/sql-server/sql-server-downloads) (ou SQL Server Express/LocalDB)
 - [Git](https://git-scm.com/)
 
@@ -150,12 +182,13 @@ dotnet user-secrets set "Seed:TeamName" "nome-do-grupo-do-administrador" --proje
     "Issuer": "sua-issuer",
     "Audience": "sua-audience",
     "SecretKey": "sua-secret-key",
-    "AccessTokenExpirationMinutes": 0, // Tempo em minutos de duração do access token
-    "RefreshTokenExpirationDays": 0 // Tempo em dias de duração do refresh token
+    "AccessTokenExpirationMinutes": 0,
+    "RefreshTokenExpirationDays": 0
   }
 }
 ```
-
+> `AccessTokenExpirationMinutes`: duração do access token em minutos.  
+> `RefreshTokenExpirationDays`: duração do refresh token em dias.
 
 4. **Restaure os pacotes e compile**
 
@@ -178,7 +211,7 @@ dotnet run --project RentalFlow.API
 
 7. **Acesse a API (Scalar)**
 
-   Abra o navegador em: `https://localhost:5001/scalar`
+   Abra o navegador em `https://localhost:<porta>/scalar` (a porta é definida em `Properties/launchSettings.json`).
 
 ---
 
