@@ -1,4 +1,4 @@
-﻿namespace RentalFlow.Tests.Application.UseCases.Queries.Operator;
+﻿namespace RentalFlow.Tests.Application.UseCases.Queries;
 
 public sealed class GetOperatorByIdQueryHandlerTests
 {
@@ -7,6 +7,7 @@ public sealed class GetOperatorByIdQueryHandlerTests
     private readonly Mock<IOperatorRepository> _repositoryMock = new();
     private readonly Mock<IRentalApplicationRepository> _rentalApplicationRepositoryMock = new();
     private readonly Mock<ICurrentUserService> _currentUserServiceMock = new();
+    private readonly Mock<ILogger<GetOperatorByIdQueryHandler>> _loggerMock = new();
     private readonly GetOperatorByIdQueryHandler _handler;
 
     public GetOperatorByIdQueryHandlerTests()
@@ -16,7 +17,8 @@ public sealed class GetOperatorByIdQueryHandlerTests
         _handler = new GetOperatorByIdQueryHandler(
             _repositoryMock.Object,
             _rentalApplicationRepositoryMock.Object,
-            _currentUserServiceMock.Object);
+            _currentUserServiceMock.Object,
+            _loggerMock.Object);
     }
 
     [Fact]
@@ -150,7 +152,7 @@ public sealed class GetOperatorByIdQueryHandlerTests
 
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().BeEquivalentTo(
-            @operator.ToDetailedResponse(@operator.Applications.Count()));
+            @operator.ToDetailedResponse(@operator.Applications.Count));
 
         _repositoryMock.Verify(r => r.GetByIdWithDetailsAsync(query.Id, It.IsAny<CancellationToken>()), Times.Once);
         _currentUserServiceMock.Verify(s => s.Role, Times.Once);
@@ -235,7 +237,7 @@ public sealed class GetOperatorByIdQueryHandlerTests
 
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().BeEquivalentTo(
-            @operator.ToDetailedResponse(@operator.Applications.Count()));
+            @operator.ToDetailedResponse(@operator.Applications.Count));
 
         _repositoryMock.Verify(r => r.GetByIdWithDetailsAsync(query.Id, It.IsAny<CancellationToken>()), Times.Once);
         _currentUserServiceMock.Verify(s => s.Role, Times.Once);

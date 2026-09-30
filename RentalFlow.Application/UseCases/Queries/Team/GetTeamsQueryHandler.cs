@@ -4,8 +4,8 @@ public sealed class GetTeamsQueryHandler(ITeamRepository _teamRepository) : IQue
 {
     public async Task<Result<PagedResult<GetTeamResponse>>> HandleAsync(GetTeamsQuery query, CancellationToken cancellationToken)
     {
-        var pagedResult = await _teamRepository.GetTeamsAsync(query.Request, cancellationToken);
+        var result = await _teamRepository.GetTeamsAsync(query.Request, cancellationToken);
 
-        return Result<PagedResult<GetTeamResponse>>.Success(pagedResult.ToResponse());
+        return Result<PagedResult<GetTeamResponse>>.Success(result.ToResponse());
     }
 }

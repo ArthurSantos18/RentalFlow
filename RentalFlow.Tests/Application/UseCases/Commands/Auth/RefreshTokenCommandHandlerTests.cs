@@ -6,13 +6,15 @@ public sealed class RefreshTokenCommandHandlerTests
     private readonly TestsFixtures _testsFixtures = new(new Fixture());
     private readonly Mock<IUserTokenRepository> _userTokenRepositoryMock = new();
     private readonly Mock<ITokenService> _tokenServiceMock = new();
+    private readonly Mock<ILogger<RefreshTokenCommandHandler>> _loggerMock = new();
     private readonly RefreshTokenCommandHandler _handler;
 
     public RefreshTokenCommandHandlerTests()
     {
         _handler = new RefreshTokenCommandHandler(
             _userTokenRepositoryMock.Object,
-            _tokenServiceMock.Object);
+            _tokenServiceMock.Object,
+            _loggerMock.Object);
     }
 
     [Fact]

@@ -7,6 +7,7 @@ public sealed class AssignOperatorCommandHandlerTests
     private readonly Mock<IOperatorRepository> _operatorRepositoryMock = new();
     private readonly Mock<ITeamRepository> _teamRepositoryMock = new();
     private readonly Mock<ICurrentUserService> _currentUserServiceMock = new();
+    private readonly Mock<ILogger<AssignOperatorCommandHandler>> _loggerMock = new();
     private readonly AssignOperatorCommandHandler _handler;
 
     public AssignOperatorCommandHandlerTests()
@@ -14,7 +15,8 @@ public sealed class AssignOperatorCommandHandlerTests
         _handler = new AssignOperatorCommandHandler(
             _operatorRepositoryMock.Object,
             _teamRepositoryMock.Object,
-            _currentUserServiceMock.Object);
+            _currentUserServiceMock.Object,
+            _loggerMock.Object);
     }
 
     [Fact]

@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+  </Folder>
   <Project Path="RentalFlow.API/RentalFlow.API.csproj" Id="0b9e5796-a031-49a3-be82-fa024f7044fd" />
   <Project Path="RentalFlow.Application/RentalFlow.Application.csproj" Id="6790d2ee-29e0-4722-8916-9c941670b437" />
   <Project Path="RentalFlow.Crosscutting/RentalFlow.Crosscutting.csproj" Id="bf44467c-19c2-478f-b678-09e78110015d" />

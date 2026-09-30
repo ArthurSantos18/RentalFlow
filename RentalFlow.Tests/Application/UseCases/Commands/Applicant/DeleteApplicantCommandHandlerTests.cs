@@ -6,13 +6,15 @@ public sealed class DeleteApplicantCommandHandlerTests
     private readonly TestsFixtures _testsFixtures = new(new Fixture());
     private readonly Mock<IApplicantRepository> _applicantRepositoryMock = new();
     private readonly Mock<IRentalApplicationRepository> _rentalApplicationRepositoryMock = new();
+    private readonly Mock<ILogger<DeleteApplicantCommandHandler>> _loggerMock = new();
     private readonly DeleteApplicantCommandHandler _handler;
 
     public DeleteApplicantCommandHandlerTests()
     {
         _handler = new DeleteApplicantCommandHandler(
             _applicantRepositoryMock.Object,
-            _rentalApplicationRepositoryMock.Object);
+            _rentalApplicationRepositoryMock.Object,
+            _loggerMock.Object);
     }
 
     [Fact]

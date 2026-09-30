@@ -1,6 +1,9 @@
 ﻿namespace RentalFlow.Application.UseCases.Commands.Auth;
 
-public sealed class LogoutCommandHandler(IUserTokenRepository _userTokenRepository) : ICommandHandler<LogoutCommand, Result>
+public sealed class LogoutCommandHandler(
+    IUserTokenRepository _userTokenRepository,
+    ILogger<LogoutCommandHandler> _logger
+) : ICommandHandler<LogoutCommand, Result>
 {
     public async Task<Result> HandleAsync(LogoutCommand command, CancellationToken cancellationToken)
     {
@@ -8,12 +11,20 @@ public sealed class LogoutCommandHandler(IUserTokenRepository _userTokenReposito
 
         if (token is null)
         {
+            _logger.LogDebug(
+                "Logout requested with an unknown or already-revoked refresh token");
+
             return Result.Success();
         }
 
         token.Revoke();
 
         await _userTokenRepository.SaveChangesAsync(cancellationToken);
+
+        _logger.LogInformation(
+            "User {UserId} ({Email}) logged out successfully",
+            token.User.Id,
+            token.User.Email);
 
         return Result.Success();
     }

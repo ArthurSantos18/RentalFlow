@@ -37,7 +37,7 @@ public sealed class PropertyRepository(AppDbContext context) : BaseRepository<Pr
         {
             return query.Where(p => ids.Contains(p.Id));
         }
-            
+
         return query;
     }
 
@@ -91,12 +91,12 @@ public sealed class PropertyRepository(AppDbContext context) : BaseRepository<Pr
         {
             query = query.Where(p => p.RentPrice >= minPrice.Value);
         }
-            
+
         if (maxPrice.HasValue)
         {
             query = query.Where(p => p.RentPrice <= maxPrice.Value);
         }
-            
+
         return query;
     }
 

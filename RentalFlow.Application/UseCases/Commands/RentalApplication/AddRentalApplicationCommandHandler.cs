@@ -5,17 +5,29 @@ public sealed class AddRentalApplicationCommandHandler(
     IApplicantRepository _applicantRepository,
     IPropertyRepository _propertyRepository,
     IOperatorRepository _operatorRepository,
-    ICurrentUserService _currentUserService
+    ICurrentUserService _currentUserService,
+    ILogger<AddRentalApplicationCommandHandler> _logger
     ) : ICommandHandler<AddRentalApplicationCommand, Result<Guid>>
 {
     public async Task<Result<Guid>> HandleAsync(AddRentalApplicationCommand command, CancellationToken cancellationToken)
     {
         var request = command.Request;
 
+        _logger.LogInformation(
+            "Creating rental application for applicant {ApplicantId}, property {PropertyId}, operator {OperatorId}",
+            request.ApplicantId,
+            request.PropertyId,
+            request.OperatorId);
+
         var operatorResult = await ResolveOperatorAsync(request.OperatorId, cancellationToken);
 
         if (operatorResult.IsFailure)
         {
+            _logger.LogWarning(
+                "Cannot create rental application because operator could not be resolved: {ErrorCode} {ErrorMessage}",
+                operatorResult.Error.Code,
+                operatorResult.Error.Message);
+
             return Result<Guid>.Failure(operatorResult.Error);
         }
 
@@ -23,6 +35,12 @@ public sealed class AddRentalApplicationCommandHandler(
 
         if (applicantResult.IsFailure)
         {
+            _logger.LogWarning(
+                 "Cannot create rental application for applicant {ApplicantId}: {ErrorCode} {ErrorMessage}",
+                 request.ApplicantId,
+                 applicantResult.Error.Code,
+                 applicantResult.Error.Message);
+
             return Result<Guid>.Failure(applicantResult.Error);
         }
 
@@ -30,6 +48,12 @@ public sealed class AddRentalApplicationCommandHandler(
 
         if (propertyResult.IsFailure)
         {
+            _logger.LogWarning(
+                  "Cannot create rental application for property {PropertyId}: {ErrorCode} {ErrorMessage}",
+                  request.PropertyId,
+                  propertyResult.Error.Code,
+                  propertyResult.Error.Message);
+
             return Result<Guid>.Failure(propertyResult.Error);
         }
 
@@ -38,6 +62,13 @@ public sealed class AddRentalApplicationCommandHandler(
         await _rentalApplicationRepository.AddAsync(rentalApplication, cancellationToken);
 
         await _rentalApplicationRepository.SaveChangesAsync(cancellationToken);
+
+        _logger.LogInformation(
+            "Rental application {RentalApplicationId} created successfully for applicant {ApplicantId}, property {PropertyId}, operator {OperatorId}",
+            rentalApplication.Id,
+            applicantResult.Value.Id,
+            propertyResult.Value.Id,
+            operatorResult.Value.Id);
 
         return Result<Guid>.Success(rentalApplication.Id);
     }

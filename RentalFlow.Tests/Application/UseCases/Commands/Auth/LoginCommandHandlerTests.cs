@@ -8,7 +8,7 @@ public sealed class LoginCommandHandlerTests
     private readonly Mock<IUserTokenRepository> _userTokenRepositoryMock = new();
     private readonly Mock<IPasswordService> _passwordServiceMock = new();
     private readonly Mock<ITokenService> _tokenServiceMock = new();
-
+    private readonly Mock<ILogger<LoginCommandHandler>> _loggerMock = new();
     private readonly LoginCommandHandler _handler;
 
     public LoginCommandHandlerTests()
@@ -17,7 +17,8 @@ public sealed class LoginCommandHandlerTests
             _userRepositoryMock.Object,
             _userTokenRepositoryMock.Object,
             _passwordServiceMock.Object,
-            _tokenServiceMock.Object);
+            _tokenServiceMock.Object,
+            _loggerMock.Object);
     }
 
     [Fact]

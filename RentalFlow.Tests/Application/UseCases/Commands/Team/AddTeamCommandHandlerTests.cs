@@ -4,11 +4,14 @@ public sealed class AddTeamCommandHandlerTests
 {
     private readonly Fixture _fixture = new();
     private readonly Mock<ITeamRepository> _teamRepositoryMock = new();
+    private readonly Mock<ILogger<AddTeamCommandHandler>> _loggerMock = new();
     private readonly AddTeamCommandHandler _handler;
 
     public AddTeamCommandHandlerTests()
     {
-        _handler = new AddTeamCommandHandler(_teamRepositoryMock.Object);
+        _handler = new AddTeamCommandHandler(
+            _teamRepositoryMock.Object,
+            _loggerMock.Object);
     }
 
     [Fact]

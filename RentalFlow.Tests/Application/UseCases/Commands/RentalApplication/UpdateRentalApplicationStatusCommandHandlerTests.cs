@@ -6,13 +6,15 @@ public sealed class UpdateRentalApplicationStatusCommandHandlerTests
     private readonly TestsFixtures _testsFixtures = new(new Fixture());
     private readonly Mock<IRentalApplicationRepository> _rentalApplicationRepositoryMock = new();
     private readonly Mock<ICurrentUserService> _currentUserServiceMock = new();
+    private readonly Mock<ILogger<UpdateRentalApplicationStatusCommandHandler>> _loggerMock = new();
     private readonly UpdateRentalApplicationStatusCommandHandler _handler;
 
     public UpdateRentalApplicationStatusCommandHandlerTests()
     {
         _handler = new UpdateRentalApplicationStatusCommandHandler(
             _rentalApplicationRepositoryMock.Object,
-            _currentUserServiceMock.Object);
+            _currentUserServiceMock.Object,
+            _loggerMock.Object);
     }
 
     [Fact]

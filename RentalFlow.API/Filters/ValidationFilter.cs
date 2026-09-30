@@ -1,8 +1,4 @@
-﻿using FluentValidation;
-using FluentValidation.Results;
-using Microsoft.AspNetCore.Mvc.Filters;
-
-namespace RentalFlow.API.Filters;
+﻿namespace RentalFlow.API.Filters;
 
 public sealed class ValidationFilter(IServiceProvider _serviceProvider) : IAsyncActionFilter
 {
@@ -15,9 +11,8 @@ public sealed class ValidationFilter(IServiceProvider _serviceProvider) : IAsync
             var argumentType = argument.GetType();
 
             var validatorType = typeof(IValidator<>).MakeGenericType(argumentType);
-            var validator = _serviceProvider.GetService(validatorType) as IValidator;
 
-            if (validator is null)
+            if (_serviceProvider.GetService(validatorType) is not IValidator validator)
             {
                 continue;
             }

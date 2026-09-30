@@ -6,13 +6,15 @@ public sealed class UpdateTeamCommandHandlerTests
     private readonly TestsFixtures _testsFixtures = new(new Fixture());
     private readonly Mock<ITeamRepository> _teamRepositoryMock = new();
     private readonly Mock<ICurrentUserService> _currentUserServiceMock = new();
+    private readonly Mock<ILogger<UpdateTeamCommandHandler>> _loggerMock = new();
     private readonly UpdateTeamCommandHandler _handler;
 
     public UpdateTeamCommandHandlerTests()
     {
         _handler = new UpdateTeamCommandHandler(
             _teamRepositoryMock.Object,
-            _currentUserServiceMock.Object);
+            _currentUserServiceMock.Object,
+            _loggerMock.Object);
     }
 
     [Fact]

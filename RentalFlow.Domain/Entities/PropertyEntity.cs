@@ -22,26 +22,26 @@ public sealed class PropertyEntity : BaseEntity<PropertyEntity>
 
     private PropertyEntity() { }
 
-    public PropertyEntity SetAddress(Address address) 
-    { 
-        Address = address; 
+    public PropertyEntity SetAddress(Address address)
+    {
+        Address = address;
         return this;
     }
 
-    public PropertyEntity SetRentPrice(decimal rentPrice) 
-    { 
+    public PropertyEntity SetRentPrice(decimal rentPrice)
+    {
         RentPrice = rentPrice;
         return this;
     }
 
-    public PropertyEntity SetBedrooms(int bedrooms) 
-    { 
+    public PropertyEntity SetBedrooms(int bedrooms)
+    {
         Bedrooms = bedrooms;
         return this;
     }
 
-    public PropertyEntity SetIsAvailable(bool isAvailable) 
-    { 
+    public PropertyEntity SetIsAvailable(bool isAvailable)
+    {
         IsAvailable = isAvailable;
         return this;
     }

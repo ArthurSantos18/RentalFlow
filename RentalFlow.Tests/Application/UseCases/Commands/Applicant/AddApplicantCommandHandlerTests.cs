@@ -5,11 +5,14 @@ public sealed class AddApplicantCommandHandlerTests
     private readonly Fixture _fixture = new();
     private readonly TestsFixtures _testsFixtures = new(new Fixture());
     private readonly Mock<IApplicantRepository> _repositoryMock = new();
+    private readonly Mock<ILogger<AddApplicantCommandHandler>> _loggerMock = new();
     private readonly AddApplicantCommandHandler _handler;
 
     public AddApplicantCommandHandlerTests()
     {
-        _handler = new AddApplicantCommandHandler(_repositoryMock.Object);
+        _handler = new AddApplicantCommandHandler(
+            _repositoryMock.Object,
+            _loggerMock.Object);
     }
 
     [Fact]

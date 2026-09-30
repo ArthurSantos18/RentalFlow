@@ -4,17 +4,31 @@ public sealed class UpdateOperatorCommandHandler(
     IOperatorRepository _operatorRepository,
     IUserRepository _userRepository,
     IUserTokenRepository _userTokenRepository,
-    ICurrentUserService _currentUserService
+    ICurrentUserService _currentUserService,
+    ILogger<UpdateOperatorCommandHandler> _logger
     ) : ICommandHandler<UpdateOperatorCommand, Result>
 {
     public async Task<Result> HandleAsync(UpdateOperatorCommand command, CancellationToken cancellationToken)
     {
         var request = command.Request;
 
+        _logger.LogInformation(
+            "Updating operator {OperatorId} with email {Email}, role {Role}, active {IsActive}",
+            command.Id,
+            request.Email,
+            request.Role,
+            request.IsActive);
+
         var @operator = await _operatorRepository.GetByIdWithDetailsAsync(command.Id, cancellationToken);
 
         if (@operator is null)
         {
+            _logger.LogWarning(
+                 "Operator {OperatorId} not found for update: {ErrorCode} {ErrorMessage}",
+                 command.Id,
+                 OperatorErrors.OperatorNotFound.Code,
+                 OperatorErrors.OperatorNotFound.Message);
+
             return Result.Failure(OperatorErrors.OperatorNotFound);
         }
 
@@ -22,6 +36,12 @@ public sealed class UpdateOperatorCommandHandler(
 
         if (manageResult.IsFailure)
         {
+            _logger.LogWarning(
+                "Cannot update operator {OperatorId}: {ErrorCode} {ErrorMessage}",
+                @operator.Id,
+                manageResult.Error.Code,
+                manageResult.Error.Message);
+
             return manageResult;
         }
 
@@ -29,6 +49,12 @@ public sealed class UpdateOperatorCommandHandler(
 
         if (adminResult.IsFailure)
         {
+            _logger.LogWarning(
+                "Cannot update operator {OperatorId} due to admin protection: {ErrorCode} {ErrorMessage}",
+                @operator.Id,
+                adminResult.Error.Code,
+                adminResult.Error.Message);
+
             return adminResult;
         }
 
@@ -36,6 +62,12 @@ public sealed class UpdateOperatorCommandHandler(
 
         if (emailResult.IsFailure)
         {
+            _logger.LogWarning(
+                "Cannot update email for operator {OperatorId}: {ErrorCode} {ErrorMessage}",
+                @operator.Id,
+                emailResult.Error.Code,
+                emailResult.Error.Message);
+
             return emailResult;
         }
 
@@ -47,6 +79,10 @@ public sealed class UpdateOperatorCommandHandler(
         }
 
         await _operatorRepository.SaveChangesAsync(cancellationToken);
+
+        _logger.LogInformation(
+            "Operator {OperatorId} updated successfully",
+            @operator.Id);
 
         return Result.Success();
     }

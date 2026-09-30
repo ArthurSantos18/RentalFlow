@@ -9,6 +9,7 @@ public sealed class AddRentalApplicationCommandHandlerTests
     private readonly Mock<IPropertyRepository> _propertyRepoMock = new();
     private readonly Mock<IOperatorRepository> _operatorRepoMock = new();
     private readonly Mock<ICurrentUserService> _currentUserServiceMock = new();
+    private readonly Mock<ILogger<AddRentalApplicationCommandHandler>> _loggerMock = new();
     private readonly AddRentalApplicationCommandHandler _handler;
 
     public AddRentalApplicationCommandHandlerTests()
@@ -18,7 +19,8 @@ public sealed class AddRentalApplicationCommandHandlerTests
             _applicantRepoMock.Object,
             _propertyRepoMock.Object,
             _operatorRepoMock.Object,
-            _currentUserServiceMock.Object);
+            _currentUserServiceMock.Object,
+            _loggerMock.Object);
     }
 
     [Fact]

@@ -9,6 +9,7 @@ public sealed class AddOperatorCommandHandlerTests
     private readonly Mock<IUserRepository> _userRepositoryMock = new();
     private readonly Mock<IPasswordService> _passwordServiceMock = new();
     private readonly Mock<ICurrentUserService> _currentUserServiceMock = new();
+    private readonly Mock<ILogger<AddOperatorCommandHandler>> _loggerMock = new();
 
     private readonly AddOperatorCommandHandler _handler;
 
@@ -19,7 +20,8 @@ public sealed class AddOperatorCommandHandlerTests
             _teamRepositoryMock.Object,
             _userRepositoryMock.Object,
             _passwordServiceMock.Object,
-            _currentUserServiceMock.Object);
+            _currentUserServiceMock.Object,
+            _loggerMock.Object);
     }
 
     [Fact]

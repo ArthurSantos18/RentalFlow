@@ -55,7 +55,7 @@ public sealed class UserRepository(AppDbContext context) : BaseRepository<UserEn
         {
             return query.Where(u => ids.Contains(u.Id));
         }
-            
+
         return query;
     }
 
@@ -76,7 +76,7 @@ public sealed class UserRepository(AppDbContext context) : BaseRepository<UserEn
         {
             return query.Where(u => operatorIds.Contains(u.OperatorId));
         }
-            
+
         return query;
     }
 
@@ -86,7 +86,7 @@ public sealed class UserRepository(AppDbContext context) : BaseRepository<UserEn
         {
             return query.Where(u => u.IsActive == isActive.Value);
         }
-            
+
         return query;
     }
 
@@ -96,7 +96,7 @@ public sealed class UserRepository(AppDbContext context) : BaseRepository<UserEn
         {
             return query.Where(u => u.MustChangePassword == mustChangePassword.Value);
         }
-            
+
         return query;
     }
 }

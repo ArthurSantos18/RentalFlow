@@ -94,7 +94,7 @@ public sealed class ApplicantRepository(AppDbContext context) : BaseRepository<A
         {
             query = query.Where(a => a.MonthlyIncome >= minIncome.Value);
         }
-            
+
         if (maxIncome.HasValue)
         {
             query = query.Where(a => a.MonthlyIncome <= maxIncome.Value);

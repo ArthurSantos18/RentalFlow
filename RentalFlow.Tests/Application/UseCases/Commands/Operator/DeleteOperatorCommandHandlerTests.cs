@@ -7,6 +7,7 @@ public sealed class DeleteOperatorCommandHandlerTests
     private readonly Mock<IOperatorRepository> _operatorRepositoryMock = new();
     private readonly Mock<IUserTokenRepository> _userTokenRepositoryMock = new();
     private readonly Mock<ICurrentUserService> _currentUserServiceMock = new();
+    private readonly Mock<ILogger<DeleteOperatorCommandHandler>> _loggerMock = new();
     private readonly DeleteOperatorCommandHandler _handler;
 
     public DeleteOperatorCommandHandlerTests()
@@ -14,7 +15,8 @@ public sealed class DeleteOperatorCommandHandlerTests
         _handler = new DeleteOperatorCommandHandler(
             _operatorRepositoryMock.Object,
             _userTokenRepositoryMock.Object,
-            _currentUserServiceMock.Object);
+            _currentUserServiceMock.Object,
+            _loggerMock.Object);
     }
 
     [Fact]

@@ -60,4 +60,3 @@ public abstract class BaseEntity<TEntity> where TEntity : BaseEntity<TEntity>
         return (TEntity)this;
     }
 }
-

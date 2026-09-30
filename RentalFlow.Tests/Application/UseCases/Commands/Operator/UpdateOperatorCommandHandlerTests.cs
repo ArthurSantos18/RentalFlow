@@ -8,6 +8,7 @@ public sealed class UpdateOperatorCommandHandlerTests
     private readonly Mock<IUserRepository> _userRepositoryMock = new();
     private readonly Mock<IUserTokenRepository> _userTokenRepositoryMock = new();
     private readonly Mock<ICurrentUserService> _currentUserServiceMock = new();
+    private readonly Mock<ILogger<UpdateOperatorCommandHandler>> _loggerMock = new();
     private readonly UpdateOperatorCommandHandler _handler;
 
     public UpdateOperatorCommandHandlerTests()
@@ -16,7 +17,8 @@ public sealed class UpdateOperatorCommandHandlerTests
             _operatorRepositoryMock.Object,
             _userRepositoryMock.Object,
             _userTokenRepositoryMock.Object,
-            _currentUserServiceMock.Object);
+            _currentUserServiceMock.Object,
+            _loggerMock.Object);
     }
 
     [Fact]

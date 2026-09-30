@@ -50,4 +50,3 @@ public sealed class ApplicantController(ICommandMediator _commandMediator, IQuer
             : ApiResponseHelper.HandleError(result.Error);
     }
 }
-

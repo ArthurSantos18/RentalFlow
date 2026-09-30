@@ -6,13 +6,15 @@ public sealed class DeletePropertyCommandHandlerTests
     private readonly TestsFixtures _testsFixtures = new(new Fixture());
     private readonly Mock<IPropertyRepository> _propertyRepositoryMock = new();
     private readonly Mock<IRentalApplicationRepository> _rentalApplicationRepositoryMock = new();
+    private readonly Mock<ILogger<DeletePropertyCommandHandler>> _loggerMock = new();
     private readonly DeletePropertyCommandHandler _handler;
 
     public DeletePropertyCommandHandlerTests()
     {
         _handler = new DeletePropertyCommandHandler(
             _propertyRepositoryMock.Object,
-            _rentalApplicationRepositoryMock.Object);
+            _rentalApplicationRepositoryMock.Object,
+            _loggerMock.Object);
     }
 
     [Fact]

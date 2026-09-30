@@ -9,6 +9,7 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
     private readonly Mock<IOperatorRepository> _operatorRepositoryMock = new();
     private readonly Mock<IPropertyRepository> _propertyRepositoryMock = new();
     private readonly Mock<ICurrentUserService> _currentUserServiceMock = new();
+    private readonly Mock<ILogger<UpdateRentalApplicationCommandHandler>> _loggerMock = new();
     private readonly UpdateRentalApplicationCommandHandler _handler;
 
     public UpdateRentalApplicationCommandHandlerTests()
@@ -18,7 +19,8 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
             _applicantRepositoryMock.Object,
             _operatorRepositoryMock.Object,
             _propertyRepositoryMock.Object,
-            _currentUserServiceMock.Object);
+            _currentUserServiceMock.Object,
+            _loggerMock.Object);
     }
 
     [Fact]

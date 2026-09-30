@@ -1,5 +1,7 @@
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddRentalFlowLogging();
+
 builder.Services.AddRentalFlowOpenApi();
 builder.Services.AddMediator();
 builder.Services.AddValidators();
@@ -14,14 +16,12 @@ var app = builder.Build();
 await app.SeedDatabaseAsync();
 
 app.UseExceptionHandler();
-
 app.UseRentalFlowOpenApi();
-
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseMiddleware();
 app.MapControllers();
 
-app.Run();
+app.RunWithLogging();

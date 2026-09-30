@@ -6,7 +6,7 @@ public static class LiteBusExtension
     {
         services.AddLiteBus(liteBus =>
         {
-            liteBus.AddMessaging(_ => { } );
+            liteBus.AddMessaging(_ => { });
             liteBus.AddCommands(module =>
             {
                 module.RegisterFromAssembly(typeof(AddApplicantCommand).Assembly);

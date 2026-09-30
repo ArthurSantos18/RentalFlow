@@ -5,20 +5,37 @@ public sealed class UpdateRentalApplicationCommandHandler(
     IApplicantRepository _applicantRepository,
     IOperatorRepository _operatorRepository,
     IPropertyRepository _propertyRepository,
-    ICurrentUserService _currentUserService
+    ICurrentUserService _currentUserService,
+    ILogger<UpdateRentalApplicationCommandHandler> _logger
     ) : ICommandHandler<UpdateRentalApplicationCommand, Result>
 {
     public async Task<Result> HandleAsync(UpdateRentalApplicationCommand command, CancellationToken cancellationToken)
     {
+        _logger.LogInformation(
+            "Updating rental application {RentalApplicationId}",
+            command.Id);
+
         var rentalApplication = await _rentalApplicationRepository.GetByIdAsync(command.Id, cancellationToken);
 
         if (rentalApplication is null)
         {
+            _logger.LogWarning(
+                "Rental application {RentalApplicationId} not found for update: {ErrorCode} {ErrorMessage}",
+                command.Id,
+                RentalApplicationErrors.RentalApplicationNotFound.Code,
+                RentalApplicationErrors.RentalApplicationNotFound.Message);
+
             return Result.Failure(RentalApplicationErrors.RentalApplicationNotFound);
         }
 
         if (!CanAccess(rentalApplication))
         {
+            _logger.LogWarning(
+                "Forbidden to update rental application {RentalApplicationId}: {ErrorCode} {ErrorMessage}",
+                rentalApplication.Id,
+                UserErrors.Forbidden.Code,
+                UserErrors.Forbidden.Message);
+
             return Result.Failure(UserErrors.Forbidden);
         }
 
@@ -26,6 +43,12 @@ public sealed class UpdateRentalApplicationCommandHandler(
 
         if (canEdit.IsFailure)
         {
+            _logger.LogWarning(
+                "Rental application {RentalApplicationId} cannot be edited: {ErrorCode} {ErrorMessage}",
+                rentalApplication.Id,
+                canEdit.Error.Code,
+                canEdit.Error.Message);
+
             return canEdit;
         }
 
@@ -33,6 +56,12 @@ public sealed class UpdateRentalApplicationCommandHandler(
 
         if (applicantResult.IsFailure)
         {
+            _logger.LogWarning(
+                "Cannot update applicant for rental application {RentalApplicationId}: {ErrorCode} {ErrorMessage}",
+                rentalApplication.Id,
+                applicantResult.Error.Code,
+                applicantResult.Error.Message);
+
             return applicantResult;
         }
 
@@ -40,6 +69,12 @@ public sealed class UpdateRentalApplicationCommandHandler(
 
         if (operatorResult.IsFailure)
         {
+            _logger.LogWarning(
+                "Cannot update operator for rental application {RentalApplicationId}: {ErrorCode} {ErrorMessage}",
+                rentalApplication.Id,
+                operatorResult.Error.Code,
+                operatorResult.Error.Message);
+
             return operatorResult;
         }
 
@@ -47,12 +82,22 @@ public sealed class UpdateRentalApplicationCommandHandler(
 
         if (propertyResult.IsFailure)
         {
+            _logger.LogWarning(
+                "Cannot update property for rental application {RentalApplicationId}: {ErrorCode} {ErrorMessage}",
+                rentalApplication.Id,
+                propertyResult.Error.Code,
+                propertyResult.Error.Message);
+
             return propertyResult;
         }
 
         rentalApplication.UpdateFrom(command.Request);
 
         await _rentalApplicationRepository.SaveChangesAsync(cancellationToken);
+
+        _logger.LogInformation(
+            "Rental application {RentalApplicationId} updated successfully",
+            rentalApplication.Id);
 
         return Result.Success();
     }

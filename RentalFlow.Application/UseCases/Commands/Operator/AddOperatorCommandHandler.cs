@@ -5,17 +5,30 @@ public sealed class AddOperatorCommandHandler(
     ITeamRepository _teamRepository,
     IUserRepository _userRepository,
     IPasswordService _passwordService,
-    ICurrentUserService _currentUserService
+    ICurrentUserService _currentUserService,
+    ILogger<AddOperatorCommandHandler> _logger
     ) : ICommandHandler<AddOperatorCommand, Result<AddOperatorResponse>>
 {
     public async Task<Result<AddOperatorResponse>> HandleAsync(AddOperatorCommand command, CancellationToken cancellationToken)
     {
         var request = command.Request;
 
+        _logger.LogInformation(
+            "Creating operator with email {Email}, role {Role} for team {TeamId}",
+            request.Email,
+            request.Role,
+            request.TeamId);
+
         var roleValidation = EnsureCanCreateRole(request.Role);
 
         if (roleValidation.IsFailure)
         {
+            _logger.LogWarning(
+                "Cannot create operator with role {Role}: {ErrorCode} {ErrorMessage}",
+                request.Role,
+                roleValidation.Error.Code,
+                roleValidation.Error.Message);
+
             return Result<AddOperatorResponse>.Failure(roleValidation.Error);
         }
 
@@ -23,6 +36,12 @@ public sealed class AddOperatorCommandHandler(
 
         if (teamResult.IsFailure)
         {
+            _logger.LogWarning(
+                "Cannot create operator for team {TeamId}: {ErrorCode} {ErrorMessage}",
+                request.TeamId,
+                teamResult.Error.Code,
+                teamResult.Error.Message);
+
             return Result<AddOperatorResponse>.Failure(teamResult.Error);
         }
 
@@ -30,6 +49,12 @@ public sealed class AddOperatorCommandHandler(
 
         if (emailExists)
         {
+            _logger.LogWarning(
+                "Cannot create operator because email {Email} already exists: {ErrorCode} {ErrorMessage}",
+                request.Email,
+                UserErrors.EmailAlreadyExists.Code,
+                UserErrors.EmailAlreadyExists.Message);
+
             return Result<AddOperatorResponse>.Failure(UserErrors.EmailAlreadyExists);
         }
 
@@ -46,6 +71,12 @@ public sealed class AddOperatorCommandHandler(
         await _userRepository.AddAsync(user, cancellationToken);
 
         await _userRepository.SaveChangesAsync(cancellationToken);
+
+        _logger.LogInformation(
+            "Operator {OperatorId} created successfully with email {Email} for team {TeamId}",
+            @operator.Id,
+            user.Email,
+            teamResult.Value.Id);
 
         var response = @operator.ToResponse(user, temporaryPassword);
 

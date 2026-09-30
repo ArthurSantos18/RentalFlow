@@ -11,30 +11,30 @@ public sealed class PropertyConfiguration : BaseConfiguration<PropertyEntity>
             address.Property(a => a.Street)
                 .HasMaxLength(200)
                 .IsRequired();
-                
+
             address.Property(a => a.Number)
                 .HasMaxLength(20)
                 .IsRequired();
-                
+
             address.Property(a => a.Complement)
                 .HasMaxLength(200);
-                
+
             address.Property(a => a.Neighborhood)
                 .HasMaxLength(100)
                 .IsRequired();
-                
+
             address.Property(a => a.City)
                 .HasMaxLength(100)
                 .IsRequired();
-                
+
             address.Property(a => a.State)
                 .HasMaxLength(2)
                 .IsRequired();
-                
+
             address.Property(a => a.ZipCode)
                 .HasMaxLength(8)
                 .IsRequired();
-                
+
         });
 
         builder.Property(p => p.RentPrice)

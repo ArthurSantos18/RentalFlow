@@ -5,13 +5,15 @@ public sealed class ChangePasswordCommandHandlerTests
     private readonly Fixture _fixture = new();
     private readonly Mock<IUserRepository> _userRepoMock = new();
     private readonly Mock<IPasswordService> _passwordServiceMock = new();
+    private readonly Mock<ILogger<ChangePasswordCommandHandler>> _loggerMock = new();
     private readonly ChangePasswordCommandHandler _handler;
 
     public ChangePasswordCommandHandlerTests()
     {
         _handler = new ChangePasswordCommandHandler(
             _userRepoMock.Object,
-            _passwordServiceMock.Object);
+            _passwordServiceMock.Object,
+            _loggerMock.Object);
     }
 
     [Fact]

@@ -4,14 +4,15 @@ public sealed class UpdatePropertyCommandHandlerTests
 {
     private readonly Fixture _fixture = new();
     private readonly TestsFixtures _testsFixtures = new(new Fixture());
-
     private readonly Mock<IPropertyRepository> _propertyRepositoryMock = new();
-
+    private readonly Mock<ILogger<UpdatePropertyCommandHandler>> _loggerMock = new();
     private readonly UpdatePropertyCommandHandler _handler;
 
     public UpdatePropertyCommandHandlerTests()
     {
-        _handler = new(_propertyRepositoryMock.Object);
+        _handler = new UpdatePropertyCommandHandler(
+            _propertyRepositoryMock.Object,
+            _loggerMock.Object);
     }
 
     [Fact]

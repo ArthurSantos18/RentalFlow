@@ -4,11 +4,14 @@ public sealed class AddPropertyCommandHandlerTests
 {
     private readonly Fixture _fixture = new();
     private readonly Mock<IPropertyRepository> _repositoryMock = new();
+    private readonly Mock<ILogger<AddPropertyCommandHandler>> _loggerMock = new();
     private readonly AddPropertyCommandHandler _handler;
 
     public AddPropertyCommandHandlerTests()
     {
-        _handler = new AddPropertyCommandHandler(_repositoryMock.Object);
+        _handler = new AddPropertyCommandHandler(
+            _repositoryMock.Object,
+            _loggerMock.Object);
     }
 
     [Fact]

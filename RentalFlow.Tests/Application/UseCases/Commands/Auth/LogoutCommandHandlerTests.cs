@@ -4,14 +4,15 @@ public sealed class LogoutCommandHandlerTests
 {
     private readonly Fixture _fixture = new();
     private readonly TestsFixtures _testsFixtures = new(new Fixture());
-
     private readonly Mock<IUserTokenRepository> _userTokenRepositoryMock = new();
-
+    private readonly Mock<ILogger<LogoutCommandHandler>> _loggerMock = new();
     private readonly LogoutCommandHandler _handler;
 
     public LogoutCommandHandlerTests()
     {
-        _handler = new LogoutCommandHandler(_userTokenRepositoryMock.Object);
+        _handler = new LogoutCommandHandler(
+            _userTokenRepositoryMock.Object,
+            _loggerMock.Object);
     }
 
     [Fact]
