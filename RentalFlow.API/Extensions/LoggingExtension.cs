@@ -9,20 +9,19 @@ public static class LoggingExtension
             "logs",
             "rentalflow-.log");
 
+        const string consoleTemplate = "{Timestamp:HH:mm:ss} [{Level:u3}] [CorrelationId:{CorrelationId}] [User:{UserId}] [Role:{Role}] {Message:lj}{NewLine}{Exception}";
+        const string fileTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [CorrelationId:{CorrelationId}] [User:{UserId}] [Role:{Role}] {Message:lj}{NewLine}{Exception}";
+
         Log.Logger = new LoggerConfiguration()
             .ReadFrom.Configuration(builder.Configuration)
             .Enrich.FromLogContext()
             .Enrich.WithProperty("Application", "RentalFlow.API")
-            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-            .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
-            .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
-            .WriteTo.Console(
-                outputTemplate: "{Timestamp:HH:mm:ss} [{Level:u3}] [CorrelationId:{CorrelationId}] [User:{UserId}] [Role:{Role}] {Message:lj}{NewLine}{Exception}")
-            .WriteTo.File(
+            .WriteTo.Async(wt => wt.Console(outputTemplate: consoleTemplate))
+            .WriteTo.Async(wt => wt.File(
                 path: logPath,
                 rollingInterval: RollingInterval.Day,
                 retainedFileCountLimit: 30,
-                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [CorrelationId:{CorrelationId}] [User:{UserId}] [Role:{Role}] {Message:lj}{NewLine}{Exception}")
+                outputTemplate: fileTemplate))
             .CreateLogger();
 
         builder.Host.UseSerilog();
