@@ -16,15 +16,16 @@ O projeto está sendo desenvolvido com foco em boas práticas de desenvolvimento
 |------------|------------|
 | .NET 10 | Plataforma de desenvolvimento |
 | C# | Linguagem principal |
-| Entity Framework Core | ORM para acesso a dados (SQL Server) |
+| Entity Framework Core | ORM para acesso a dados |
+| SQL Server | Banco de dados relacional |
 | LiteBus | Barramento de mensagens para CQRS |
 | FluentValidation | Validação de dados |
-| SQL Server | Banco de dados relacional |
-| JSON Web Token (JWT) | Autenticação e Autorização |
+| Serilog | Logging estruturado (console e arquivo) |
+| JSON Web Token (JWT) | Autenticação e autorização |
 | BCrypt | Criptografia de senhas |
 | Scalar | Documentação interativa da API |
 | xUnit / Moq / AutoFixture | Testes unitários |
-| Serilog | Logging estruturado (console e arquivo) |
+| FluentAssertions | Asserções legíveis nos testes |
 
 ---
 
@@ -40,7 +41,7 @@ RentalFlow/
 │   ├── Helpers/
 │   ├── Middlewares/
 │   ├── Services/
-│   └── Program.cs
+│   ├── Program.cs
 │   └── Usings.cs
 ├── RentalFlow.Application/         # Camada de Aplicação (Handlers, Commands, Queries)
 │   ├── Extensions/
@@ -53,15 +54,15 @@ RentalFlow/
 │   ├── UseCases/
 │   │   ├── Commands/
 │   │   └── Queries/
-│   └── Validators/
+│   ├── Validators/
 │   └── Usings.cs
 ├── RentalFlow.Domain/              # Camada de Domínio (Entidades, Enums, Value Objects)
 │   ├── Entities/
 │   ├── Enums/
 │   ├── Errors/
-│   └── Helpers/
+│   ├── Helpers/
 │   ├── Patterns/
-│   └── ValueObject/
+│   ├── ValueObject/
 │   └── Usings.cs
 ├── RentalFlow.Infrastructure/      # Camada de Infraestrutura (DbContext, Repositories)
 │   ├── Data/
@@ -70,9 +71,9 @@ RentalFlow/
 │   ├── Repositories/
 │   ├── Services/
 │   ├── Settings/
-│   └── Usings.cs/
+│   └── Usings.cs
 ├── RentalFlow.Crosscutting/        # Preocupações Transversais (Validações, Configurações)
-│   ├── Extensions/
+│   └── Extensions/
 └── RentalFlow.Tests/               # Testes Unitários
     ├── Application/
     ├── Fixtures/
@@ -103,48 +104,55 @@ RentalFlow/
 - [x] **Property** – Cadastro com endereço (Value Object), consulta, atualização, soft delete.
 - [x] **Operator** – Cadastro, papéis (`Broker`, `Manager`, `Administrator`), associação a time, consulta, atualização, soft delete.
 - [x] **RentalApplication** – Cadastro, consulta, atualização, mudança de status, soft delete.
-- [x] **Team** - Cadastro, consulta, atualização, soft delete.
+- [x] **Team** – Cadastro, consulta, atualização, soft delete.
 
-### 🔒 Autenticação
+### 🔒 Autenticação e Autorização
 
-- [x] **Login** - Login de usuário com geração de token Jwt.
-- [x] **Refresh** - Refresh token com endpoint para renovação do mesmo.
-- [x] **Password** - Senha criptografada, com opção de mudança.
-- [x] **Logout** - Revogação de refresh token.
-- [x] **Autorização por papéis** – `Broker`, `Manager`, `Administrator` com regras específicas de acesso.
-- [x] **Data Scope** – Filtro automático de dados por time/operador conforme o papel do usuário.
+- [x] **Login** – Autenticação com geração de access token JWT.
+- [x] **Refresh** – Renovação de access token via refresh token persistido.
+- [x] **Logout** – Revogação do refresh token.
+- [x] **Change Password** – Senha com hash BCrypt e troca autenticada.
+- [x] **Autorização por papéis** – Regras específicas para `Broker`, `Manager` e `Administrator`.
+- [x] **Data Scope** – Filtro automático de dados por time/operador conforme papel do usuário.
 
 ### 📊 Observabilidade
 
 - [x] **Serilog** – Logging estruturado com saída para console e arquivo.
-- [x] **LogContext por request** – `UserId` e `Role` injetados automaticamente nos logs via middleware.
+- [x] **Correlation ID** – Cada request recebe um `X-Correlation-Id` (aceito do cliente ou gerado via `TraceIdentifier`), propagado para os logs e devolvido no header da resposta.
+- [x] **LogContext por request** – `UserId`, `Role` e `CorrelationId` injetados automaticamente nos logs via middleware.
 - [x] **Logs de Commands** – Início, sucesso e warnings com `ErrorCode` + `ErrorMessage`.
+- [x] **Global Exception Handler** – Tratamento centralizado via `IExceptionHandler`, com resposta padronizada em `ProblemDetails` contendo `traceId`/`correlationId` e log estruturado.
 
 ### 🌐 API
 
 - [x] **Scalar** – Documentação interativa em `/scalar`.
 - [x] **OpenAPI** – Especificação gerada automaticamente.
-- [x] **JWT Bearer** – Autenticação via `Authorization: Bearer <token>`.
+- [x] **JWT Bearer** – Autenticação via header `Authorization`.
 
 ### 📦 Padrões e Boas Práticas
 
+**Arquitetura**
 - **Clean Architecture** – Separação clara de responsabilidades.
-- **CQRS** – Commands (escrita) e Queries (leitura) separados.
-- **Result Pattern** – Tratamento explícito de sucesso/erro.
+- **CQRS** – Commands (escrita) e Queries (leitura) separados via LiteBus.
 - **Repository Pattern** – Abstração do acesso a dados por agregado.
+- **Result Pattern** – Tratamento explícito de sucesso/erro, sem exceptions para fluxo de negócio.
+- **Global Exception Handler** – Tratamento centralizado via `IExceptionHandler` com `ProblemDetails`.
+
+**Modelagem**
 - **Soft Delete** – Exclusão lógica com `IsDeleted`.
 - **Value Objects** – `Address` encapsulado.
-- **FluentValidation** – Validação centralizada.
-- **Global Using** - Utilização de global using para centralização.
+
+**Validação e Configuração**
+- **FluentValidation** – Validação centralizada de requests.
 - **User Secrets** – Credenciais sensíveis fora do versionamento.
 - **Migrations** – Versionamento do schema via EF Core Migrations.
-- **Global Exception Handler** – Tratamento centralizado de exceções.
+- **Global Using** – Centralização de `using` por projeto.
 
 ---
 
 ## 🚀 Como Executar o Projeto
 
-### Pré‑requisitos
+### Pré-requisitos
 
 - [.NET 10.0 SDK](https://dotnet.microsoft.com/download)
 - [SQL Server 2022](https://www.microsoft.com/pt-br/sql-server/sql-server-downloads) (ou SQL Server Express/LocalDB)
@@ -161,7 +169,7 @@ cd RentalFlow
 
 2. **Configure as credenciais de administrador**
 
-   O projeto utiliza **User Secrets** para desenvolvimento. Inicialize e configure:
+O projeto utiliza **User Secrets** para desenvolvimento. Inicialize e configure:
 
 ```bash
 dotnet user-secrets init --project RentalFlow.API
@@ -171,9 +179,9 @@ dotnet user-secrets set "Seed:AdminName" "nome-do-administrador" --project Renta
 dotnet user-secrets set "Seed:TeamName" "nome-do-grupo-do-administrador" --project RentalFlow.API
 ```
 
-3. **Configure o appsettings com sua connection string e configurações jwt**
+3. **Configure o `appsettings.json` com sua connection string e configurações JWT**
 
-```bash
+```json
 {
   "ConnectionStrings": {
     "DefaultConnection": "sua-connection-string"
@@ -182,11 +190,12 @@ dotnet user-secrets set "Seed:TeamName" "nome-do-grupo-do-administrador" --proje
     "Issuer": "sua-issuer",
     "Audience": "sua-audience",
     "SecretKey": "sua-secret-key",
-    "AccessTokenExpirationMinutes": 0,
-    "RefreshTokenExpirationDays": 0
+    "AccessTokenExpirationMinutes": 60,
+    "RefreshTokenExpirationDays": 7
   }
 }
 ```
+
 > `AccessTokenExpirationMinutes`: duração do access token em minutos.  
 > `RefreshTokenExpirationDays`: duração do refresh token em dias.
 
@@ -211,7 +220,21 @@ dotnet run --project RentalFlow.API
 
 7. **Acesse a API (Scalar)**
 
-   Abra o navegador em `https://localhost:<porta>/scalar` (a porta é definida em `Properties/launchSettings.json`).
+Abra o navegador em `https://localhost:<porta>/scalar` (a porta é definida em `Properties/launchSettings.json`).
+
+---
+
+## 📊 Logging e Observabilidade
+
+O projeto utiliza **Serilog** para logging estruturado com:
+
+- Saída para **console** e **arquivo** (rolling file diário, retenção de 30 dias).
+- Configuração de níveis por namespace (`Microsoft` e `Microsoft.EntityFrameworkCore` em `Warning`).
+- Enriquecimento com `Application`, `CorrelationId`, `UserId` e `Role`.
+- Formato dos logs:
+  ```
+  20:56:35 [INF] [CorrelationId:0HNOV9P3R8100:00000013] [User:84e4897a-...] [Role:Administrator] Creating property...
+  ```
 
 ---
 
@@ -227,8 +250,8 @@ dotnet test RentalFlow.Tests/RentalFlow.Tests.csproj
 
 ## ✒️ Autor
 
-**Arthur Santos Azevedo**  
-- [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/arthurazevedo18/)  
+**Arthur Santos Azevedo**
+- [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/arthurazevedo18/)
 - [![GitHub](https://img.shields.io/badge/GitHub-181717?logo=github&logoColor=white)](https://github.com/ArthurSantos18)
 
 **RentalFlow** 🚀
