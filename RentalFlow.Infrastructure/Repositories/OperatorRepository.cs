@@ -40,6 +40,7 @@ public sealed class OperatorRepository(AppDbContext context) : BaseRepository<Op
         var total = await query.CountAsync(cancellationToken);
 
         var results = await query
+            .OrderByDescending(a => a.CreatedAt)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);

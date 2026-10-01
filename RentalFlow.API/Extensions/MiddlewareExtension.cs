@@ -2,9 +2,13 @@
 
 public static class MiddlewareExtension
 {
-    public static void UseMiddleware(this WebApplication app)
+    public static void UseRequestIdMiddleware(this WebApplication app)
     {
         app.UseMiddleware<CorrelationIdMiddleware>();
+    }
+
+    public static void UseRequestLogContext(this WebApplication app)
+    {
         app.UseMiddleware<LogContextMiddleware>();
     }
 }

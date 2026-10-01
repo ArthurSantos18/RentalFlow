@@ -9,7 +9,10 @@ public sealed class TeamRepository(AppDbContext context) : BaseRepository<TeamEn
 
     public async Task<PagedResult<TeamEntity>> GetTeamsAsync(GetTeamRequest request, CancellationToken cancellationToken)
     {
-        var query = _context.Teams.AsNoTracking().AsQueryable();
+        var query = _context.Teams
+            .AsNoTracking()
+            .Include(t => t.Operators)
+            .AsQueryable();
 
         query = ApplyIdsFilter(query, request.Ids);
         query = ApplyNamesFilter(query, request.Names);
@@ -22,7 +25,7 @@ public sealed class TeamRepository(AppDbContext context) : BaseRepository<TeamEn
         var total = await query.CountAsync(cancellationToken);
 
         var results = await query
-            .Include(t => t.Operators)
+            .OrderByDescending(a => a.CreatedAt)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);

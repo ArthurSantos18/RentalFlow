@@ -1,4 +1,4 @@
-﻿namespace RentalFlow.API.Middleware;
+﻿namespace RentalFlow.API.Middlewares;
 
 public sealed class CorrelationIdMiddleware(RequestDelegate _next)
 {

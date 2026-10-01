@@ -27,7 +27,10 @@ public sealed class UserTokenRepository(AppDbContext context) : BaseRepository<U
 
     public async Task<PagedResult<UserTokenEntity>> GetTokensAsync(GetUserTokenRequest request, CancellationToken cancellationToken)
     {
-        var query = _dbSet.AsNoTracking().Include(t => t.User).AsQueryable();
+        var query = _dbSet
+            .AsNoTracking()
+            .Include(t => t.User)
+            .AsQueryable();
 
         query = ApplyIdsFilter(query, request.Ids);
         query = ApplyUserIdsFilter(query, request.UserIds);
@@ -42,6 +45,7 @@ public sealed class UserTokenRepository(AppDbContext context) : BaseRepository<U
         var total = await query.CountAsync(cancellationToken);
 
         var results = await query
+            .OrderByDescending(a => a.CreatedAt)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);

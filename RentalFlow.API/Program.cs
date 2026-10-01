@@ -15,13 +15,13 @@ var app = builder.Build();
 
 await app.SeedDatabaseAsync();
 
+app.UseRequestIdMiddleware();
 app.UseExceptionHandler();
 app.UseRentalFlowOpenApi();
 app.UseHttpsRedirection();
 app.UseAuthentication();
+app.UseRequestLogContext();
 app.UseAuthorization();
-
-app.UseMiddleware();
 app.MapControllers();
 
 app.RunWithLogging();

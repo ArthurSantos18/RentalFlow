@@ -9,7 +9,9 @@ public sealed class ApplicantRepository(AppDbContext context) : BaseRepository<A
 
     public async Task<PagedResult<ApplicantEntity>> GetApplicantsAsync(GetApplicantRequest request, CancellationToken cancellationToken = default)
     {
-        var query = _dbSet.AsNoTracking().AsQueryable();
+        var query = _dbSet
+            .AsNoTracking()
+            .AsQueryable();
 
         query = ApplyIdsFilter(query, request.Ids);
         query = ApplyFullNamesFilter(query, request.FullNames);
@@ -27,6 +29,7 @@ public sealed class ApplicantRepository(AppDbContext context) : BaseRepository<A
         var total = await query.CountAsync(cancellationToken);
 
         var results = await query
+            .OrderByDescending(a => a.CreatedAt)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);

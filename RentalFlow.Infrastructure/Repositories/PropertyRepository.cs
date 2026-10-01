@@ -4,7 +4,9 @@ public sealed class PropertyRepository(AppDbContext context) : BaseRepository<Pr
 {
     public async Task<PagedResult<PropertyEntity>> GetPropertiesAsync(GetPropertyRequest request, CancellationToken cancellationToken)
     {
-        var query = _context.Properties.AsNoTracking().AsQueryable();
+        var query = _context.Properties
+            .AsNoTracking()
+            .AsQueryable();
 
         query = ApplyIdsFilter(query, request.Ids);
         query = ApplyCitiesFilter(query, request.Cities);
@@ -24,6 +26,7 @@ public sealed class PropertyRepository(AppDbContext context) : BaseRepository<Pr
         var total = await query.CountAsync(cancellationToken);
 
         var results = await query
+            .OrderByDescending(a => a.CreatedAt)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);

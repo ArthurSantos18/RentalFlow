@@ -46,6 +46,7 @@ public sealed class RentalApplicationRepository(AppDbContext context) : BaseRepo
         var total = await query.CountAsync(cancellationToken);
 
         var results = await query
+            .OrderByDescending(a => a.CreatedAt)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);

@@ -27,7 +27,10 @@ public sealed class UserRepository(AppDbContext context) : BaseRepository<UserEn
 
     public async Task<PagedResult<UserEntity>> GetUsersAsync(GetUserRequest request, CancellationToken cancellationToken)
     {
-        var query = _dbSet.AsNoTracking().AsQueryable();
+        var query = _dbSet
+            .AsNoTracking()
+            .Include(u => u.Operator)
+            .AsQueryable();
 
         query = ApplyIdsFilter(query, request.Ids);
         query = ApplyEmailsFilter(query, request.Emails);
@@ -41,9 +44,9 @@ public sealed class UserRepository(AppDbContext context) : BaseRepository<UserEn
         var total = await query.CountAsync(cancellationToken);
 
         var results = await query
+            .OrderByDescending(a => a.CreatedAt)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .Include(u => u.Operator)
             .ToListAsync(cancellationToken);
 
         return new PagedResult<UserEntity>(results, total, page, pageSize);
