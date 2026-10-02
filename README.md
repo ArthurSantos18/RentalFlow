@@ -26,6 +26,8 @@ O projeto está sendo desenvolvido com foco em boas práticas de desenvolvimento
 | Scalar | Documentação interativa da API |
 | xUnit / Moq / AutoFixture | Testes unitários |
 | FluentAssertions | Asserções legíveis nos testes |
+| AspNetCore.HealthChecks.SqlServer | Health check de conectividade com SQL Server |
+| Health Checks | Monitoramento de saúde da API |
 
 ---
 
@@ -122,6 +124,7 @@ RentalFlow/
 - [x] **LogContext por request** – `UserId`, `Role` e `CorrelationId` injetados automaticamente nos logs via middleware.
 - [x] **Logs de Commands** – Início, sucesso e warnings com `ErrorCode` + `ErrorMessage`.
 - [x] **Global Exception Handler** – Tratamento centralizado via `IExceptionHandler`, com resposta padronizada em `ProblemDetails` contendo `traceId`/`correlationId` e log estruturado.
+- [x] **Health Checks** – Endpoints `/health/live` (liveness) e `/health/ready` (readiness) com resposta JSON, integrados ao SQL Server.
 
 ### 🌐 API
 
@@ -235,6 +238,17 @@ O projeto utiliza **Serilog** para logging estruturado com:
   ```
   20:56:35 [INF] [CorrelationId:0HNOV9P3R8100:00000013] [User:84e4897a-...] [Role:Administrator] Creating property...
   ```
+
+---
+
+## 🩺 Health Checks
+
+O projeto expõe dois endpoints de health check no padrão, com resposta em JSON:
+
+| Endpoint | Tipo | Verifica | Ação em caso de falha |
+|----------|------|----------|----------------------|
+| `/health/live` | Liveness | Processo está vivo | Orquestrador **reinicia** o container |
+| `/health/ready` | Readiness | SQL Server acessível | Orquestrador **remove do load balancer** |
 
 ---
 
