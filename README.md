@@ -76,6 +76,7 @@ RentalFlow/
 │   └── Usings.cs
 ├── RentalFlow.Crosscutting/        # Preocupações Transversais (Validações, Configurações)
 │   └── Extensions/
+│   └── Usings.cs
 └── RentalFlow.Tests/               # Testes Unitários
     ├── Application/
     ├── Fixtures/
