@@ -1,14 +1,16 @@
 ﻿namespace RentalFlow.API.Extensions;
 
-public static class MiddlewareExtension
+public static class MiddlewareExtensions
 {
-    public static void UseRequestIdMiddleware(this WebApplication app)
+    public static WebApplication UseCorrelationIdMiddleware(this WebApplication app)
     {
         app.UseMiddleware<CorrelationIdMiddleware>();
+        return app;
     }
 
-    public static void UseRequestLogContext(this WebApplication app)
+    public static WebApplication UseRequestLogContext(this WebApplication app)
     {
         app.UseMiddleware<LogContextMiddleware>();
+        return app;
     }
 }

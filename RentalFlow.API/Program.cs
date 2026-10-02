@@ -10,15 +10,17 @@ builder.Services.AddApiServices();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddExceptionHandling();
+builder.Services.AddRentalFlowHealthChecks(builder.Configuration);
 
 var app = builder.Build();
 
 await app.SeedDatabaseAsync();
 
-app.UseRequestIdMiddleware();
+app.UseCorrelationIdMiddleware();
 app.UseExceptionHandler();
-app.UseRentalFlowOpenApi();
 app.UseHttpsRedirection();
+app.UseRentalFlowOpenApi();
+app.UseRentalFlowHealthChecks();
 app.UseAuthentication();
 app.UseRequestLogContext();
 app.UseAuthorization();
