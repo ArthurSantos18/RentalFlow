@@ -114,7 +114,7 @@ RentalFlow/
 - [x] **Login** – Autenticação com geração de access token JWT.
 - [x] **Refresh** – Renovação de access token via refresh token persistido.
 - [x] **Logout** – Revogação do refresh token.
-- [x] **Change Password** – Senha com hash BCrypt e troca autenticada.
+- [x] **Password** – Senha com hash BCrypt e troca autenticada.
 - [x] **Autorização por papéis** – Regras específicas para `Broker`, `Manager` e `Administrator`.
 - [x] **Data Scope** – Filtro automático de dados por time/operador conforme papel do usuário.
 
