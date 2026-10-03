@@ -1,11 +1,12 @@
 ﻿namespace RentalFlow.API.Controllers;
 
-[Route("api/[controller]")]
 [ApiController]
+[Route("api/[controller]")]
 public class AuthController(ICommandMediator _commandMediator) : ControllerBase
 {
     [HttpPost("login")]
     [AllowAnonymous]
+    [EnableRateLimiting(RateLimitingPolicies.LoginPolicy)]
     public async Task<IActionResult> Login([FromBody] LoginRequest request, CancellationToken cancellationToken)
     {
         var command = new LoginCommand(request);
@@ -18,6 +19,7 @@ public class AuthController(ICommandMediator _commandMediator) : ControllerBase
 
     [HttpPost("refresh")]
     [AllowAnonymous]
+    [EnableRateLimiting(RateLimitingPolicies.RefreshPolicy)]
     public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest request, CancellationToken cancellationToken)
     {
         var command = new RefreshTokenCommand(request);
@@ -30,6 +32,7 @@ public class AuthController(ICommandMediator _commandMediator) : ControllerBase
 
     [HttpPost("logout")]
     [AllowAnonymous]
+    [EnableRateLimiting(RateLimitingPolicies.AuthenticatedPolicy)]
     public async Task<IActionResult> Logout([FromBody] LogoutRequest request, CancellationToken cancellationToken)
     {
         var command = new LogoutCommand(request);
@@ -42,6 +45,7 @@ public class AuthController(ICommandMediator _commandMediator) : ControllerBase
 
     [HttpPost("change-password")]
     [Authorize]
+    [EnableRateLimiting(RateLimitingPolicies.AuthenticatedPolicy)]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request, CancellationToken cancellationToken)
     {
         var userId = ClaimsPrincipalHelper.GetUserId(User);

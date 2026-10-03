@@ -1,8 +1,9 @@
 ﻿namespace RentalFlow.API.Controllers;
 
-[Authorize]
-[Route("api/teams")]
 [ApiController]
+[Route("api/teams")]
+[Authorize]
+[EnableRateLimiting(RateLimitingPolicies.AuthenticatedPolicy)]
 public sealed class TeamController(ICommandMediator _commandMediator, IQueryMediator _queryMediator) : ControllerBase
 {
     [HttpGet]
@@ -17,7 +18,7 @@ public sealed class TeamController(ICommandMediator _commandMediator, IQueryMedi
     }
 
     [HttpGet("{id:guid}/operators")]
-    public async Task<IActionResult> GetTeamOperators([FromRoute] Guid id, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> GetTeamOperatorsAsync([FromRoute] Guid id, CancellationToken cancellationToken = default)
     {
         var request = new GetOperatorRequest { TeamIds = [id] };
         var query = new GetOperatorsQuery(request);

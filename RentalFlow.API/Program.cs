@@ -11,6 +11,7 @@ builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddExceptionHandling();
 builder.Services.AddRentalFlowHealthChecks(builder.Configuration);
+builder.Services.AddRentalFlowRateLimiting();
 
 var app = builder.Build();
 
@@ -24,6 +25,7 @@ app.UseRentalFlowHealthChecks();
 app.UseAuthentication();
 app.UseRequestLogContext();
 app.UseAuthorization();
+app.UseRentalFlowRateLimiting();
 app.MapControllers();
 
 app.RunWithLogging();

@@ -1,8 +1,9 @@
 ﻿namespace RentalFlow.API.Controllers;
 
-[Authorize]
-[Route("api/applicants")]
 [ApiController]
+[Route("api/applicants")]
+[Authorize]
+[EnableRateLimiting(RateLimitingPolicies.AuthenticatedPolicy)]
 public sealed class ApplicantController(ICommandMediator _commandMediator, IQueryMediator _queryMediator) : ControllerBase
 {
     [HttpGet]

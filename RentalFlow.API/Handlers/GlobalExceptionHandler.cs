@@ -20,9 +20,7 @@ public sealed class GlobalExceptionHandler(
             Title = "An unexpected error occurred.",
             Type = "https://tools.ietf.org/html/rfc7231#section-6.6.1",
             Instance = httpContext.Request.Path,
-            Detail = _environment.IsDevelopment()
-                ? exception.Message
-                : "An internal server error occurred. Please contact support."
+            Detail = _environment.IsDevelopment() ? exception.Message : "An internal server error occurred. Please contact support."
         };
 
         problemDetails.Extensions["traceId"] = httpContext.TraceIdentifier;

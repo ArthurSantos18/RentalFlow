@@ -18,7 +18,7 @@ public sealed class ValidationFilter(IServiceProvider _serviceProvider) : IAsync
             }
 
             var validationContext = new ValidationContext<object>(argument);
-            ValidationResult validationResult = await validator.ValidateAsync(validationContext);
+            var validationResult = await validator.ValidateAsync(validationContext);
 
             if (validationResult.IsValid)
             {

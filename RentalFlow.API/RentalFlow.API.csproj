@@ -1,12 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>09c172cf-c8fa-4e17-8419-bb779217a7b5</UserSecretsId>
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\RentalFlow.Domain\RentalFlow.Domain.csproj" />
     <ProjectReference Include="..\RentalFlow.Application\RentalFlow.Application.csproj" />
@@ -29,5 +22,12 @@
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
     <PackageReference Include="Serilog.Sinks.Async" Version="2.1.0" />
   </ItemGroup>
+  
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>09c172cf-c8fa-4e17-8419-bb779217a7b5</UserSecretsId>
+  </PropertyGroup>
 
 </Project>

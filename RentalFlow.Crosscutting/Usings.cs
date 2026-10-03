@@ -1,19 +1,13 @@
 ﻿global using FluentValidation;
+
 global using LiteBus.Commands;
 global using LiteBus.Extensions.Microsoft.DependencyInjection;
 global using LiteBus.Messaging;
 global using LiteBus.Queries;
+
 global using Microsoft.Extensions.DependencyInjection;
-global using RentalFlow.Application.Interfaces.Repositories;
-global using RentalFlow.Application.Interfaces.Services;
-global using RentalFlow.Application.Requests.Applicant;
-global using RentalFlow.Application.Requests.Operator;
-global using RentalFlow.Application.Requests.Property;
-global using RentalFlow.Application.Requests.RentalApplication;
-global using RentalFlow.Application.Services;
+
 global using RentalFlow.Application.UseCases.Commands.Applicant;
 global using RentalFlow.Application.UseCases.Queries.Applicant;
+
 global using RentalFlow.Application.Validators.Applicant;
-global using RentalFlow.Application.Validators.Operator;
-global using RentalFlow.Application.Validators.Property;
-global using RentalFlow.Application.Validators.RentalApplication;
