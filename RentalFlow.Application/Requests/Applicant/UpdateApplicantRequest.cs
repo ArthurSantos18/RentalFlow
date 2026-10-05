@@ -2,18 +2,18 @@
 
 public sealed record UpdateApplicantRequest
 {
-    [Description("The full name of the applicant.")]
+    [Description("O novo nome completo do inquilino.")]
     public string? FullName { get; init; }
 
-    [Description("The email of the applicant.")]
+    [Description("O novo email do inquilino.")]
     public string? Email { get; init; }
 
-    [Description("The phone number of the applicant.")]
+    [Description("O novo número de telefone do inquilino.")]
     public string? Phone { get; init; }
 
-    [Description("The monthly income of the applicant.")]
+    [Description("A nova renda mensal do inquilino.")]
     public decimal? MonthlyIncome { get; init; }
 
-    [Description("Indicates if the applicant is active.")]
+    [Description("O novo status ativo para o inquilino.")]
     public bool? IsActive { get; init; }
 };

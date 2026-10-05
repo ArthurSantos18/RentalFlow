@@ -1,5 +1,6 @@
 ﻿namespace RentalFlow.API.Extensions;
 
+[ExcludeFromCodeCoverage(Justification = "Extension class for adding API services.")]
 public static class HealthCheckExtension
 {
     public static IServiceCollection AddRentalFlowHealthChecks(this IServiceCollection services, IConfiguration configuration)

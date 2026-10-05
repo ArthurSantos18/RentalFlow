@@ -2,18 +2,18 @@
 
 public sealed record AddApplicantRequest
 {
-    [Description("The full name of the applicant.")]
+    [Description("O nome completo do inquilino.")]
     public string FullName { get; init; } = string.Empty;
 
-    [Description("The CPF of the applicant.")]
+    [Description("O CPF do inquilino.")]
     public string Cpf { get; init; } = string.Empty;
 
-    [Description("The email of the applicant.")]
+    [Description("O email do inquilino.")]
     public string Email { get; init; } = string.Empty;
 
-    [Description("The phone number of the applicant.")]
+    [Description("O número de telefone do inquilino.")]
     public string Phone { get; init; } = string.Empty;
 
-    [Description("The monthly income of the applicant.")]
+    [Description("A renda mensal do inquilino.")]
     public decimal MonthlyIncome { get; init; }
 }

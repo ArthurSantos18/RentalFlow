@@ -109,7 +109,7 @@ public sealed class AddOperatorCommandHandler(
 
         if (!team.IsActive)
         {
-            return Result<TeamEntity>.Failure(TeamErrors.TeamNotFound);
+            return Result<TeamEntity>.Failure(TeamErrors.TeamInactive);
         }
 
         if (_currentUserService.Role == nameof(OperatorRole.Manager) && team.Id != _currentUserService.TeamId)

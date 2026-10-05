@@ -2,21 +2,21 @@
 
 public record AddOperatorResponse
 {
-    [Description("The unique identifier of the newly added operator.")]
+    [Description("O identificador único do novo operador.")]
     public Guid Id { get; init; }
 
-    [Description("The name of the newly added operator.")]
+    [Description("O nome do novo operador.")]
     public string Name { get; init; } = string.Empty;
 
-    [Description("The email of the newly added operator.")]
+    [Description("O email do novo operador.")]
     public string Email { get; init; } = string.Empty;
 
-    [Description("The role of the newly added operator.")]
+    [Description("A função do novo operador.")]
     public string Role { get; init; } = string.Empty;
 
-    [Description("The temporary password for the newly added operator.")]
+    [Description("A senha temporária para o novo operador.")]
     public string TemporaryPassword { get; init; } = string.Empty;
 
-    [Description("A message associated with the response.")]
+    [Description("A mensagem associada à resposta.")]
     public string Message { get; init; } = string.Empty;
 }

@@ -4,7 +4,7 @@ public sealed class ChangePasswordCommandHandler(
     IUserRepository _userRepository,
     IPasswordService _passwordService,
     ILogger<ChangePasswordCommandHandler> _logger
-) : ICommandHandler<ChangePasswordCommand, Result>
+    ) : ICommandHandler<ChangePasswordCommand, Result>
 {
     public async Task<Result> HandleAsync(ChangePasswordCommand command, CancellationToken cancellationToken)
     {
@@ -37,20 +37,6 @@ public sealed class ChangePasswordCommandHandler(
                 UserErrors.InvalidPassword.Message);
 
             return Result.Failure(UserErrors.InvalidPassword);
-        }
-
-        var newPasswordSameAsCurrent = _passwordService.Verify(command.Request.NewPassword, user.PasswordHash);
-
-        if (newPasswordSameAsCurrent)
-        {
-            _logger.LogWarning(
-                "Password change failed for user {UserId} ({Email}) because new password matches the current one: {ErrorCode} {ErrorMessage}",
-                user.Id,
-                user.Email,
-                UserErrors.NewPasswordMustBeDifferent.Code,
-                UserErrors.NewPasswordMustBeDifferent.Message);
-
-            return Result.Failure(UserErrors.NewPasswordMustBeDifferent);
         }
 
         var newHash = _passwordService.Hash(command.Request.NewPassword);

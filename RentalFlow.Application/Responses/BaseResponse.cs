@@ -3,15 +3,15 @@
 public abstract record BaseResponse
 {
     [JsonPropertyOrder(-1)]
-    [Description("The unique identifier of the entity.")]
+    [Description("O identificador único da entidade.")]
     public Guid Id { get; init; }
 
-    [Description("Indicates whether the entity is active.")]
+    [Description("Indica se a entidade está ativa.")]
     public bool IsActive { get; init; }
 
-    [Description("The date and time when the entity was created.")]
+    [Description("A data e hora quando a entidade foi criada.")]
     public DateTime CreatedAt { get; init; }
 
-    [Description("The date and time when the entity was last updated.")]
+    [Description("A data e hora quando a entidade foi atualizada pela última vez.")]
     public DateTime? UpdatedAt { get; init; }
 }

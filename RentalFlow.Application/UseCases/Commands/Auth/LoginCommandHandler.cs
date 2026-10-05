@@ -35,10 +35,10 @@ public sealed class LoginCommandHandler(
                 "Login failed for user {UserId} ({Email}) because user is inactive: {ErrorCode} {ErrorMessage}",
                 user.Id,
                 user.Email,
-                UserErrors.UserNotFound.Code,
-                UserErrors.UserNotFound.Message);
+                UserErrors.InvalidCredentials.Code,
+                UserErrors.InvalidCredentials.Message);
 
-            return Result<LoginResponse>.Failure(UserErrors.UserNotFound);
+            return Result<LoginResponse>.Failure(UserErrors.InvalidCredentials);
         }
 
         var passwordValid = _passwordService.Verify(command.Request.Password, user.PasswordHash);

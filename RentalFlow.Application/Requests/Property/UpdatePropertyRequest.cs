@@ -2,18 +2,18 @@
 
 public sealed record UpdatePropertyRequest
 {
-    [Description("The address of the property.")]
+    [Description("O novo endereço da propriedade.")]
     public Address? Address { get; init; }
 
-    [Description("The monthly rent price of the property.")]
+    [Description("O novo preço mensal do aluguel da propriedade.")]
     public decimal? RentPrice { get; init; }
 
-    [Description("The number of bedrooms in the property.")]
+    [Description("O novo número de quartos na propriedade.")]
     public int? Bedrooms { get; init; }
 
-    [Description("Indicates if the property is available for rent.")]
+    [Description("O novo status de disponibilidade para a propriedade.")]
     public bool? IsAvailable { get; init; }
 
-    [Description("Indicates if the property is active.")]
+    [Description("O novo status ativo para a propriedade.")]
     public bool? IsActive { get; init; }
 }

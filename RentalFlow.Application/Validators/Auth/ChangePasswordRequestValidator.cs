@@ -11,6 +11,8 @@ public sealed class ChangePasswordRequestValidator : AbstractValidator<ChangePas
         RuleFor(x => x.NewPassword)
             .NotEmpty()
             .WithMessage("New password is required.")
+            .NotEqual(x => x.CurrentPassword)
+            .WithMessage("New password must be different from the current one.")
             .Must(PasswordValidator.HasMinimumLength)
             .WithMessage($"New password must be at least {PasswordValidator.MinimumLength} characters.")
             .Must(PasswordValidator.HasUppercase)

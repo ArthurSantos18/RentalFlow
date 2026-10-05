@@ -2,12 +2,25 @@
 
 public sealed record Address
 {
+    [Description("O logradouro do endereço.")]
     public string Street { get; init; } = string.Empty;
+
+    [Description("O número do endereço.")]
     public string Number { get; init; } = string.Empty;
+
+    [Description("O complemento do endereço.")]
     public string Complement { get; init; } = string.Empty;
+
+    [Description("O bairro do endereço.")]
     public string Neighborhood { get; init; } = string.Empty;
+
+    [Description("A cidade do endereço.")]
     public string City { get; init; } = string.Empty;
+
+    [Description("O estado do endereço.")]
     public string State { get; init; } = string.Empty;
+
+    [Description("O código postal (CEP) do endereço.")]
     public string ZipCode { get; init; } = string.Empty;
 
     private Address() { }

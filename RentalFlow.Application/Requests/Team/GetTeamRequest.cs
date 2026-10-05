@@ -6,15 +6,15 @@ public sealed record GetTeamRequest
 
     public PageFilterRequest PageFilter { get; set; }
 
-    [Description("The list of team IDs to filter by.")]
+    [Description("A lista de IDs das equipes para filtrar.")]
     public IEnumerable<Guid>? Ids { get; set; }
 
-    [Description("The list of team names to filter by.")]
+    [Description("A lista de nomes das equipes para filtrar.")]
     public IEnumerable<string>? Names { get; set; }
 
-    [Description("The list of team descriptions to filter by.")]
+    [Description("A lista de descrições das equipes para filtrar.")]
     public IEnumerable<string>? Description { get; set; }
 
-    [Description("Indicates if the team is active.")]
+    [Description("Indica se a equipe está ativa.")]
     public bool? IsActive { get; set; }
 }

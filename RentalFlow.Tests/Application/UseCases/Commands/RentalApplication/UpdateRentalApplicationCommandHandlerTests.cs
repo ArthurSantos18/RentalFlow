@@ -458,7 +458,7 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(ApplicantErrors.ApplicantNotFound);
+        result.Error.Should().Be(ApplicantErrors.ApplicantInactive);
 
         _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
         _applicantRepositoryMock.Verify(r => r.GetByIdAsync(applicant.Id, It.IsAny<CancellationToken>()), Times.Once);
@@ -662,7 +662,7 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(OperatorErrors.OperatorNotFound);
+        result.Error.Should().Be(OperatorErrors.OperatorInactive);
 
         _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
         _applicantRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
@@ -976,7 +976,7 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(PropertyErrors.PropertyNotFound);
+        result.Error.Should().Be(PropertyErrors.PropertyInactive);
 
         _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
         _applicantRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);

@@ -26,10 +26,10 @@ public sealed class RefreshTokenCommandHandler(
                 "Refresh token failed for user {UserId} ({Email}) because user is inactive: {ErrorCode} {ErrorMessage}",
                 token.User.Id,
                 token.User.Email,
-                UserErrors.UserNotFound.Code,
-                UserErrors.UserNotFound.Message);
+                UserErrors.InvalidRefreshToken.Code,
+                UserErrors.InvalidRefreshToken.Message);
 
-            return Result<LoginResponse>.Failure(UserErrors.UserNotFound);
+            return Result<LoginResponse>.Failure(UserErrors.InvalidRefreshToken);
         }
 
         token.Revoke();

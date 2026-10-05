@@ -6,42 +6,42 @@ public sealed record GetPropertyRequest
 
     public PageFilterRequest PageFilter { get; set; }
 
-    [Description("The list of property IDs to filter by.")]
+    [Description("A lista de IDs de propriedades para filtrar.")]
     public IEnumerable<Guid>? Ids { get; set; }
 
-    [Description("The list of cities to filter by.")]
+    [Description("A lista de cidades para filtrar.")]
     public IEnumerable<string>? Cities { get; set; }
 
-    [Description("The list of states to filter by.")]
+    [Description("A lista de estados para filtrar.")]
     public IEnumerable<string>? States { get; set; }
 
-    [Description("The list of neighborhoods to filter by.")]
+    [Description("A lista de bairros para filtrar.")]
     public IEnumerable<string>? Neighborhoods { get; set; }
 
-    [Description("The list of zip codes to filter by.")]
+    [Description("A lista de códigos postais para filtrar.")]
     public IEnumerable<string>? ZipCodes { get; set; }
 
-    [Description("The minimum rent price to filter by.")]
+    [Description("O preço mínimo do aluguel para filtrar.")]
     public decimal? MinRentPrice { get; set; }
 
-    [Description("The maximum rent price to filter by.")]
+    [Description("O preço máximo do aluguel para filtrar.")]
     public decimal? MaxRentPrice { get; set; }
 
-    [Description("The minimum number of bedrooms to filter by.")]
+    [Description("O número mínimo de quartos para filtrar.")]
     public int? MinBedrooms { get; set; }
 
-    [Description("The maximum number of bedrooms to filter by.")]
+    [Description("O número máximo de quartos para filtrar.")]
     public int? MaxBedrooms { get; set; }
 
-    [Description("Indicates if the property is available.")]
+    [Description("Indica se a propriedade está disponível.")]
     public bool? IsAvailable { get; set; }
 
-    [Description("Indicates if the property is active.")]
+    [Description("Indica se a propriedade está ativa.")]
     public bool? IsActive { get; set; }
 
-    [Description("Indicates if the property has applications.")]
+    [Description("Indica se a propriedade possui aplicações.")]
     public bool? HasApplications { get; set; }
 
-    [Description("The list of application IDs to filter by.")]
+    [Description("A lista de IDs das aplicações para filtrar.")]
     public IEnumerable<Guid>? ApplicationIds { get; set; }
 }

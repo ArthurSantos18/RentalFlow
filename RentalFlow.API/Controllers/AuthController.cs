@@ -8,6 +8,7 @@ public class AuthController(ICommandMediator _commandMediator) : ControllerBase
     [HttpPost("login")]
     [AllowAnonymous]
     [EnableRateLimiting(RateLimitingPolicies.LoginPolicy)]
+    [EndpointDescription("Autentica o usuário e retorna um token de acesso e um token de atualização.")]
     public async Task<IActionResult> LoginAsync([FromBody] LoginRequest request, CancellationToken cancellationToken)
     {
         var command = new LoginCommand(request);
@@ -21,6 +22,7 @@ public class AuthController(ICommandMediator _commandMediator) : ControllerBase
     [HttpPost("refresh")]
     [AllowAnonymous]
     [EnableRateLimiting(RateLimitingPolicies.RefreshPolicy)]
+    [EndpointDescription("Atualiza o token de acesso usando o token de atualização.")]
     public async Task<IActionResult> RefreshAsync([FromBody] RefreshTokenRequest request, CancellationToken cancellationToken)
     {
         var command = new RefreshTokenCommand(request);
@@ -34,6 +36,7 @@ public class AuthController(ICommandMediator _commandMediator) : ControllerBase
     [HttpPost("logout")]
     [AllowAnonymous]
     [EnableRateLimiting(RateLimitingPolicies.AuthenticatedPolicy)]
+    [EndpointDescription("Faz o logout do usuário e invalida o token de atualização.")]
     public async Task<IActionResult> LogoutAsync([FromBody] LogoutRequest request, CancellationToken cancellationToken)
     {
         var command = new LogoutCommand(request);
@@ -47,6 +50,7 @@ public class AuthController(ICommandMediator _commandMediator) : ControllerBase
     [HttpPost("change-password")]
     [Authorize]
     [EnableRateLimiting(RateLimitingPolicies.AuthenticatedPolicy)]
+    [EndpointDescription("Altera a senha do usuário autenticado.")]
     public async Task<IActionResult> ChangePasswordAsync([FromBody] ChangePasswordRequest request, CancellationToken cancellationToken)
     {
         var userId = ClaimsPrincipalHelper.GetUserId(User);

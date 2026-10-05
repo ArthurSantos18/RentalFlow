@@ -2,15 +2,15 @@
 
 public sealed record UpdateOperatorRequest
 {
-    [Description("The name of the operator.")]
+    [Description("O novo nome do operador.")]
     public string? Name { get; init; }
 
-    [Description("The email address of the operator.")]
+    [Description("O novo email do operador.")]
     public string? Email { get; init; }
 
-    [Description("The role of the operator.")]
+    [Description("A nova função do operador.")]
     public OperatorRole? Role { get; init; }
 
-    [Description("Indicates if the operator is active.")]
+    [Description("O novo status ativo para o operador.")]
     public bool? IsActive { get; init; }
 }

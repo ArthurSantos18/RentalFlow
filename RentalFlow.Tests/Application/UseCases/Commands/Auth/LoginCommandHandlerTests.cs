@@ -74,7 +74,7 @@ public sealed class LoginCommandHandlerTests
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(UserErrors.UserNotFound);
+        result.Error.Should().Be(UserErrors.InvalidCredentials);
 
         _userRepositoryMock.Verify(r => r.GetByEmailAsync(request.Email, It.IsAny<CancellationToken>()), Times.Once);
         _passwordServiceMock.Verify(p => p.Verify(It.IsAny<string>(), It.IsAny<string>()), Times.Never);

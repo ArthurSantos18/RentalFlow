@@ -2,7 +2,6 @@
 
 public static class UserErrors
 {
-    public static readonly Error NewPasswordMustBeDifferent = new(400, "New password must be different from the current one.");
     public static readonly Error InvalidRole = new(403, "The current user's role is not authorized to perform this action.");
     public static readonly Error InvalidCredentials = new(401, "Invalid email or password.");
     public static readonly Error InvalidPassword = new(401, "Invalid password.");

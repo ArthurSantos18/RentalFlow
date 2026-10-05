@@ -6,18 +6,18 @@ public sealed record GetUserRequest
 
     public PageFilterRequest PageFilter { get; set; }
 
-    [Description("The list of user IDs to filter by.")]
+    [Description("A lista de IDs de usuários para filtrar.")]
     public IEnumerable<Guid>? Ids { get; set; }
 
-    [Description("The list of emails to filter by.")]
+    [Description("A lista de emails para filtrar.")]
     public IEnumerable<string>? Emails { get; set; }
 
-    [Description("The list of operator IDs to filter by.")]
+    [Description("A lista de IDs de operadores para filtrar.")]
     public IEnumerable<Guid>? OperatorIds { get; set; }
 
-    [Description("Indicates if the user is active.")]
+    [Description("Indica se o usuário está ativo.")]
     public bool? IsActive { get; set; }
 
-    [Description("Indicates if the user must change their password.")]
+    [Description("Indica se o usuário deve alterar sua senha.")]
     public bool? MustChangePassword { get; set; }
 }

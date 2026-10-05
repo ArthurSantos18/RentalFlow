@@ -1,5 +1,6 @@
 ﻿namespace RentalFlow.API.Extensions;
 
+[ExcludeFromCodeCoverage(Justification = "Extension class for adding API services.")]
 public static class RateLimitingExtension
 {
     public static IServiceCollection AddRentalFlowRateLimiting(this IServiceCollection services)

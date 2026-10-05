@@ -2,27 +2,27 @@
 
 public sealed record GetOperatorByIdResponse : BaseResponse
 {
-    [Description("The name of the operator.")]
+    [Description("O nome do operador.")]
     public string Name { get; init; } = string.Empty;
 
-    [Description("The role of the operator.")]
+    [Description("A função do operador.")]
     public OperatorRole Role { get; init; }
 
-    [Description("The unique identifier of the team the operator belongs to.")]
+    [Description("O identificador único da equipe à qual o operador pertence.")]
     public Guid TeamId { get; init; }
 
-    [Description("The name of the team the operator belongs to.")]
+    [Description("O nome da equipe à qual o operador pertence.")]
     public string TeamName { get; init; } = string.Empty;
 
-    [Description("The email address of the operator.")]
+    [Description("O endereço de email do operador.")]
     public string Email { get; init; } = string.Empty;
 
-    [Description("Indicates whether the operator must change their password.")]
+    [Description("Indica se o operador deve alterar sua senha.")]
     public bool MustChangePassword { get; init; }
 
-    [Description("The unique identifier of the user account associated with the operator.")]
+    [Description("O identificador único da conta de usuário associada ao operador.")]
     public Guid UserId { get; init; }
 
-    [Description("The number of applications associated with the operator.")]
+    [Description("O número de solicitações associadas ao operador.")]
     public int ApplicationsCount { get; init; }
 }

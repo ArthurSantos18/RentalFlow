@@ -6,7 +6,10 @@ public sealed class ValidationFilter(IServiceProvider _serviceProvider) : IAsync
     {
         foreach (var argument in context.ActionArguments.Values)
         {
-            if (argument is null) continue;
+            if (argument is null)
+            {
+                continue;
+            }
 
             var argumentType = argument.GetType();
 

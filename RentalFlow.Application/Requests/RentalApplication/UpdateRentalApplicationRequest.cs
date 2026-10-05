@@ -2,24 +2,24 @@
 
 public sealed record UpdateRentalApplicationRequest
 {
-    [Description("The number of installments for the rental application.")]
+    [Description("O novo número de parcelas para a solicitação de aluguel.")]
     public int? Installments { get; init; }
 
-    [Description("The amount financed for the rental application.")]
+    [Description("O novo valor financiado para a solicitação de aluguel.")]
     public decimal? FinancedAmount { get; init; }
 
-    [Description("The total amount for the rental application.")]
+    [Description("O novo valor total para a solicitação de aluguel.")]
     public decimal? TotalAmount { get; init; }
 
-    [Description("The date of the rental contract.")]
+    [Description("A nova data do contrato de aluguel.")]
     public DateTime? ContractDate { get; init; }
 
-    [Description("The ID of the applicant.")]
+    [Description("O novo ID do candidato.")]
     public Guid? ApplicantId { get; init; }
 
-    [Description("The ID of the operator.")]
+    [Description("O novo ID do operador.")]
     public Guid? OperatorId { get; init; }
 
-    [Description("The ID of the property.")]
+    [Description("O novo ID da propriedade.")]
     public Guid? PropertyId { get; init; }
 }

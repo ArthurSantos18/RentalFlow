@@ -2,24 +2,24 @@
 
 public sealed record AddRentalApplicationRequest
 {
-    [Description("The ID of the applicant.")]
+    [Description("O ID do candidato.")]
     public Guid ApplicantId { get; init; }
 
-    [Description("The ID of the property.")]
+    [Description("O ID da propriedade.")]
     public Guid PropertyId { get; init; }
 
-    [Description("The ID of the operator.")]
+    [Description("O ID do operador.")]
     public Guid? OperatorId { get; init; }
 
-    [Description("The amount financed for the rental application.")]
+    [Description("O valor financiado para a solicitação de aluguel.")]
     public decimal FinancedAmount { get; init; }
 
-    [Description("The total amount for the rental application.")]
+    [Description("O valor total para a solicitação de aluguel.")]
     public decimal TotalAmount { get; init; }
 
-    [Description("The number of installments for the rental application.")]
+    [Description("O número de parcelas para a solicitação de aluguel.")]
     public int Installments { get; init; }
 
-    [Description("The date of the rental contract.")]
+    [Description("A data do contrato de aluguel.")]
     public DateTime? ContractDate { get; init; }
 }

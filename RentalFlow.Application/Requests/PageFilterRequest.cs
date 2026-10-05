@@ -2,9 +2,9 @@
 
 public class PageFilterRequest
 {
-    [Description("The page number to retrieve.")]
+    [Description("O número da página a ser recuperada.")]
     public int Page { get; set; } = 1;
 
-    [Description("The number of items per page.")]
+    [Description("O número de itens por página.")]
     public int PageSize { get; set; } = 60;
 }

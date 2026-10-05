@@ -2,6 +2,6 @@
 
 public sealed record UpdateRentalApplicationStatusRequest
 {
-    [Description("The new status for the rental application.")]
+    [Description("O novo status para a solicitação de aluguel.")]
     public RentalStatus RentalStatus { get; init; }
 }

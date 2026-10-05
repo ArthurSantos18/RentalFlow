@@ -8,6 +8,7 @@
 public sealed class PropertyController(ICommandMediator _commandMediator, IQueryMediator _queryMediator) : ControllerBase
 {
     [HttpGet]
+    [EndpointDescription("Retorna uma lista de propriedades com base nos critérios fornecidos.")]
     public async Task<IActionResult> GetPropertiesAsync([FromQuery] GetPropertyRequest request, CancellationToken cancellationToken)
     {
         var query = new GetPropertiesQuery(request);
@@ -19,6 +20,7 @@ public sealed class PropertyController(ICommandMediator _commandMediator, IQuery
     }
 
     [HttpPost]
+    [EndpointDescription("Adiciona uma nova propriedade ao sistema.")]
     public async Task<IActionResult> AddPropertyAsync([FromBody] AddPropertyRequest request, CancellationToken cancellationToken)
     {
         var command = new AddPropertyCommand(request);
@@ -31,6 +33,7 @@ public sealed class PropertyController(ICommandMediator _commandMediator, IQuery
 
     [HttpDelete("{id:guid}")]
     [Authorize(Roles = $"{nameof(OperatorRole.Administrator)},{nameof(OperatorRole.Manager)}")]
+    [EndpointDescription("Deleta uma propriedade existente do sistema.")]
     public async Task<IActionResult> DeletePropertyAsync([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var command = new DeletePropertyCommand(id);
@@ -42,6 +45,7 @@ public sealed class PropertyController(ICommandMediator _commandMediator, IQuery
     }
 
     [HttpPatch("{id:guid}")]
+    [EndpointDescription("Atualiza uma propriedade existente no sistema.")]
     public async Task<IActionResult> UpdatePropertyAsync([FromRoute] Guid id, [FromBody] UpdatePropertyRequest request, CancellationToken cancellationToken)
     {
         var command = new UpdatePropertyCommand(id, request);

@@ -10,19 +10,21 @@ global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.Mvc.Filters;
 global using Microsoft.AspNetCore.Mvc.ApiExplorer;
 global using Microsoft.AspNetCore.RateLimiting;
+global using Microsoft.AspNetCore.OpenApi;
 
 global using Microsoft.IdentityModel.Tokens;
 
 global using Microsoft.OpenApi;
 
-global using RentalFlow.API.Metadata;
 global using RentalFlow.API.Constants;
 global using RentalFlow.API.Extensions;
 global using RentalFlow.API.Filters;
 global using RentalFlow.API.Handlers;
 global using RentalFlow.API.Helpers;
+global using RentalFlow.API.Metadata;
 global using RentalFlow.API.Middlewares;
 global using RentalFlow.API.Services;
+global using RentalFlow.API.Transformers;
 
 global using RentalFlow.Application.Extensions;
 

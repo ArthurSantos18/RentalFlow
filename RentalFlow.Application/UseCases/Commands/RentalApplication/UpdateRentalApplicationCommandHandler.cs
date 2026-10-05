@@ -142,7 +142,7 @@ public sealed class UpdateRentalApplicationCommandHandler(
 
         if (!applicant.IsActive)
         {
-            return Result.Failure(ApplicantErrors.ApplicantNotFound);
+            return Result.Failure(ApplicantErrors.ApplicantInactive);
         }
 
         return rentalApplication.ChangeApplicant(applicant);
@@ -169,7 +169,7 @@ public sealed class UpdateRentalApplicationCommandHandler(
 
         if (!@operator.IsActive)
         {
-            return Result.Failure(OperatorErrors.OperatorNotFound);
+            return Result.Failure(OperatorErrors.OperatorInactive);
         }
 
         if (_currentUserService.Role == nameof(OperatorRole.Manager) && @operator.TeamId != _currentUserService.TeamId)
@@ -196,7 +196,7 @@ public sealed class UpdateRentalApplicationCommandHandler(
 
         if (!property.IsActive)
         {
-            return Result.Failure(PropertyErrors.PropertyNotFound);
+            return Result.Failure(PropertyErrors.PropertyInactive);
         }
 
         if (!property.IsAvailable)

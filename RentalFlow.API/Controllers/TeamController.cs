@@ -8,6 +8,7 @@
 public sealed class TeamController(ICommandMediator _commandMediator, IQueryMediator _queryMediator) : ControllerBase
 {
     [HttpGet]
+    [EndpointDescription("Retorna uma lista de equipes com base nos critérios fornecidos.")]
     public async Task<IActionResult> GetTeamsAsync([FromQuery] GetTeamRequest request, CancellationToken cancellationToken)
     {
         var query = new GetTeamsQuery(request);
@@ -18,20 +19,9 @@ public sealed class TeamController(ICommandMediator _commandMediator, IQueryMedi
             : ApiResponseHelper.HandleError(result.Error);
     }
 
-    [HttpGet("{id:guid}/operators")]
-    public async Task<IActionResult> GetTeamOperatorsAsync([FromRoute] Guid id, CancellationToken cancellationToken = default)
-    {
-        var request = new GetOperatorRequest { TeamIds = [id] };
-        var query = new GetOperatorsQuery(request);
-        var result = await _queryMediator.QueryAsync(query, cancellationToken);
-
-        return result.IsSuccess
-            ? Ok(result.Value)
-            : ApiResponseHelper.HandleError(result.Error);
-    }
-
     [HttpPost]
     [Authorize(Roles = nameof(OperatorRole.Administrator))]
+    [EndpointDescription("Adiciona uma nova equipe ao sistema.")]
     public async Task<IActionResult> AddTeamAsync([FromBody] AddTeamRequest request, CancellationToken cancellationToken)
     {
         var command = new AddTeamCommand(request);
@@ -44,6 +34,7 @@ public sealed class TeamController(ICommandMediator _commandMediator, IQueryMedi
 
     [HttpDelete("{id:guid}")]
     [Authorize(Roles = nameof(OperatorRole.Administrator))]
+    [EndpointDescription("Deleta uma equipe existente do sistema.")]
     public async Task<IActionResult> DeleteTeamAsync([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var command = new DeleteTeamCommand(id);
@@ -56,6 +47,7 @@ public sealed class TeamController(ICommandMediator _commandMediator, IQueryMedi
 
     [HttpPatch("{id:guid}")]
     [Authorize(Roles = $"{nameof(OperatorRole.Administrator)},{nameof(OperatorRole.Manager)}")]
+    [EndpointDescription("Atualiza uma equipe existente no sistema.")]
     public async Task<IActionResult> UpdateTeamAsync([FromRoute] Guid id, [FromBody] UpdateTeamRequest request, CancellationToken cancellationToken)
     {
         var command = new UpdateTeamCommand(id, request);

@@ -6,27 +6,27 @@ public sealed class GetOperatorRequest
 
     public PageFilterRequest PageFilter { get; set; }
 
-    [Description("The list of operator IDs to filter by.")]
+    [Description("A lista de IDs dos operadores para filtrar.")]
     public IEnumerable<Guid>? Ids { get; set; }
 
-    [Description("The list of operator names to filter by.")]
+    [Description("A lista de nomes dos operadores para filtrar.")]
     public IEnumerable<string>? Names { get; set; }
 
-    [Description("The list of operator emails to filter by.")]
+    [Description("A lista de emails dos operadores para filtrar.")]
     public IEnumerable<string>? Emails { get; set; }
 
-    [Description("The role of the operator to filter by.")]
+    [Description("A função do operador para filtrar.")]
     public OperatorRole? Role { get; set; }
 
-    [Description("Indicates if the operator is active.")]
+    [Description("Indica se o operador está ativo.")]
     public bool? IsActive { get; set; }
 
-    [Description("Indicates if the operator has applications.")]
+    [Description("Indica se o operador possui aplicações.")]
     public bool? HasApplications { get; set; }
 
-    [Description("The list of application IDs to filter by.")]
+    [Description("A lista de IDs das aplicações para filtrar.")]
     public IEnumerable<Guid>? ApplicationIds { get; set; }
 
-    [Description("The list of team IDs to filter by.")]
+    [Description("A lista de IDs das equipes para filtrar.")]
     public IEnumerable<Guid>? TeamIds { get; set; }
 }

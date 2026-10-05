@@ -2,21 +2,21 @@
 
 public sealed record LoginResponse
 {
-    [Description("The access token for the authenticated user.")]
+    [Description("O token de acesso do usuário autenticado.")]
     public string AccessToken { get; init; } = string.Empty;
 
-    [Description("The refresh token for the authenticated user.")]
+    [Description("O token de atualização do usuário autenticado.")]
     public string RefreshToken { get; init; } = string.Empty;
 
-    [Description("Indicates whether the user must change their password.")]
+    [Description("Indica se o usuário deve alterar sua senha.")]
     public bool MustChangePassword { get; init; }
 
-    [Description("The unique identifier of the authenticated user.")]
+    [Description("O identificador único do usuário autenticado.")]
     public Guid UserId { get; init; }
 
-    [Description("The email address of the authenticated user.")]
+    [Description("O endereço de email do usuário autenticado.")]
     public string Email { get; init; } = string.Empty;
 
-    [Description("The role of the authenticated user.")]
+    [Description("A função do usuário autenticado.")]
     public string Role { get; init; } = string.Empty;
 }

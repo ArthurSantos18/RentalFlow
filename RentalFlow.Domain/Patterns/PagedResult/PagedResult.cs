@@ -2,25 +2,25 @@
 
 public sealed class PagedResult<T>
 {
-    [Description("The current page number.")]
+    [Description("O número da página atual.")]
     public int Page { get; set; }
 
-    [Description("The number of items per page.")]
+    [Description("O número de itens por página.")]
     public int PageSize { get; set; }
 
-    [Description("The total number of results.")]
+    [Description("O número total de resultados.")]
     public int TotalResults { get; set; }
 
-    [Description("The total number of pages.")]
+    [Description("O número total de páginas.")]
     public int TotalPages => (TotalResults + PageSize - 1) / PageSize;
 
-    [Description("The list of results for the current page.")]
+    [Description("A lista de resultados para a página atual.")]
     public IEnumerable<T> Results { get; set; } = [];
 
-    [Description("Indicates if there is a previous page.")]
+    [Description("Indica se há uma página anterior.")]
     public bool HasPrevious => Page > 1;
 
-    [Description("Indicates if there is a next page.")]
+    [Description("Indica se há uma página seguinte.")]
     public bool HasNext => Page < TotalPages;
 
     public PagedResult() { }

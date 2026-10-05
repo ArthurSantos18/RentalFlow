@@ -6,33 +6,33 @@ public sealed record GetApplicantRequest
 
     public PageFilterRequest PageFilter { get; set; }
 
-    [Description("The list of applicant IDs to filter by.")]
+    [Description("A lista de IDs de inquilinos para filtrar.")]
     public IEnumerable<Guid>? Ids { get; set; }
 
-    [Description("The list of full names to filter by.")]
+    [Description("A lista de nomes completos para filtrar.")]
     public IEnumerable<string>? FullNames { get; set; }
 
-    [Description("The list of CPFs to filter by.")]
+    [Description("A lista de CPFs para filtrar.")]
     public IEnumerable<string>? Cpfs { get; set; }
 
-    [Description("The list of emails to filter by.")]
+    [Description("A lista de emails para filtrar.")]
     public IEnumerable<string>? Emails { get; set; }
 
-    [Description("The list of phones to filter by.")]
+    [Description("A lista de telefones para filtrar.")]
     public IEnumerable<string>? Phones { get; set; }
 
-    [Description("The minimum monthly income to filter by.")]
+    [Description("A renda mensal mínima para filtrar.")]
     public decimal? MinMonthlyIncome { get; set; }
 
-    [Description("The maximum monthly income to filter by.")]
+    [Description("A renda mensal máxima para filtrar.")]
     public decimal? MaxMonthlyIncome { get; set; }
 
-    [Description("Indicates if the applicant is active.")]
+    [Description("Indica se o inquilino está ativo.")]
     public bool? IsActive { get; set; }
 
-    [Description("Indicates if the applicant has applications.")]
+    [Description("Indica se o inquilino possui aplicações.")]
     public bool? HasApplications { get; set; }
 
-    [Description("The list of application IDs to filter by.")]
+    [Description("A lista de IDs de aplicações para filtrar.")]
     public IEnumerable<Guid>? ApplicationIds { get; set; }
 };

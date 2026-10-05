@@ -2,15 +2,15 @@
 
 public sealed record AddOperatorRequest
 {
-    [Description("The name of the operator.")]
+    [Description("O nome do operador.")]
     public string Name { get; init; } = string.Empty;
 
-    [Description("The email address of the operator.")]
+    [Description("O email do operador.")]
     public string Email { get; init; } = string.Empty;
 
-    [Description("The role of the operator.")]
+    [Description("A função do operador.")]
     public OperatorRole Role { get; init; }
 
-    [Description("The ID of the team to which the operator belongs.")]
+    [Description("O ID da equipe à qual o operador pertence.")]
     public Guid TeamId { get; init; }
 }

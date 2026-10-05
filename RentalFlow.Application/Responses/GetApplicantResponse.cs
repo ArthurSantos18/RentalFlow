@@ -2,18 +2,18 @@
 
 public sealed record GetApplicantResponse : BaseResponse
 {
-    [Description("The full name of the applicant.")]
+    [Description("O nome completo do candidato.")]
     public string FullName { get; init; } = string.Empty;
 
-    [Description("The CPF of the applicant.")]
+    [Description("O CPF do candidato.")]
     public string Cpf { get; init; } = string.Empty;
 
-    [Description("The email address of the applicant.")]
+    [Description("O email do candidato.")]
     public string Email { get; init; } = string.Empty;
 
-    [Description("The phone number of the applicant.")]
+    [Description("O número de telefone do candidato.")]
     public string? Phone { get; init; }
 
-    [Description("The monthly income of the applicant.")]
+    [Description("A renda mensal do candidato.")]
     public decimal MonthlyIncome { get; init; }
 }

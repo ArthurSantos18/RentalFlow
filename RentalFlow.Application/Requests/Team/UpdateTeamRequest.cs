@@ -2,12 +2,12 @@
 
 public sealed record UpdateTeamRequest
 {
-    [Description("The new name for the team.")]
+    [Description("O novo nome para a equipe.")]
     public string? Name { get; init; }
 
-    [Description("The new description for the team.")]
+    [Description("A nova descrição para a equipe.")]
     public string? Description { get; init; }
 
-    [Description("The new active status for the team.")]
+    [Description("O novo status ativo para a equipe.")]
     public bool? IsActive { get; init; }
 }

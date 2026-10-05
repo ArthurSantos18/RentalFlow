@@ -2,9 +2,9 @@
 
 public sealed record GetTeamResponse : BaseResponse
 {
-    [Description("The name of the team.")]
+    [Description("O nome da equipe.")]
     public string Name { get; init; } = string.Empty;
 
-    [Description("The description of the team.")]
+    [Description("A descrição da equipe.")]
     public string Description { get; init; } = string.Empty;
 }

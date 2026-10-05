@@ -148,7 +148,7 @@ public sealed class AddOperatorCommandHandlerTests
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(TeamErrors.TeamNotFound);
+        result.Error.Should().Be(TeamErrors.TeamInactive);
 
         _currentUserServiceMock.Verify(s => s.Role, Times.Once);
         _teamRepositoryMock.Verify(r => r.GetByIdAsync(request.TeamId, It.IsAny<CancellationToken>()), Times.Once);
