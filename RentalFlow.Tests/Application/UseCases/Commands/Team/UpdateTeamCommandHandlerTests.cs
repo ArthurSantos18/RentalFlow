@@ -60,7 +60,7 @@ public sealed class UpdateTeamCommandHandlerTests
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(UserErrors.Forbidden);
+        result.Error.Should().Be(UserErrors.InvalidRole);
 
         _teamRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
         _currentUserServiceMock.Verify(s => s.Role, Times.Once);
@@ -95,7 +95,7 @@ public sealed class UpdateTeamCommandHandlerTests
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(UserErrors.Forbidden);
+        result.Error.Should().Be(UserErrors.InvalidRole);
 
         _teamRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
         _currentUserServiceMock.Verify(s => s.Role, Times.Once);

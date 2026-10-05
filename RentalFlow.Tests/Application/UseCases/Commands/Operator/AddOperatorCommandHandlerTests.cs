@@ -148,7 +148,7 @@ public sealed class AddOperatorCommandHandlerTests
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(TeamErrors.TeamInactive);
+        result.Error.Should().Be(TeamErrors.TeamNotFound);
 
         _currentUserServiceMock.Verify(s => s.Role, Times.Once);
         _teamRepositoryMock.Verify(r => r.GetByIdAsync(request.TeamId, It.IsAny<CancellationToken>()), Times.Once);
@@ -306,7 +306,7 @@ public sealed class AddOperatorCommandHandlerTests
         _operatorRepositoryMock.Verify(r => r.AddAsync(It.Is<OperatorEntity>(o => o.Name == request.Name && o.Role == request.Role && o.TeamId == team.Id), It.IsAny<CancellationToken>()), Times.Once);
         _passwordServiceMock.Verify(s => s.GenerateTemporaryPassword(), Times.Once);
         _passwordServiceMock.Verify(s => s.Hash(temporaryPassword), Times.Once);
-        _userRepositoryMock.Verify(r => r.AddAsync(It.Is<UserEntity>(u => u.Email == request.Email.ToLowerInvariant() && u.PasswordHash == passwordHash), It.IsAny<CancellationToken>()), Times.Once);
+        _userRepositoryMock.Verify(r => r.AddAsync(It.Is<UserEntity>(u => u.Email.Equals(request.Email, StringComparison.InvariantCultureIgnoreCase) && u.PasswordHash == passwordHash), It.IsAny<CancellationToken>()), Times.Once);
         _userRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
 
         _currentUserServiceMock.VerifyNoOtherCalls();

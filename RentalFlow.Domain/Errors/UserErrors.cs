@@ -7,9 +7,7 @@ public static class UserErrors
     public static readonly Error InvalidCredentials = new(401, "Invalid email or password.");
     public static readonly Error InvalidPassword = new(401, "Invalid password.");
     public static readonly Error InvalidRefreshToken = new(401, "Invalid or expired refresh token.");
-    public static readonly Error UserInactive = new(403, "User is inactive.");
     public static readonly Error MustChangePassword = new(403, "You must change your password before continuing.");
     public static readonly Error UserNotFound = new(404, "User not found.");
     public static readonly Error EmailAlreadyExists = new(409, "Email is already registered.");
-    public static readonly Error Forbidden = new(403, "You don't have permission to perform this action.");
 }

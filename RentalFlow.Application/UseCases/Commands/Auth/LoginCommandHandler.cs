@@ -6,7 +6,7 @@ public sealed class LoginCommandHandler(
     IPasswordService _passwordService,
     ITokenService _tokenService,
     ILogger<LoginCommandHandler> _logger
-) : ICommandHandler<LoginCommand, Result<LoginResponse>>
+    ) : ICommandHandler<LoginCommand, Result<LoginResponse>>
 {
     public async Task<Result<LoginResponse>> HandleAsync(LoginCommand command, CancellationToken cancellationToken)
     {
@@ -35,10 +35,10 @@ public sealed class LoginCommandHandler(
                 "Login failed for user {UserId} ({Email}) because user is inactive: {ErrorCode} {ErrorMessage}",
                 user.Id,
                 user.Email,
-                UserErrors.UserInactive.Code,
-                UserErrors.UserInactive.Message);
+                UserErrors.UserNotFound.Code,
+                UserErrors.UserNotFound.Message);
 
-            return Result<LoginResponse>.Failure(UserErrors.UserInactive);
+            return Result<LoginResponse>.Failure(UserErrors.UserNotFound);
         }
 
         var passwordValid = _passwordService.Verify(command.Request.Password, user.PasswordHash);

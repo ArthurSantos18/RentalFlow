@@ -96,12 +96,12 @@ public sealed class UpdateOperatorCommandHandler(
 
         if (_currentUserService.Role != nameof(OperatorRole.Manager))
         {
-            return Result.Failure(UserErrors.Forbidden);
+            return Result.Failure(UserErrors.InvalidRole);
         }
 
         if (@operator.TeamId != _currentUserService.TeamId)
         {
-            return Result.Failure(UserErrors.Forbidden);
+            return Result.Failure(UserErrors.InvalidRole);
         }
 
         if (@operator.Role == OperatorRole.Administrator)

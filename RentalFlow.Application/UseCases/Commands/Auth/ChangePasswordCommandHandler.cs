@@ -4,9 +4,9 @@ public sealed class ChangePasswordCommandHandler(
     IUserRepository _userRepository,
     IPasswordService _passwordService,
     ILogger<ChangePasswordCommandHandler> _logger
-) : ICommandHandler<ChangePasswordCommand, Result<string>>
+) : ICommandHandler<ChangePasswordCommand, Result>
 {
-    public async Task<Result<string>> HandleAsync(ChangePasswordCommand command, CancellationToken cancellationToken)
+    public async Task<Result> HandleAsync(ChangePasswordCommand command, CancellationToken cancellationToken)
     {
         _logger.LogInformation(
             "Password change requested for user {UserId}",
@@ -22,7 +22,7 @@ public sealed class ChangePasswordCommandHandler(
                 UserErrors.UserNotFound.Code,
                 UserErrors.UserNotFound.Message);
 
-            return Result<string>.Failure(UserErrors.UserNotFound);
+            return Result.Failure(UserErrors.UserNotFound);
         }
 
         var currentPasswordValid = _passwordService.Verify(command.Request.CurrentPassword, user.PasswordHash);
@@ -36,7 +36,7 @@ public sealed class ChangePasswordCommandHandler(
                 UserErrors.InvalidPassword.Code,
                 UserErrors.InvalidPassword.Message);
 
-            return Result<string>.Failure(UserErrors.InvalidPassword);
+            return Result.Failure(UserErrors.InvalidPassword);
         }
 
         var newPasswordSameAsCurrent = _passwordService.Verify(command.Request.NewPassword, user.PasswordHash);
@@ -50,7 +50,7 @@ public sealed class ChangePasswordCommandHandler(
                 UserErrors.NewPasswordMustBeDifferent.Code,
                 UserErrors.NewPasswordMustBeDifferent.Message);
 
-            return Result<string>.Failure(UserErrors.NewPasswordMustBeDifferent);
+            return Result.Failure(UserErrors.NewPasswordMustBeDifferent);
         }
 
         var newHash = _passwordService.Hash(command.Request.NewPassword);
@@ -66,6 +66,6 @@ public sealed class ChangePasswordCommandHandler(
             user.Id,
             user.Email);
 
-        return Result<string>.Success("Password changed successfully.");
+        return Result.Success();
     }
 }

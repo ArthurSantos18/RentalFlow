@@ -3,6 +3,7 @@
 [ApiController]
 [Route("api/operators")]
 [Authorize]
+[ApiConventionType(typeof(OperatorMetadata))]
 [EnableRateLimiting(RateLimitingPolicies.AuthenticatedPolicy)]
 public sealed class OperatorController(ICommandMediator _commandMediator, IQueryMediator _queryMediator) : ControllerBase
 {

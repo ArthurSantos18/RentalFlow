@@ -33,10 +33,10 @@ public sealed class UpdateRentalApplicationCommandHandler(
             _logger.LogWarning(
                 "Forbidden to update rental application {RentalApplicationId}: {ErrorCode} {ErrorMessage}",
                 rentalApplication.Id,
-                UserErrors.Forbidden.Code,
-                UserErrors.Forbidden.Message);
+                UserErrors.InvalidRole.Code,
+                UserErrors.InvalidRole.Message);
 
-            return Result.Failure(UserErrors.Forbidden);
+            return Result.Failure(UserErrors.InvalidRole);
         }
 
         var canEdit = EnsureCanBeEdited(rentalApplication);
@@ -142,7 +142,7 @@ public sealed class UpdateRentalApplicationCommandHandler(
 
         if (!applicant.IsActive)
         {
-            return Result.Failure(ApplicantErrors.ApplicantIsInactive);
+            return Result.Failure(ApplicantErrors.ApplicantNotFound);
         }
 
         return rentalApplication.ChangeApplicant(applicant);
@@ -157,7 +157,7 @@ public sealed class UpdateRentalApplicationCommandHandler(
 
         if (_currentUserService.Role == nameof(OperatorRole.Broker))
         {
-            return Result.Failure(UserErrors.Forbidden);
+            return Result.Failure(UserErrors.InvalidRole);
         }
 
         var @operator = await _operatorRepository.GetByIdAsync(operatorId.Value, cancellationToken);
@@ -169,12 +169,12 @@ public sealed class UpdateRentalApplicationCommandHandler(
 
         if (!@operator.IsActive)
         {
-            return Result.Failure(OperatorErrors.OperatorIsInactive);
+            return Result.Failure(OperatorErrors.OperatorNotFound);
         }
 
         if (_currentUserService.Role == nameof(OperatorRole.Manager) && @operator.TeamId != _currentUserService.TeamId)
         {
-            return Result.Failure(UserErrors.Forbidden);
+            return Result.Failure(UserErrors.InvalidRole);
         }
 
         return rentalApplication.ChangeOperator(@operator);
@@ -196,7 +196,7 @@ public sealed class UpdateRentalApplicationCommandHandler(
 
         if (!property.IsActive)
         {
-            return Result.Failure(PropertyErrors.PropertyIsInactive);
+            return Result.Failure(PropertyErrors.PropertyNotFound);
         }
 
         if (!property.IsAvailable)

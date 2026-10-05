@@ -8,12 +8,14 @@ global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Diagnostics;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.Mvc.Filters;
+global using Microsoft.AspNetCore.Mvc.ApiExplorer;
 global using Microsoft.AspNetCore.RateLimiting;
 
 global using Microsoft.IdentityModel.Tokens;
 
 global using Microsoft.OpenApi;
 
+global using RentalFlow.API.Metadata;
 global using RentalFlow.API.Constants;
 global using RentalFlow.API.Extensions;
 global using RentalFlow.API.Filters;
@@ -46,10 +48,13 @@ global using RentalFlow.Application.UseCases.Queries.Property;
 global using RentalFlow.Application.UseCases.Queries.RentalApplication;
 global using RentalFlow.Application.UseCases.Queries.Team;
 
+global using RentalFlow.Application.Responses;
+
 global using RentalFlow.Crosscutting.Extensions;
 
 global using RentalFlow.Domain.Enums;
 global using RentalFlow.Domain.Patterns.Result;
+global using RentalFlow.Domain.Patterns.PagedResult;
 
 global using RentalFlow.Infrastructure.Data;
 global using RentalFlow.Infrastructure.Extensions;
@@ -65,4 +70,5 @@ global using Microsoft.Extensions.Diagnostics.HealthChecks;
 global using System.IdentityModel.Tokens.Jwt;
 global using System.Security.Claims;
 global using System.Threading.RateLimiting;
+global using System.Diagnostics.CodeAnalysis;
 global using System.Text;

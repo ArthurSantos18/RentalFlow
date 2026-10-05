@@ -3,6 +3,7 @@
 [ApiController]
 [Route("api/applicants")]
 [Authorize]
+[ApiConventionType(typeof(ApplicantsMetadata))]
 [EnableRateLimiting(RateLimitingPolicies.AuthenticatedPolicy)]
 public sealed class ApplicantController(ICommandMediator _commandMediator, IQueryMediator _queryMediator) : ControllerBase
 {

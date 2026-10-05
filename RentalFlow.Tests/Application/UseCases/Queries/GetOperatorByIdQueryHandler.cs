@@ -63,7 +63,7 @@ public sealed class GetOperatorByIdQueryHandlerTests
         var result = await _handler.HandleAsync(query, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(UserErrors.Forbidden);
+        result.Error.Should().Be(UserErrors.InvalidRole);
 
         _repositoryMock.Verify(r => r.GetByIdWithDetailsAsync(query.Id, It.IsAny<CancellationToken>()), Times.Once);
         _currentUserServiceMock.Verify(s => s.Role, Times.Exactly(2));
@@ -190,7 +190,7 @@ public sealed class GetOperatorByIdQueryHandlerTests
         var result = await _handler.HandleAsync(query, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(UserErrors.Forbidden);
+        result.Error.Should().Be(UserErrors.InvalidRole);
 
         _repositoryMock.Verify(r => r.GetByIdWithDetailsAsync(query.Id, It.IsAny<CancellationToken>()), Times.Once);
         _currentUserServiceMock.Verify(s => s.Role, Times.Exactly(2));
@@ -273,7 +273,7 @@ public sealed class GetOperatorByIdQueryHandlerTests
         var result = await _handler.HandleAsync(query, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(UserErrors.Forbidden);
+        result.Error.Should().Be(UserErrors.InvalidRole);
 
         _repositoryMock.Verify(r => r.GetByIdWithDetailsAsync(query.Id, It.IsAny<CancellationToken>()), Times.Once);
         _currentUserServiceMock.Verify(s => s.Role, Times.Exactly(2));

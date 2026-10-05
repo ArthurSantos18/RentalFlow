@@ -31,10 +31,10 @@ public sealed class UpdateRentalApplicationStatusCommandHandler(
             _logger.LogWarning(
                 "Forbidden to update status of rental application {RentalApplicationId}: {ErrorCode} {ErrorMessage}",
                 rentalApplication.Id,
-                UserErrors.Forbidden.Code,
-                UserErrors.Forbidden.Message);
+                UserErrors.InvalidRole.Code,
+                UserErrors.InvalidRole.Message);
 
-            return Result.Failure(UserErrors.Forbidden);
+            return Result.Failure(UserErrors.InvalidRole);
         }
 
         var previousStatus = rentalApplication.Status;

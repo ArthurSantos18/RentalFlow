@@ -3,6 +3,7 @@
 [ApiController]
 [Route("api/properties")]
 [Authorize]
+[ApiConventionType(typeof(PropertyMetadata))]
 [EnableRateLimiting(RateLimitingPolicies.AuthenticatedPolicy)]
 public sealed class PropertyController(ICommandMediator _commandMediator, IQueryMediator _queryMediator) : ControllerBase
 {

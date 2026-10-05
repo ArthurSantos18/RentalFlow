@@ -96,7 +96,7 @@ public sealed class AssignOperatorCommandHandlerTests
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(TeamErrors.TeamInactive);
+        result.Error.Should().Be(TeamErrors.TeamNotFound);
 
         _operatorRepositoryMock.Verify(r => r.GetByIdWithDetailsAsync(command.OperatorId, It.IsAny<CancellationToken>()), Times.Once);
         _teamRepositoryMock.Verify(r => r.GetByIdAsync(command.TeamId, It.IsAny<CancellationToken>()), Times.Once);
@@ -171,7 +171,7 @@ public sealed class AssignOperatorCommandHandlerTests
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(UserErrors.Forbidden);
+        result.Error.Should().Be(UserErrors.InvalidRole);
 
         _operatorRepositoryMock.Verify(r => r.GetByIdWithDetailsAsync(command.OperatorId, It.IsAny<CancellationToken>()), Times.Once);
         _teamRepositoryMock.Verify(r => r.GetByIdAsync(command.TeamId, It.IsAny<CancellationToken>()), Times.Once);

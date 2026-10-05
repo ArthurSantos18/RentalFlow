@@ -61,7 +61,7 @@ public sealed class UpdateOperatorCommandHandlerTests
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(UserErrors.Forbidden);
+        result.Error.Should().Be(UserErrors.InvalidRole);
 
         _operatorRepositoryMock.Verify(r => r.GetByIdWithDetailsAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
         _currentUserServiceMock.Verify(s => s.Role, Times.Exactly(2));
@@ -95,7 +95,7 @@ public sealed class UpdateOperatorCommandHandlerTests
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(UserErrors.Forbidden);
+        result.Error.Should().Be(UserErrors.InvalidRole);
 
         _operatorRepositoryMock.Verify(r => r.GetByIdWithDetailsAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
         _currentUserServiceMock.Verify(s => s.Role, Times.Exactly(2));

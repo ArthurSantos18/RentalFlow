@@ -4,10 +4,10 @@ public class ApiResponseHelper
 {
     public static IActionResult HandleError(Error error)
     {
-        return new ObjectResult(new
+        return new ObjectResult(new ErrorResponse
         {
-            error.Code,
-            error.Message
+            Code = error.Code,
+            Message = error.Message
         })
         {
             StatusCode = error.Code

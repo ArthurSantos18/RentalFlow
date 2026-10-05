@@ -2,7 +2,8 @@
 
 public sealed class AddPropertyCommandHandler(
     IPropertyRepository _propertyRepository,
-    ILogger<AddPropertyCommandHandler> _logger) : ICommandHandler<AddPropertyCommand, Result<Guid>>
+    ILogger<AddPropertyCommandHandler> _logger
+    ) : ICommandHandler<AddPropertyCommand, Result<Guid>>
 {
     public async Task<Result<Guid>> HandleAsync(AddPropertyCommand command, CancellationToken cancellationToken)
     {

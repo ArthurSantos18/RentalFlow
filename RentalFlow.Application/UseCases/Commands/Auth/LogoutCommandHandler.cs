@@ -3,7 +3,7 @@
 public sealed class LogoutCommandHandler(
     IUserTokenRepository _userTokenRepository,
     ILogger<LogoutCommandHandler> _logger
-) : ICommandHandler<LogoutCommand, Result>
+    ) : ICommandHandler<LogoutCommand, Result>
 {
     public async Task<Result> HandleAsync(LogoutCommand command, CancellationToken cancellationToken)
     {

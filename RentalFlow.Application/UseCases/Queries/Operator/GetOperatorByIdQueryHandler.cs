@@ -29,10 +29,10 @@ public sealed class GetOperatorByIdQueryHandler(
                 @operator.Id,
                 @operator.User?.Email,
                 _currentUserService.Role,
-                UserErrors.Forbidden.Code,
-                UserErrors.Forbidden.Message);
+                UserErrors.InvalidRole.Code,
+                UserErrors.InvalidRole.Message);
 
-            return Result<GetOperatorByIdResponse>.Failure(UserErrors.Forbidden);
+            return Result<GetOperatorByIdResponse>.Failure(UserErrors.InvalidRole);
         }
 
         var rentalApplicationsCount = await _rentalApplicationRepository.CountByOperatorAsync(@operator.Id, cancellationToken);

@@ -61,7 +61,6 @@ public sealed class ChangePasswordCommandHandlerTests
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        result.Value.Should().Be("Password changed successfully.");
 
         user.PasswordHash.Should().Be(newPasswordHash);
         user.MustChangePassword.Should().BeFalse();

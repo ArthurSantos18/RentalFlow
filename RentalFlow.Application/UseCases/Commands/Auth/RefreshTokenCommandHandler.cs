@@ -4,7 +4,7 @@ public sealed class RefreshTokenCommandHandler(
     IUserTokenRepository _userTokenRepository,
     ITokenService _tokenService,
     ILogger<RefreshTokenCommandHandler> _logger
-) : ICommandHandler<RefreshTokenCommand, Result<LoginResponse>>
+    ) : ICommandHandler<RefreshTokenCommand, Result<LoginResponse>>
 {
     public async Task<Result<LoginResponse>> HandleAsync(RefreshTokenCommand command, CancellationToken cancellationToken)
     {
@@ -26,10 +26,10 @@ public sealed class RefreshTokenCommandHandler(
                 "Refresh token failed for user {UserId} ({Email}) because user is inactive: {ErrorCode} {ErrorMessage}",
                 token.User.Id,
                 token.User.Email,
-                UserErrors.UserInactive.Code,
-                UserErrors.UserInactive.Message);
+                UserErrors.UserNotFound.Code,
+                UserErrors.UserNotFound.Message);
 
-            return Result<LoginResponse>.Failure(UserErrors.UserInactive);
+            return Result<LoginResponse>.Failure(UserErrors.UserNotFound);
         }
 
         token.Revoke();

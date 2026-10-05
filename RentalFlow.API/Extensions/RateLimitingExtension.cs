@@ -22,16 +22,11 @@ public static class RateLimitingExtension
                      path,
                      retryAfter);
 
-                 var problemDetails = new ProblemDetails
+                 var errorResponse = new ErrorResponse
                  {
-                     Status = StatusCodes.Status429TooManyRequests,
-                     Title = "Too Many Requests",
-                     Type = "https://tools.ietf.org/html/rfc6585#section-4",
-                     Instance = path,
-                     Detail = "Too many requests. Please try again later."
+                     Code = StatusCodes.Status429TooManyRequests,
+                     Message = "Too many requests. Please try again later."
                  };
-
-                 problemDetails.Extensions["traceId"] = context.HttpContext.TraceIdentifier;
 
                  if (retryAfter != null)
                  {
@@ -41,7 +36,7 @@ public static class RateLimitingExtension
                  context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
                  context.HttpContext.Response.ContentType = "application/problem+json";
 
-                 await context.HttpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
+                 await context.HttpContext.Response.WriteAsJsonAsync(errorResponse, cancellationToken);
              };
 
              options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>

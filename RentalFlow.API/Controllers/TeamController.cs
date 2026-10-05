@@ -3,6 +3,7 @@
 [ApiController]
 [Route("api/teams")]
 [Authorize]
+[ApiConventionType(typeof(TeamMetadata))]
 [EnableRateLimiting(RateLimitingPolicies.AuthenticatedPolicy)]
 public sealed class TeamController(ICommandMediator _commandMediator, IQueryMediator _queryMediator) : ControllerBase
 {

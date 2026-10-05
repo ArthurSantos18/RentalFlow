@@ -3,6 +3,7 @@
 [ApiController]
 [Route("api/rental-applications")]
 [Authorize]
+[ApiConventionType(typeof(RentalApplicationMetadata))]
 [EnableRateLimiting(RateLimitingPolicies.AuthenticatedPolicy)]
 public class RentalApplicationController(ICommandMediator _commandMediator, IQueryMediator _queryMediator) : ControllerBase
 {

@@ -343,7 +343,7 @@ public sealed class AddRentalApplicationCommandHandlerTests
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(OperatorErrors.OperatorIsInactive);
+        result.Error.Should().Be(OperatorErrors.OperatorNotFound);
 
         _operatorRepoMock.Verify(r => r.GetByIdAsync(request.OperatorId!.Value, It.IsAny<CancellationToken>()), Times.Once);
         _applicantRepoMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
@@ -388,7 +388,7 @@ public sealed class AddRentalApplicationCommandHandlerTests
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(UserErrors.Forbidden);
+        result.Error.Should().Be(UserErrors.InvalidRole);
 
         _operatorRepoMock.Verify(r => r.GetByIdAsync(request.OperatorId!.Value, It.IsAny<CancellationToken>()), Times.Once);
         _applicantRepoMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
@@ -483,7 +483,7 @@ public sealed class AddRentalApplicationCommandHandlerTests
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(ApplicantErrors.ApplicantIsInactive);
+        result.Error.Should().Be(ApplicantErrors.ApplicantNotFound);
 
         _operatorRepoMock.Verify(r => r.GetByIdAsync(request.OperatorId!.Value, It.IsAny<CancellationToken>()), Times.Once);
         _applicantRepoMock.Verify(r => r.GetByIdAsync(request.ApplicantId, It.IsAny<CancellationToken>()), Times.Once);
@@ -588,7 +588,7 @@ public sealed class AddRentalApplicationCommandHandlerTests
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(PropertyErrors.PropertyIsInactive);
+        result.Error.Should().Be(PropertyErrors.PropertyNotFound);
 
         _operatorRepoMock.Verify(r => r.GetByIdAsync(request.OperatorId!.Value, It.IsAny<CancellationToken>()), Times.Once);
         _applicantRepoMock.Verify(r => r.GetByIdAsync(request.ApplicantId, It.IsAny<CancellationToken>()), Times.Once);

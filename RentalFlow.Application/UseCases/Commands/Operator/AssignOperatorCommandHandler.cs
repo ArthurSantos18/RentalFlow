@@ -46,10 +46,10 @@ public sealed class AssignOperatorCommandHandler(
                 "Cannot assign operator {OperatorId} to inactive team {TeamId}: {ErrorCode} {ErrorMessage}",
                 @operator.Id,
                 team.Id,
-                TeamErrors.TeamInactive.Code,
-                TeamErrors.TeamInactive.Message);
+                TeamErrors.TeamNotFound.Code,
+                TeamErrors.TeamNotFound.Message);
 
-            return Result.Failure(TeamErrors.TeamInactive);
+            return Result.Failure(TeamErrors.TeamNotFound);
         }
 
         if (@operator.TeamId == team.Id)
@@ -97,7 +97,7 @@ public sealed class AssignOperatorCommandHandler(
 
         if (_currentUserService.Role != nameof(OperatorRole.Manager))
         {
-            return Result.Failure(UserErrors.Forbidden);
+            return Result.Failure(UserErrors.InvalidRole);
         }
 
         if (teamId != _currentUserService.TeamId)

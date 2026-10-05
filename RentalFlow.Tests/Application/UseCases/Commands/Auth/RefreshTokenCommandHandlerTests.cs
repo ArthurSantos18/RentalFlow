@@ -107,7 +107,7 @@ public sealed class RefreshTokenCommandHandlerTests
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(UserErrors.UserInactive);
+        result.Error.Should().Be(UserErrors.UserNotFound);
 
         _userTokenRepositoryMock.Verify(r => r.GetByRefreshTokenAsync(request.RefreshToken, It.IsAny<CancellationToken>()), Times.Once);
         _userTokenRepositoryMock.Verify(r => r.AddAsync(It.IsAny<UserTokenEntity>(), It.IsAny<CancellationToken>()), Times.Never);

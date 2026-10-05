@@ -33,10 +33,10 @@ public sealed class UpdateTeamCommandHandler(
             _logger.LogWarning(
                 "Forbidden to update team {TeamId}: {ErrorCode} {ErrorMessage}",
                 team.Id,
-                UserErrors.Forbidden.Code,
-                UserErrors.Forbidden.Message);
+                UserErrors.InvalidRole.Code,
+                UserErrors.InvalidRole.Message);
 
-            return Result.Failure(UserErrors.Forbidden);
+            return Result.Failure(UserErrors.InvalidRole);
         }
 
         if (!string.IsNullOrWhiteSpace(request.Name) && request.Name != team.Name)

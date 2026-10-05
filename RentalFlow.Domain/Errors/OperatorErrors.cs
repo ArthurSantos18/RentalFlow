@@ -3,7 +3,6 @@
 public static class OperatorErrors
 {
     public static readonly Error OperatorNotFound = new(404, "Operator not found.");
-    public static readonly Error OperatorIsInactive = new(409, "Operator is inactive.");
     public static readonly Error OperatorNotInTeam = new(403, "You can only manage operators in your own team.");
     public static readonly Error CannotMoveToDifferentTeam = new(403, "Managers can only move operators to their own team.");
     public static readonly Error ManagerCannotManageAdmin = new(403, "Managers cannot manage administrators.");

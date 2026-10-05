@@ -1,13 +1,14 @@
 ﻿namespace RentalFlow.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/auth")]
+[ApiConventionType(typeof(AuthMetadata))]
 public class AuthController(ICommandMediator _commandMediator) : ControllerBase
 {
     [HttpPost("login")]
     [AllowAnonymous]
     [EnableRateLimiting(RateLimitingPolicies.LoginPolicy)]
-    public async Task<IActionResult> Login([FromBody] LoginRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> LoginAsync([FromBody] LoginRequest request, CancellationToken cancellationToken)
     {
         var command = new LoginCommand(request);
         var result = await _commandMediator.SendAsync(command, cancellationToken);
@@ -20,7 +21,7 @@ public class AuthController(ICommandMediator _commandMediator) : ControllerBase
     [HttpPost("refresh")]
     [AllowAnonymous]
     [EnableRateLimiting(RateLimitingPolicies.RefreshPolicy)]
-    public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> RefreshAsync([FromBody] RefreshTokenRequest request, CancellationToken cancellationToken)
     {
         var command = new RefreshTokenCommand(request);
         var result = await _commandMediator.SendAsync(command, cancellationToken);
@@ -33,7 +34,7 @@ public class AuthController(ICommandMediator _commandMediator) : ControllerBase
     [HttpPost("logout")]
     [AllowAnonymous]
     [EnableRateLimiting(RateLimitingPolicies.AuthenticatedPolicy)]
-    public async Task<IActionResult> Logout([FromBody] LogoutRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> LogoutAsync([FromBody] LogoutRequest request, CancellationToken cancellationToken)
     {
         var command = new LogoutCommand(request);
         var result = await _commandMediator.SendAsync(command, cancellationToken);
@@ -46,7 +47,7 @@ public class AuthController(ICommandMediator _commandMediator) : ControllerBase
     [HttpPost("change-password")]
     [Authorize]
     [EnableRateLimiting(RateLimitingPolicies.AuthenticatedPolicy)]
-    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> ChangePasswordAsync([FromBody] ChangePasswordRequest request, CancellationToken cancellationToken)
     {
         var userId = ClaimsPrincipalHelper.GetUserId(User);
 
@@ -54,7 +55,7 @@ public class AuthController(ICommandMediator _commandMediator) : ControllerBase
         var result = await _commandMediator.SendAsync(command, cancellationToken);
 
         return result.IsSuccess
-            ? Ok(result.Value)
+            ? NoContent()
             : ApiResponseHelper.HandleError(result.Error);
     }
 }

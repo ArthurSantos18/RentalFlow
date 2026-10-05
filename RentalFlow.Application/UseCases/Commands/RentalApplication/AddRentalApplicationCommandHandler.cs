@@ -101,12 +101,12 @@ public sealed class AddRentalApplicationCommandHandler(
 
         if (!@operator.IsActive)
         {
-            return Result<OperatorEntity>.Failure(OperatorErrors.OperatorIsInactive);
+            return Result<OperatorEntity>.Failure(OperatorErrors.OperatorNotFound);
         }
 
         if (_currentUserService.Role == nameof(OperatorRole.Manager) && @operator.TeamId != _currentUserService.TeamId)
         {
-            return Result<OperatorEntity>.Failure(UserErrors.Forbidden);
+            return Result<OperatorEntity>.Failure(UserErrors.InvalidRole);
         }
 
         return Result<OperatorEntity>.Success(@operator);
@@ -123,7 +123,7 @@ public sealed class AddRentalApplicationCommandHandler(
 
         if (!applicant.IsActive)
         {
-            return Result<ApplicantEntity>.Failure(ApplicantErrors.ApplicantIsInactive);
+            return Result<ApplicantEntity>.Failure(ApplicantErrors.ApplicantNotFound);
         }
 
         return Result<ApplicantEntity>.Success(applicant);
@@ -140,7 +140,7 @@ public sealed class AddRentalApplicationCommandHandler(
 
         if (!property.IsActive)
         {
-            return Result<PropertyEntity>.Failure(PropertyErrors.PropertyIsInactive);
+            return Result<PropertyEntity>.Failure(PropertyErrors.PropertyNotFound);
         }
 
         if (!property.IsAvailable)

@@ -33,4 +33,6 @@ global using RentalFlow.Domain.ValueObject;
 
 global using System.Linq.Expressions;
 
+global using System.ComponentModel;
+
 global using System.Text.Json.Serialization;
