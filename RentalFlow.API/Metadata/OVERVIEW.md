@@ -96,7 +96,6 @@ Quando o access token expirar, renove com `POST /api/auth/refresh`.
 | Método | Rota | Descrição |
 |--------|------|-----------|
 | `GET` | `/api/teams` | Lista |
-| `GET` | `/api/teams/{id}/operators` | Operadores do time |
 | `POST` | `/api/teams` | Cria (admin) |
 | `PATCH` | `/api/teams/{id}` | Atualiza |
 | `DELETE` | `/api/teams/{id}` | Remove (admin) |

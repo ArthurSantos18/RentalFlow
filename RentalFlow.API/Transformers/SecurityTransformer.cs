@@ -17,7 +17,5 @@ public sealed class SecurityTransformer : IOpenApiDocumentTransformer
             In = ParameterLocation.Header,
             Description = "Informe o token de acesso JWT. Exemplo: `eyJhbGciOiJIUzI1NiIs...`"
         };
-
-        return Task.CompletedTask;
     }
 }
