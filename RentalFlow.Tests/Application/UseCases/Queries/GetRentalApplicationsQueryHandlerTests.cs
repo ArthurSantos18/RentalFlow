@@ -1,4 +1,4 @@
-namespace RentalFlow.Tests.Application.UseCases.Queries.RentalApplication;
+namespace RentalFlow.Tests.Application.UseCases.Queries;
 
 public sealed class GetRentalApplicationsQueryHandlerTests
 {

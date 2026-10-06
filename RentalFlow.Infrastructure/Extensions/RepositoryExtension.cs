@@ -7,6 +7,7 @@ public static class RepositoryExtension
         services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 
         services.AddScoped<IApplicantRepository, ApplicantRepository>();
+        services.AddScoped<IAuditLogRepository, AuditLogRepository>();
         services.AddScoped<IOperatorRepository, OperatorRepository>();
         services.AddScoped<IPropertyRepository, PropertyRepository>();
         services.AddScoped<IRentalApplicationRepository, RentalApplicationRepository>();

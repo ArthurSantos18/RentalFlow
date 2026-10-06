@@ -23,6 +23,32 @@ Este grupo tem as políticas mais rígidas da API:
 
 ---
 
+## AuditLog
+
+Fornece **rastreabilidade** de todas as alterações feitas no sistema. Cada operação de criação, atualização ou remoção gera registros automáticos via `AuditSaveChangesInterceptor`, capturando **quem** alterou, **o que** mudou (valor antigo e novo) e **quando**.
+
+### Responsabilidades
+
+- Consulta paginada de logs de auditoria com filtros (entidade, entidade ID, campo, usuário, ação, período)
+- Rastreamento de mudanças em todas as entidades auditáveis do domínio
+
+### Ações Auditadas
+
+| Ação | Descrição |
+|------|-----------|
+| Created | Criado |
+| Modified | Modificado |
+| Deleted | Deletado |
+
+### Regras de Negócio
+
+- **Registro automático**: logs são gerados na mesma transação da operação original — se a operação falhar, o log também é desfeito
+- **Granularidade por campo**: uma atualização que altera múltiplos campos gera múltiplos registros
+- **Campos sensíveis protegidos**: senhas, tokens e outros segredos **nunca** são auditados (marcados com `[IgnoreAudit]`)
+- **Dados pessoais mascarados**: CPF, e-mail, telefone e renda mensal são registrados de forma **mascarada** (ex.: `***.***.***-01`, `jo***@example.com`) para conformidade com a LGPD
+
+---
+
 ## Applicant
 
 Gerencia os **inquilinos** — pessoas físicas que desejam alugar imóveis.

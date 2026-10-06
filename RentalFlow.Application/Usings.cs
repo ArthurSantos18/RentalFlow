@@ -13,6 +13,7 @@ global using RentalFlow.Application.Mappers;
 global using RentalFlow.Application.Models;
 
 global using RentalFlow.Application.Requests.Applicant;
+global using RentalFlow.Application.Requests.AuditLog;
 global using RentalFlow.Application.Requests.Auth;
 global using RentalFlow.Application.Requests.Operator;
 global using RentalFlow.Application.Requests.Property;

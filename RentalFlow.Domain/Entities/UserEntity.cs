@@ -3,11 +3,19 @@
 public sealed class UserEntity : BaseEntity<UserEntity>
 {
     public Guid OperatorId { get; private set; }
+
     public string Email { get; private set; } = string.Empty;
+
+    [IgnoreAudit]
     public string PasswordHash { get; private set; } = string.Empty;
+
+    [IgnoreAudit]
     public bool MustChangePassword { get; private set; } = true;
+
     public OperatorEntity Operator { get; private set; } = null!;
+
     private readonly List<UserTokenEntity> _tokens = [];
+
     public IReadOnlyList<UserTokenEntity> Tokens => _tokens.AsReadOnly();
 
     public UserEntity(

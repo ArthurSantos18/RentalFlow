@@ -11,6 +11,7 @@ public class JwtTokenService(IOptions<JwtSettings> settings) : ITokenService
             new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new(JwtRegisteredClaimNames.Email, user.Email),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new(JwtRegisteredClaimNames.Name, user.Operator.Name),
             new("operator_id", user.OperatorId.ToString()),
             new("team_id", user.Operator?.TeamId.ToString() ?? string.Empty),
             new(ClaimTypes.Role, user.Operator?.Role.ToString() ?? "Broker")

@@ -1,6 +1,6 @@
 ﻿namespace RentalFlow.Infrastructure.Data;
 
-public sealed class AppDbContext : DbContext
+public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
     public DbSet<ApplicantEntity> Applicants { get; set; }
     public DbSet<PropertyEntity> Properties { get; set; }
@@ -9,10 +9,7 @@ public sealed class AppDbContext : DbContext
     public DbSet<TeamEntity> Teams { get; set; }
     public DbSet<UserEntity> Users { get; set; }
     public DbSet<UserTokenEntity> UserTokens { get; set; }
-
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-    {
-    }
+    public DbSet<AuditLogEntity> AuditLogs => Set<AuditLogEntity>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

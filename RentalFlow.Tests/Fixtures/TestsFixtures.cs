@@ -1,7 +1,4 @@
-﻿using Azure;
-using System.Net.Mail;
-
-namespace RentalFlow.Tests.Fixtures;
+﻿namespace RentalFlow.Tests.Fixtures;
 
 public sealed class TestsFixtures(Fixture fixture)
 {
@@ -151,6 +148,27 @@ public sealed class TestsFixtures(Fixture fixture)
             createdAt ?? fixture.Create<DateTime>(),
             revokedAt)
             .SetId(id ?? fixture.Create<Guid>());
+    }
+
+    public AuditLogEntity MakeAuditLog(
+        string? entityName = null,
+        Guid? entityId = null,
+        string? fieldName = null,
+        string? oldValue = null,
+        string? newValue = null,
+        AuditAction? action = null,
+        Guid? userId = null,
+        string? userName = null)
+    {
+        return new AuditLogEntity(
+            entityName ?? fixture.Create<string>(),
+            entityId ?? fixture.Create<Guid>(),
+            fieldName ?? fixture.Create<string>(),
+            oldValue ?? fixture.Create<string>(),
+            newValue ?? fixture.Create<string>(),
+            action ?? fixture.Create<AuditAction>(),
+            userId ?? fixture.Create<Guid>(),
+            userName ?? fixture.Create<string>());
     }
 
     private static string GenerateCpf()

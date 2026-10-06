@@ -3,7 +3,9 @@
 public sealed class TeamEntity : BaseEntity<TeamEntity>
 {
     public string Name { get; private set; } = string.Empty;
+
     public string Description { get; private set; } = string.Empty;
+
     public List<OperatorEntity> Operators { get; private set; } = [];
 
     public TeamEntity(

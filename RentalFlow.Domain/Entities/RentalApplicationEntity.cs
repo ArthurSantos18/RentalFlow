@@ -3,16 +3,27 @@
 public sealed class RentalApplicationEntity : BaseEntity<RentalApplicationEntity>
 {
     public Guid ApplicantId { get; private set; }
+
     public Guid PropertyId { get; private set; }
+
     public Guid OperatorId { get; private set; }
+
     public int Installments { get; private set; }
+
     public decimal FinancedAmount { get; private set; }
+
     public decimal TotalAmount { get; private set; }
+
     public RentalStatus Status { get; private set; } = RentalStatus.Draft;
+
     public DateTime ContractDate { get; private set; }
+
     public string ProposalNumber { get; private set; } = string.Empty;
+
     public ApplicantEntity Applicant { get; private set; } = null!;
+
     public PropertyEntity Property { get; private set; } = null!;
+
     public OperatorEntity Operator { get; private set; } = null!;
 
     public RentalApplicationEntity(

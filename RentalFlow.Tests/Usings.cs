@@ -8,6 +8,7 @@ global using Microsoft.Extensions.Logging;
 global using Moq;
 
 global using RentalFlow.Application.Interfaces.Repositories;
+global using RentalFlow.Application.Requests.AuditLog;
 global using RentalFlow.Application.Interfaces.Services;
 
 global using RentalFlow.Application.Mappers;
@@ -29,12 +30,14 @@ global using RentalFlow.Application.UseCases.Commands.RentalApplication;
 global using RentalFlow.Application.UseCases.Commands.Team;
 
 global using RentalFlow.Application.UseCases.Queries.Applicant;
+global using RentalFlow.Application.UseCases.Queries.AuditLog;
 global using RentalFlow.Application.UseCases.Queries.Operator;
 global using RentalFlow.Application.UseCases.Queries.Property;
 global using RentalFlow.Application.UseCases.Queries.RentalApplication;
 global using RentalFlow.Application.UseCases.Queries.Team;
 
 global using RentalFlow.Application.Validators.Applicant;
+global using RentalFlow.Application.Validators.AuditLog;
 global using RentalFlow.Application.Validators.Auth;
 global using RentalFlow.Application.Validators.Operator;
 global using RentalFlow.Application.Validators.Property;

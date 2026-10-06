@@ -3,10 +3,15 @@
 public sealed class OperatorEntity : BaseEntity<OperatorEntity>
 {
     public Guid TeamId { get; private set; }
+
     public string Name { get; private set; } = string.Empty;
+
     public OperatorRole Role { get; private set; }
+
     public UserEntity User { get; private set; } = null!;
+
     public TeamEntity Team { get; private set; } = null!;
+
     public List<RentalApplicationEntity> Applications { get; private set; } = [];
 
     public OperatorEntity(

@@ -1,4 +1,4 @@
-﻿namespace RentalFlow.Tests.Application.UseCases.Queries.Operator;
+﻿namespace RentalFlow.Tests.Application.UseCases.Queries;
 
 public sealed class GetOperatorsQueryHandlerTests
 {

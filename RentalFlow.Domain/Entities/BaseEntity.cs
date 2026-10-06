@@ -3,10 +3,19 @@
 public abstract class BaseEntity<TEntity> where TEntity : BaseEntity<TEntity>
 {
     public Guid Id { get; protected set; } = Guid.NewGuid();
+
     public bool IsActive { get; protected set; } = true;
+
+    [IgnoreAudit]
     public bool IsDeleted { get; protected set; } = false;
+
+    [IgnoreAudit]
     public DateTime CreatedAt { get; protected set; } = DateTime.UtcNow;
+
+    [IgnoreAudit]
     public DateTime? UpdatedAt { get; protected set; }
+
+    [IgnoreAudit]
     public DateTime? DeletedAt { get; protected set; }
 
     public TEntity SetId(Guid id)

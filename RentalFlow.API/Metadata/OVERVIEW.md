@@ -57,6 +57,11 @@ Quando o access token expirar, renove com `POST /api/auth/refresh`.
 | `POST` | `/api/auth/logout` | Logout |
 | `POST` | `/api/auth/change-password` | Altera senha |
 
+### Audit Log
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| `GET` | `/api/audit-log` | Lista |
+
 ### Applicants
 | Método | Rota | Descrição |
 |--------|------|-----------|

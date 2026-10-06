@@ -9,6 +9,7 @@ public sealed class CurrentUserService(IHttpContextAccessor httpContextAccessor)
     public Guid OperatorId => Guid.TryParse(User?.FindFirst("operator_id")?.Value, out var id) ? id : Guid.Empty;
 
     public Guid? TeamId => Guid.TryParse(User?.FindFirst("team_id")?.Value, out var id) ? id : null;
+    public string Name => User?.FindFirst(JwtRegisteredClaimNames.Name)?.Value ?? User?.FindFirst(ClaimTypes.Name)?.Value ?? User?.FindFirst("name")?.Value ?? string.Empty;
 
     public string Email => User?.FindFirst(JwtRegisteredClaimNames.Email)?.Value ?? User?.FindFirst(ClaimTypes.Email)?.Value ?? string.Empty;
 

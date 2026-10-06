@@ -1,4 +1,6 @@
-﻿namespace RentalFlow.Infrastructure.Repositories;
+﻿#pragma warning disable CA1862
+
+namespace RentalFlow.Infrastructure.Repositories;
 
 public sealed class UserRepository(AppDbContext context) : BaseRepository<UserEntity>(context), IUserRepository
 {

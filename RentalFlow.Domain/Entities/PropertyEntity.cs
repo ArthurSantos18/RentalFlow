@@ -3,9 +3,13 @@
 public sealed class PropertyEntity : BaseEntity<PropertyEntity>
 {
     public Address Address { get; private set; } = Address.Empty;
+
     public decimal RentPrice { get; private set; }
+
     public int Bedrooms { get; private set; }
+
     public bool IsAvailable { get; private set; } = true;
+
     public List<RentalApplicationEntity> Applications { get; private set; } = [];
 
     public PropertyEntity(

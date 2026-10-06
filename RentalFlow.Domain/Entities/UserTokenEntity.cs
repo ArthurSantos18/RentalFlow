@@ -3,9 +3,14 @@
 public sealed class UserTokenEntity : BaseEntity<UserTokenEntity>
 {
     public Guid UserId { get; private set; }
+
+    [IgnoreAudit]
     public string RefreshToken { get; private set; } = string.Empty;
+
     public DateTime ExpiresAt { get; private set; } = DateTime.UtcNow.AddDays(7);
+
     public DateTime? RevokedAt { get; private set; }
+
     public UserEntity User { get; private set; } = null!;
 
     public UserTokenEntity(
