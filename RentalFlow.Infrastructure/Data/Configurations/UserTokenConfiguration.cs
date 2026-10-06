@@ -36,5 +36,7 @@ public sealed class UserTokenConfiguration : IEntityTypeConfiguration<UserTokenE
             .IsUnique();
 
         builder.HasIndex(t => t.UserId);
+
+        builder.HasQueryFilter(t => !t.User.IsDeleted);
     }
 }

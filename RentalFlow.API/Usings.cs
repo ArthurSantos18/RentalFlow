@@ -14,6 +14,8 @@ global using Microsoft.AspNetCore.OpenApi;
 
 global using Microsoft.IdentityModel.Tokens;
 
+global using Microsoft.EntityFrameworkCore;
+
 global using Microsoft.OpenApi;
 
 global using RentalFlow.API.Constants;

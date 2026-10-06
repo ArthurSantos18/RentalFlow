@@ -1,0 +1,56 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: rentalflow-sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD}
+      - MSSQL_PID=Developer
+    ports:
+      - "1434:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P ${MSSQL_SA_PASSWORD} -C -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - rentalflow-network
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rentalflow-api
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=RentalFlow;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;Encrypt=False
+      - Jwt__Issuer=${JWT_ISSUER}
+      - Jwt__Audience=${JWT_AUDIENCE}
+      - Jwt__SecretKey=${JWT_SECRET_KEY}
+      - Jwt__AccessTokenExpirationMinutes=${JWT_ACCESS_EXPIRATION:-60}
+      - Jwt__RefreshTokenExpirationDays=${JWT_REFRESH_EXPIRATION:-7}
+      - Seed__AdminEmail=${SEED_ADMIN_EMAIL}
+      - Seed__AdminPassword=${SEED_ADMIN_PASSWORD}
+      - Seed__AdminName=${SEED_ADMIN_NAME}
+      - Seed__TeamName=${SEED_TEAM_NAME}
+    ports:
+      - "8080:8080"
+    volumes:
+      - api-logs:/app/logs
+    networks:
+      - rentalflow-network
+
+volumes:
+  sqlserver-data:
+  api-logs:
+
+networks:
+  rentalflow-network:
+    driver: bridge

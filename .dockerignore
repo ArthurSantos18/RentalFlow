@@ -1,0 +1,41 @@
+# Build artifacts
+**/bin/
+**/obj/
+**/out/
+
+# Logs
+**/logs/
+*.log
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+
+# Git
+.git/
+.gitignore
+
+# Docker
+docker-compose*.yml
+Dockerfile*
+.dockerignore
+
+# Documentation
+*.md
+!README.md
+
+# Testes (não precisam ir pro build de produção)
+**/RentalFlow.Tests/
+
+# Environment
+.env
+.env.*
+.env.local
+appsettings.Development.json
+
+# OS
+.DS_Store
+Thumbs.db
