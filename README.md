@@ -27,6 +27,7 @@ O projeto está sendo desenvolvido com foco em boas práticas de desenvolvimento
 | xUnit / Moq / AutoFixture | Testes unitários |
 | FluentAssertions | Asserções legíveis nos testes |
 | Health Checks | Monitoramento de saúde da API |
+| Docker | Containerização da API e do banco |
 
 ---
 
@@ -204,6 +205,11 @@ A auditoria utiliza um `SaveChangesInterceptor`, permitindo registrar automatica
 | `NewValue` | Novo valor |
 | `UserId` | Usuário responsável pela alteração |
 
+### Proteções
+
+- **Campos sensíveis** (senhas, tokens) nunca são auditados.
+- **Dados pessoais** (CPF, e-mail, telefone) são mascarados na auditoria para conformidade com a LGPD.
+
 ---
 
 ## 🚦 Rate Limiting
@@ -237,9 +243,73 @@ dotnet test RentalFlow.Tests/RentalFlow.Tests.csproj
 
 ---
 
+## 🐳 Executando com Docker
+
+A forma mais simples de rodar o projeto é via **Docker Compose**, que sobe a API + SQL Server automaticamente.
+
+### Pré-requisitos
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) instalado e rodando
+
+### Passo a Passo
+
+**1. Clone o repositório**
+
+```bash
+git clone https://github.com/ArthurSantos18/RentalFlow.git
+cd RentalFlow
+```
+
+**2. Configure as variáveis de ambiente**
+
+```bash
+cp .env.example .env
+```
+
+Edite o `.env` e preencha:
+
+```env
+MSSQL_SA_PASSWORD=SuaSenha@Forte123
+JWT_ISSUER=RentalFlow
+JWT_AUDIENCE=RentalFlow
+JWT_SECRET_KEY=sua-chave-com-32-caracteres-no-minimo
+JWT_ACCESS_EXPIRATION=60
+JWT_REFRESH_EXPIRATION=7
+SEED_ADMIN_EMAIL=seu-email-para-primeiro-admin
+SEED_ADMIN_PASSWORD=sua-senha-para-primeiro-admin
+SEED_ADMIN_NAME=seu-username-para-primeiro-admin
+SEED_TEAM_NAME=seu-primeiro-time-para-o-admin
+```
+
+> Para gerar uma chave JWT segura: `[Convert]::ToBase64String((1..64 | ForEach-Object { Get-Random -Maximum 256 }))`
+
+**3. Suba os containers**
+
+```bash
+docker-compose up --build
+```
+
+A API estará disponível em:
+
+- **API:** `http://localhost:8080`
+- **Scalar:** `http://localhost:8080/scalar`
+- **Health Check:** `http://localhost:8080/health/live`
+
+**4. Para parar**
+
+```bash
+docker-compose down
+```
+
+**5. Para limpar tudo (incluindo volumes)**
+
+```bash
+docker-compose down -v
+```
+
 ---
 
-## 🚀 Como Executar o Projeto
+## 🚀 Executando Localmente
 
 ### Pré-requisitos
 
