@@ -145,7 +145,8 @@ Parâmetros: `?page=1&pageSize=60` (padrão: `page=1`, `pageSize=60`).
 |----------|--------|
 | `/api/auth/login` | 5/min por IP |
 | `/api/auth/refresh` | 10/min por IP |
-| Demais endpoints | 100/min por usuário |
+| endpoints autenticados | 100/min por usuário ou IP |
+| Demais endpoints | 100/min por usuário ou IP |
 
 Excedeu → `429 Too Many Requests` com header `Retry-After`.
 
