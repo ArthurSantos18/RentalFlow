@@ -8,6 +8,7 @@
 public sealed class OperatorController(ICommandMediator _commandMediator, IQueryMediator _queryMediator) : ControllerBase
 {
     [HttpGet]
+    [Stability(Stability.Stable)]
     [Authorize(Roles = $"{nameof(OperatorRole.Administrator)},{nameof(OperatorRole.Manager)}")]
     [EndpointDescription("Retorna uma lista de operadores com base nos critérios fornecidos.")]
     public async Task<IActionResult> GetOperatorsAsync([FromQuery] GetOperatorRequest request, CancellationToken cancellationToken)
@@ -21,6 +22,7 @@ public sealed class OperatorController(ICommandMediator _commandMediator, IQuery
     }
 
     [HttpGet("{id:guid}")]
+    [Stability(Stability.Stable)]
     [Authorize]
     [EndpointDescription("Retorna um operador pelo seu identificador único.")]
     public async Task<IActionResult> GetOperatorByIdAsync([FromRoute] Guid id, CancellationToken cancellationToken)
@@ -34,6 +36,7 @@ public sealed class OperatorController(ICommandMediator _commandMediator, IQuery
     }
 
     [HttpPost]
+    [Stability(Stability.Stable)]
     [Authorize(Roles = $"{nameof(OperatorRole.Administrator)},{nameof(OperatorRole.Manager)}")]
     [EndpointDescription("Adiciona um novo operador ao sistema.")]
     public async Task<IActionResult> AddOperatorAsync([FromBody] AddOperatorRequest request, CancellationToken cancellationToken)
@@ -47,6 +50,7 @@ public sealed class OperatorController(ICommandMediator _commandMediator, IQuery
     }
 
     [HttpDelete("{id:guid}")]
+    [Stability(Stability.Stable)]
     [Authorize(Roles = nameof(OperatorRole.Administrator))]
     [EndpointDescription("Deleta um operador existente do sistema.")]
     public async Task<IActionResult> DeleteOperatorAsync([FromRoute] Guid id, CancellationToken cancellationToken)
@@ -60,6 +64,7 @@ public sealed class OperatorController(ICommandMediator _commandMediator, IQuery
     }
 
     [HttpPatch("{id:guid}")]
+    [Stability(Stability.Stable)]
     [Authorize(Roles = $"{nameof(OperatorRole.Administrator)},{nameof(OperatorRole.Manager)}")]
     [EndpointDescription("Atualiza um operador existente no sistema.")]
     public async Task<IActionResult> UpdateOperatorAsync([FromRoute] Guid id, [FromBody] UpdateOperatorRequest request, CancellationToken cancellationToken)
@@ -73,6 +78,7 @@ public sealed class OperatorController(ICommandMediator _commandMediator, IQuery
     }
 
     [HttpPatch("{operatorId:guid}/team/{teamId:guid}")]
+    [Stability(Stability.Stable)]
     [Authorize(Roles = $"{nameof(OperatorRole.Administrator)},{nameof(OperatorRole.Manager)}")]
     [EndpointDescription("Atribui um operador a uma equipe específica.")]
     public async Task<IActionResult> AssignOperatorAsync([FromRoute] Guid operatorId, [FromRoute] Guid teamId, CancellationToken cancellationToken)

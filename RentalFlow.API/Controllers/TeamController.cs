@@ -8,6 +8,7 @@
 public sealed class TeamController(ICommandMediator _commandMediator, IQueryMediator _queryMediator) : ControllerBase
 {
     [HttpGet]
+    [Stability(Stability.Stable)]
     [EndpointDescription("Retorna uma lista de equipes com base nos critérios fornecidos.")]
     public async Task<IActionResult> GetTeamsAsync([FromQuery] GetTeamRequest request, CancellationToken cancellationToken)
     {
@@ -20,6 +21,7 @@ public sealed class TeamController(ICommandMediator _commandMediator, IQueryMedi
     }
 
     [HttpPost]
+    [Stability(Stability.Stable)]
     [Authorize(Roles = nameof(OperatorRole.Administrator))]
     [EndpointDescription("Adiciona uma nova equipe ao sistema.")]
     public async Task<IActionResult> AddTeamAsync([FromBody] AddTeamRequest request, CancellationToken cancellationToken)
@@ -33,6 +35,7 @@ public sealed class TeamController(ICommandMediator _commandMediator, IQueryMedi
     }
 
     [HttpDelete("{id:guid}")]
+    [Stability(Stability.Stable)]
     [Authorize(Roles = nameof(OperatorRole.Administrator))]
     [EndpointDescription("Deleta uma equipe existente do sistema.")]
     public async Task<IActionResult> DeleteTeamAsync([FromRoute] Guid id, CancellationToken cancellationToken)
@@ -46,6 +49,7 @@ public sealed class TeamController(ICommandMediator _commandMediator, IQueryMedi
     }
 
     [HttpPatch("{id:guid}")]
+    [Stability(Stability.Stable)]
     [Authorize(Roles = $"{nameof(OperatorRole.Administrator)},{nameof(OperatorRole.Manager)}")]
     [EndpointDescription("Atualiza uma equipe existente no sistema.")]
     public async Task<IActionResult> UpdateTeamAsync([FromRoute] Guid id, [FromBody] UpdateTeamRequest request, CancellationToken cancellationToken)

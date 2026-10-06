@@ -8,6 +8,7 @@
 public sealed class ApplicantController(ICommandMediator _commandMediator, IQueryMediator _queryMediator) : ControllerBase
 {
     [HttpGet]
+    [Stability(Stability.Stable)]
     [EndpointDescription("Retorna uma lista de inquilinos com base nos critérios fornecidos.")]
     public async Task<IActionResult> GetApplicantsAsync([FromQuery] GetApplicantRequest request, CancellationToken cancellationToken)
     {
@@ -20,6 +21,7 @@ public sealed class ApplicantController(ICommandMediator _commandMediator, IQuer
     }
 
     [HttpPost]
+    [Stability(Stability.Stable)]
     [EndpointDescription("Adiciona um novo inquilino ao sistema.")]
     public async Task<IActionResult> AddApplicantAsync([FromBody] AddApplicantRequest request, CancellationToken cancellationToken)
     {
@@ -32,6 +34,7 @@ public sealed class ApplicantController(ICommandMediator _commandMediator, IQuer
     }
 
     [HttpDelete("{id:guid}")]
+    [Stability(Stability.Stable)]
     [Authorize(Roles = $"{nameof(OperatorRole.Administrator)},{nameof(OperatorRole.Manager)}")]
     [EndpointDescription("Deleta um inquilino existente no sistema.")]
     public async Task<IActionResult> DeleteApplicantAsync([FromRoute] Guid id, CancellationToken cancellationToken)
@@ -45,6 +48,7 @@ public sealed class ApplicantController(ICommandMediator _commandMediator, IQuer
     }
 
     [HttpPatch("{id:guid}")]
+    [Stability(Stability.Stable)]
     [EndpointDescription("Atualiza um inquilino existente no sistema.")]
     public async Task<IActionResult> UpdateApplicantAsync([FromRoute] Guid id, [FromBody] UpdateApplicantRequest request, CancellationToken cancellationToken)
     {

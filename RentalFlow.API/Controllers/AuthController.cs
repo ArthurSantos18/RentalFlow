@@ -6,6 +6,7 @@
 public class AuthController(ICommandMediator _commandMediator) : ControllerBase
 {
     [HttpPost("login")]
+    [Stability(Stability.Stable)]
     [AllowAnonymous]
     [EnableRateLimiting(RateLimitingPolicies.LoginPolicy)]
     [EndpointDescription("Autentica o usuário e retorna um token de acesso e um token de atualização.")]
@@ -20,6 +21,7 @@ public class AuthController(ICommandMediator _commandMediator) : ControllerBase
     }
 
     [HttpPost("refresh")]
+    [Stability(Stability.Stable)]
     [AllowAnonymous]
     [EnableRateLimiting(RateLimitingPolicies.RefreshPolicy)]
     [EndpointDescription("Atualiza o token de acesso usando o token de atualização.")]
@@ -34,6 +36,7 @@ public class AuthController(ICommandMediator _commandMediator) : ControllerBase
     }
 
     [HttpPost("logout")]
+    [Stability(Stability.Stable)]
     [AllowAnonymous]
     [EnableRateLimiting(RateLimitingPolicies.AuthenticatedPolicy)]
     [EndpointDescription("Faz o logout do usuário e invalida o token de atualização.")]
@@ -48,6 +51,7 @@ public class AuthController(ICommandMediator _commandMediator) : ControllerBase
     }
 
     [HttpPost("change-password")]
+    [Stability(Stability.Stable)]
     [Authorize]
     [EnableRateLimiting(RateLimitingPolicies.AuthenticatedPolicy)]
     [EndpointDescription("Altera a senha do usuário autenticado.")]

@@ -8,6 +8,7 @@
 public class RentalApplicationController(ICommandMediator _commandMediator, IQueryMediator _queryMediator) : ControllerBase
 {
     [HttpGet]
+    [Stability(Stability.Stable)]
     [EndpointDescription("Retorna uma lista de aplicações de aluguel com base nos critérios fornecidos.")]
     public async Task<IActionResult> GetRentalApplicationsAsync([FromQuery] GetRentalApplicationRequest request, CancellationToken cancellationToken)
     {
@@ -20,6 +21,7 @@ public class RentalApplicationController(ICommandMediator _commandMediator, IQue
     }
 
     [HttpPost]
+    [Stability(Stability.Stable)]
     [EndpointDescription("Adiciona uma nova aplicação de aluguel ao sistema.")]
     public async Task<IActionResult> AddRentalApplicationAsync([FromBody] AddRentalApplicationRequest request, CancellationToken cancellationToken)
     {
@@ -32,6 +34,7 @@ public class RentalApplicationController(ICommandMediator _commandMediator, IQue
     }
 
     [HttpDelete("{id:guid}")]
+    [Stability(Stability.Stable)]
     [Authorize(Roles = $"{nameof(OperatorRole.Administrator)},{nameof(OperatorRole.Manager)}")]
     [EndpointDescription("Deleta uma aplicação de aluguel existente do sistema.")]
     public async Task<IActionResult> DeleteRentalApplicationAsync([FromRoute] Guid id, CancellationToken cancellationToken)
@@ -45,6 +48,7 @@ public class RentalApplicationController(ICommandMediator _commandMediator, IQue
     }
 
     [HttpPatch("{id:guid}")]
+    [Stability(Stability.Stable)]
     [EndpointDescription("Atualiza uma aplicação de aluguel existente no sistema.")]
     public async Task<IActionResult> UpdateRentalApplicationAsync([FromRoute] Guid id, [FromBody] UpdateRentalApplicationRequest request, CancellationToken cancellationToken)
     {
@@ -57,6 +61,7 @@ public class RentalApplicationController(ICommandMediator _commandMediator, IQue
     }
 
     [HttpPatch("{id:guid}/status")]
+    [Stability(Stability.Stable)]
     [Authorize(Roles = $"{nameof(OperatorRole.Administrator)},{nameof(OperatorRole.Manager)}")]
     [EndpointDescription("Atualiza o status de uma aplicação de aluguel existente no sistema.")]
     public async Task<IActionResult> UpdateRentalApplicationStatusAsync([FromRoute] Guid id, [FromBody] UpdateRentalApplicationStatusRequest request, CancellationToken cancellationToken)
