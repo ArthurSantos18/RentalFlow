@@ -25,7 +25,6 @@ global using RentalFlow.Application.Requests.Operator;
 global using RentalFlow.Application.Requests.Property;
 global using RentalFlow.Application.Requests.RentalApplication;
 global using RentalFlow.Application.Requests.Team;
-global using RentalFlow.Application.Requests.User;
 
 global using RentalFlow.Domain.Attributes;
 global using RentalFlow.Domain.Entities;

@@ -172,3 +172,19 @@ Gerencia as **equipes** de operadores.
 - **Acesso restrito**: apenas `Administrator` pode criar e excluir times
 - **Edição**: `Manager` só pode editar o próprio time
 - **Soft delete**: times removidos não aparecem em consultas
+
+## User
+
+Gerencia os **dados do usuário autenticado**. Cada usuário está vinculado a um **operador** (corretor, gerente ou administrador) e possui credenciais próprias para autenticação no sistema.
+
+### Responsabilidades
+
+- Consulta do perfil do usuário autenticado (`/me`)
+- Exposição de dados do operador vinculado (nome, papel, time)
+- Exposição do status da conta (ativa/inativa, troca de senha pendente)
+
+### Regras de Negócio
+
+- **Vínculo obrigatório**: todo usuário pertence a um operador — não existem usuários "soltos"
+- **Email único**: não é possível cadastrar dois usuários com o mesmo e-mail
+- **Acesso restrito**: apenas o próprio usuário pode consultar seu perfil

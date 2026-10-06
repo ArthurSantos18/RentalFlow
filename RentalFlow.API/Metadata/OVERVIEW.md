@@ -105,6 +105,11 @@ Quando o access token expirar, renove com `POST /api/auth/refresh`.
 | `PATCH` | `/api/teams/{id}` | Atualiza |
 | `DELETE` | `/api/teams/{id}` | Remove (admin) |
 
+### Users
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| `GET` | `/api/users/me` | Perfil do usuário autenticado |
+
 ---
 
 ## 📄 Paginação

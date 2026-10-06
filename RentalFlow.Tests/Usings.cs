@@ -20,7 +20,6 @@ global using RentalFlow.Application.Requests.Operator;
 global using RentalFlow.Application.Requests.Property;
 global using RentalFlow.Application.Requests.RentalApplication;
 global using RentalFlow.Application.Requests.Team;
-global using RentalFlow.Application.Requests.User;
 
 global using RentalFlow.Application.UseCases.Commands.Applicant;
 global using RentalFlow.Application.UseCases.Commands.Auth;
@@ -35,6 +34,7 @@ global using RentalFlow.Application.UseCases.Queries.Operator;
 global using RentalFlow.Application.UseCases.Queries.Property;
 global using RentalFlow.Application.UseCases.Queries.RentalApplication;
 global using RentalFlow.Application.UseCases.Queries.Team;
+global using RentalFlow.Application.UseCases.Queries.User;
 
 global using RentalFlow.Application.Validators.Applicant;
 global using RentalFlow.Application.Validators.AuditLog;
