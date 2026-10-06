@@ -61,6 +61,7 @@ RentalFlow/
 │   ├── Validators/
 │   └── Usings.cs
 ├── RentalFlow.Domain/              # Camada de Domínio (Entidades, Enums, Value Objects)
+│   ├── Attributes/
 │   ├── Entities/
 │   ├── Enums/
 │   ├── Errors/
@@ -69,8 +70,10 @@ RentalFlow/
 │   ├── ValueObject/
 │   └── Usings.cs
 ├── RentalFlow.Infrastructure/      # Camada de Infraestrutura (DbContext, Repositories)
+│   ├── Auditing/
 │   ├── Data/
 │   ├── Extensions/
+│   ├── Helpers/
 │   ├── Migrations/
 │   ├── Repositories/
 │   ├── Services/
@@ -98,6 +101,7 @@ RentalFlow/
 | **Team** | Times ao qual os operadores pertencem |
 | **User** | Usuário ao qual possuem as credenciais para login |
 | **UserToken** | Entidade que guarda os tokens e informações adicionais da autenticação do usuário |
+| **AuditLog** | Registro das alterações realizadas nas entidades do sistema |
 
 ---
 
@@ -128,6 +132,8 @@ RentalFlow/
 - [x] **Logs de Commands** – Início, sucesso e warnings com `ErrorCode` + `ErrorMessage`.
 - [x] **Global Exception Handler** – Tratamento centralizado via `IExceptionHandler`, com resposta padronizada em `ProblemDetails` contendo `traceId`/`correlationId` e log estruturado.
 - [x] **Health Checks** – Endpoints `/health/live` (liveness) e `/health/ready` (readiness) com resposta JSON, integrados ao SQL Server.
+- [x] **Auditoria automática de alterações** – Registro das operações realizadas nas entidades através de interceptor do Entity Framework Core.
+- [x] **Rate Limiting** – Limitação de requisições por IP ou usuário, com resposta 429 Too Many Requests e Retry-After.
 
 ### 🌐 API
 
@@ -153,6 +159,83 @@ RentalFlow/
 - **User Secrets** – Credenciais sensíveis fora do versionamento.
 - **Migrations** – Versionamento do schema via EF Core Migrations.
 - **Global Using** – Centralização de `using` por projeto.
+
+---
+
+## 📊 Logging e Observabilidade
+
+O projeto utiliza **Serilog** para logging estruturado com:
+
+- Saída para **console** e **arquivo** (rolling file diário, retenção de 30 dias).
+- Configuração de níveis por namespace (`Microsoft` e `Microsoft.EntityFrameworkCore` em `Warning`).
+- Enriquecimento com `Application`, `CorrelationId`, `UserId` e `Role`.
+- Formato dos logs:
+  ```
+  20:56:35 [INF] [CorrelationId:0HNOV9P3R8100:00000013] [User:84e4897a-...] [Role:Administrator] Creating property...
+  ```
+
+---
+
+## 🩺 Health Checks
+
+O projeto expõe dois endpoints de health check no padrão, com resposta em JSON:
+
+| Endpoint | Tipo | Verifica | Ação em caso de falha |
+|----------|------|----------|----------------------|
+| `/health/live` | Liveness | Processo está vivo | Orquestrador **reinicia** o container |
+| `/health/ready` | Readiness | SQL Server acessível | Orquestrador **remove do load balancer** |
+
+---
+
+## 📝 Auditoria
+
+O **RentalFlow** possui um mecanismo de auditoria integrado ao **Entity Framework Core** para rastrear alterações relevantes realizadas no sistema.
+
+A auditoria utiliza um `SaveChangesInterceptor`, permitindo registrar automaticamente as alterações sem acoplar a lógica de auditoria aos casos de uso.
+
+### Informações registradas
+
+| Campo | Descrição |
+| --- | --- |
+| `EntityName` | Nome da entidade alterada |
+| `EntityId` | Identificador da entidade |
+| `FieldName` | Campo alterado, quando aplicável |
+| `OldValue` | Valor anterior |
+| `NewValue` | Novo valor |
+| `UserId` | Usuário responsável pela alteração |
+
+---
+
+## 🚦 Rate Limiting
+
+A API utiliza **Rate Limiting** para limitar a quantidade de requisições recebidas e proteger os recursos da aplicação contra excesso de tráfego.
+
+Os limites utilizam diferentes estratégias de particionamento:
+
+- Por **IP** para endpoints de autenticação.
+- Por **usuário autenticado** para requisições que possuem um `sub` no JWT.
+- Por **IP** quando não existe um usuário autenticado.
+
+### Limites
+
+| Policy | Endpoint | Limite | Janela | Particionamento |
+| --- | --- | --- | --- | --- |
+| `LoginPolicy` | `/api/auth/login` | 5 req/min | 1 minuto | IP |
+| `RefreshPolicy` | `/api/auth/refresh` | 10 req/min | 1 minuto | IP |
+| `AuthenticatedPolicy` | Endpoints associados à policy | 100 req/min | 1 minuto | Usuário ou IP |
+| `GlobalLimiter` | Demais requisições | 200 req/min | 1 minuto | Usuário ou IP |
+
+---
+
+## 🧪 Testes
+
+Execute os testes unitários com:
+
+```bash
+dotnet test RentalFlow.Tests/RentalFlow.Tests.csproj
+```
+
+---
 
 ---
 
@@ -227,41 +310,6 @@ dotnet run --project RentalFlow.API
 7. **Acesse a API (Scalar)**
 
 Abra o navegador em `https://localhost:<porta>/scalar` (a porta é definida em `Properties/launchSettings.json`).
-
----
-
-## 📊 Logging e Observabilidade
-
-O projeto utiliza **Serilog** para logging estruturado com:
-
-- Saída para **console** e **arquivo** (rolling file diário, retenção de 30 dias).
-- Configuração de níveis por namespace (`Microsoft` e `Microsoft.EntityFrameworkCore` em `Warning`).
-- Enriquecimento com `Application`, `CorrelationId`, `UserId` e `Role`.
-- Formato dos logs:
-  ```
-  20:56:35 [INF] [CorrelationId:0HNOV9P3R8100:00000013] [User:84e4897a-...] [Role:Administrator] Creating property...
-  ```
-
----
-
-## 🩺 Health Checks
-
-O projeto expõe dois endpoints de health check no padrão, com resposta em JSON:
-
-| Endpoint | Tipo | Verifica | Ação em caso de falha |
-|----------|------|----------|----------------------|
-| `/health/live` | Liveness | Processo está vivo | Orquestrador **reinicia** o container |
-| `/health/ready` | Readiness | SQL Server acessível | Orquestrador **remove do load balancer** |
-
----
-
-## 🧪 Testes
-
-Execute os testes unitários com:
-
-```bash
-dotnet test RentalFlow.Tests/RentalFlow.Tests.csproj
-```
 
 ---
 
