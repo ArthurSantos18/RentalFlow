@@ -26,7 +26,6 @@ O projeto está sendo desenvolvido com foco em boas práticas de desenvolvimento
 | Scalar | Documentação interativa da API |
 | xUnit / Moq / AutoFixture | Testes unitários |
 | FluentAssertions | Asserções legíveis nos testes |
-| AspNetCore.HealthChecks.SqlServer | Health check de conectividade com SQL Server |
 | Health Checks | Monitoramento de saúde da API |
 
 ---
@@ -36,13 +35,16 @@ O projeto está sendo desenvolvido com foco em boas práticas de desenvolvimento
 ```
 RentalFlow/
 ├── RentalFlow.API/                 # Camada de Apresentação (Controllers, Middleware)
+│   ├── Constants/
 │   ├── Controllers/
 │   ├── Extensions/
 │   ├── Filters/
 │   ├── Handlers/
 │   ├── Helpers/
+│   ├── Metadata/
 │   ├── Middlewares/
 │   ├── Services/
+│   ├── Transformers/
 │   ├── Program.cs
 │   └── Usings.cs
 ├── RentalFlow.Application/         # Camada de Aplicação (Handlers, Commands, Queries)
