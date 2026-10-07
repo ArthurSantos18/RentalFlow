@@ -28,15 +28,13 @@ public sealed class UserTokenConfiguration : IEntityTypeConfiguration<UserTokenE
             .IsRequired();
 
         builder.HasOne(t => t.User)
-            .WithMany()
+            .WithMany(u => u.Tokens)
             .HasForeignKey(t => t.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasIndex(t => t.RefreshToken)
             .IsUnique();
-
-        builder.HasIndex(t => t.UserId);
-
-        builder.HasQueryFilter(t => !t.User.IsDeleted);
+        
+        builder.HasQueryFilter(t => !t.IsDeleted && !t.User.IsDeleted);
     }
 }

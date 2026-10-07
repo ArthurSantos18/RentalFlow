@@ -13,6 +13,10 @@ public sealed class TeamConfiguration : BaseConfiguration<TeamEntity>
         builder.Property(t => t.Description)
             .HasMaxLength(500);
 
+        builder.HasIndex(t => t.Name)
+            .IsUnique()
+            .HasFilter("[IsDeleted] = 0");
+
         builder.HasMany(t => t.Operators)
             .WithOne(o => o.Team)
             .HasForeignKey(o => o.TeamId)

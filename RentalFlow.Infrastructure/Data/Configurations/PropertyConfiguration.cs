@@ -34,7 +34,6 @@ public sealed class PropertyConfiguration : BaseConfiguration<PropertyEntity>
             address.Property(a => a.ZipCode)
                 .HasMaxLength(8)
                 .IsRequired();
-
         });
 
         builder.Property(p => p.RentPrice)

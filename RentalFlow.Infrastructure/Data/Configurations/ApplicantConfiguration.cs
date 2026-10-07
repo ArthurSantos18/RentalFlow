@@ -25,7 +25,8 @@ public sealed class ApplicantConfiguration : BaseConfiguration<ApplicantEntity>
             .HasMaxLength(15);
 
         builder.Property(a => a.MonthlyIncome)
-            .HasColumnType("decimal(18,2)").IsRequired();
+            .IsRequired()
+            .HasColumnType("decimal(18,2)");
 
         builder.HasMany(a => a.Applications)
             .WithOne(ra => ra.Applicant)

@@ -38,5 +38,9 @@ public sealed class AuditLogConfiguration : IEntityTypeConfiguration<AuditLogEnt
 
         builder.Property(x => x.CreatedAt)
             .IsRequired();
+
+        builder.HasIndex(x => new { x.EntityName, x.EntityId });
+
+        builder.HasIndex(x => x.CreatedAt);
     }
 }

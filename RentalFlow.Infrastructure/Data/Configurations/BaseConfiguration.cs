@@ -1,6 +1,7 @@
 ﻿namespace RentalFlow.Infrastructure.Data.Configurations;
 
-public abstract class BaseConfiguration<TEntity> : IEntityTypeConfiguration<TEntity> where TEntity : BaseEntity<TEntity>
+public abstract class BaseConfiguration<TEntity> : IEntityTypeConfiguration<TEntity>
+    where TEntity : BaseEntity<TEntity>
 {
     public void Configure(EntityTypeBuilder<TEntity> builder)
     {
@@ -23,6 +24,9 @@ public abstract class BaseConfiguration<TEntity> : IEntityTypeConfiguration<TEnt
 
         builder.Property(e => e.DeletedAt)
             .IsRequired(false);
+
+        builder.HasIndex(e => new { e.IsDeleted, e.CreatedAt })
+            .IsDescending(false, true);
 
         builder.HasQueryFilter(e => !e.IsDeleted);
 

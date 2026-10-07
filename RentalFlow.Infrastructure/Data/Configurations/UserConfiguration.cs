@@ -32,5 +32,7 @@ public sealed class UserConfiguration : BaseConfiguration<UserEntity>
         builder.HasIndex(u => u.OperatorId)
             .IsUnique()
             .HasFilter("[IsActive] = 1");
+
+        builder.HasIndex(u => u.IsDeleted);
     }
 }

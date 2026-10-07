@@ -28,6 +28,6 @@ public sealed class OperatorConfiguration : BaseConfiguration<OperatorEntity>
             .HasForeignKey<UserEntity>(u => u.OperatorId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasIndex(o => o.TeamId);
+        builder.HasIndex(o => new { o.Role, o.IsActive, o.IsDeleted });
     }
 }
