@@ -34,7 +34,9 @@ global using RentalFlow.Domain.Patterns.PagedResult;
 
 global using RentalFlow.Infrastructure.Auditing;
 global using RentalFlow.Infrastructure.Data;
+global using RentalFlow.Infrastructure.Factories;
 global using RentalFlow.Infrastructure.Helpers;
+global using RentalFlow.Infrastructure.Interfaces;
 global using RentalFlow.Infrastructure.Repositories;
 global using RentalFlow.Infrastructure.Services;
 global using RentalFlow.Infrastructure.Settings;

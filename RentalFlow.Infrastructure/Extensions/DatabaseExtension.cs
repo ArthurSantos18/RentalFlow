@@ -4,7 +4,9 @@ public static class DatabaseExtension
 {
     public static IServiceCollection AddDatabase(this IServiceCollection services, string connectionString)
     {
+        services.AddScoped<IAuditLogFactory, AuditLogFactory>();
         services.AddScoped<AuditSaveChangesInterceptor>();
+
         services.AddDbContext<AppDbContext>((serviceProvider, options) =>
         {
             options.UseSqlServer(connectionString);

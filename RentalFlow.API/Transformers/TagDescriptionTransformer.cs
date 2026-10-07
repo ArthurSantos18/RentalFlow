@@ -5,77 +5,45 @@ public sealed class TagDescriptionTransformer : IOpenApiDocumentTransformer
 {
     public async Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context, CancellationToken cancellationToken)
     {
-        var tagsPath = Path.Combine(AppContext.BaseDirectory, "Metadata", "TAGS.md");
+        var path = Path.Combine(AppContext.BaseDirectory, "Metadata", "TAGS.md");
 
-        if (!File.Exists(tagsPath))
+        if (!File.Exists(path))
         {
             return;
         }
 
-        var content = await File.ReadAllTextAsync(tagsPath, cancellationToken);
-        var descriptions = ParseTags(content);
+        var content = await File.ReadAllTextAsync(path, cancellationToken);
+        var blocks = Markdown.Parse(content);
+
+        var headings = blocks.OfType<HeadingBlock>().Where(heading => heading.Level == 2);
+        var separators = blocks.OfType<ThematicBreakBlock>();
 
         document.Tags ??= new HashSet<OpenApiTag>();
 
-        foreach (var (name, description) in descriptions)
+        foreach (var (heading, separator) in headings.Zip(separators))
         {
-            var existingTag = document.Tags.FirstOrDefault(t => t.Name == name);
+            var name = heading.Inline?.FirstChild?.ToString() ?? string.Empty;
 
-            if (existingTag is not null)
-            {
-                existingTag.Description = description;
-            }
-            else
-            {
-                document.Tags.Add(new OpenApiTag
-                {
-                    Name = name,
-                    Description = description
-                });
-            }
-        }
-    }
-
-    private static Dictionary<string, string> ParseTags(string content)
-    {
-        var result = new Dictionary<string, string>();
-        var lines = content.Split('\n');
-
-        string? currentTag = null;
-        var buffer = new StringBuilder();
-
-        foreach (var rawLine in lines)
-        {
-            var line = rawLine.TrimEnd();
-
-            if (line.StartsWith("## "))
-            {
-                if (currentTag is not null && buffer.Length > 0)
-                {
-                    result[currentTag] = buffer.ToString().Trim();
-                }
-
-                currentTag = line[3..].Trim();
-                buffer.Clear();
-                continue;
-            }
-
-            if (line.StartsWith("# ") || line.Trim() == "---")
+            if (string.IsNullOrWhiteSpace(name))
             {
                 continue;
             }
 
-            if (currentTag is not null)
+            var description = content[(heading.Span.End + 1)..separator.Span.Start].Trim();
+
+            var existing = document.Tags.FirstOrDefault(tag => string.Equals(tag.Name, name, StringComparison.OrdinalIgnoreCase));
+
+            if (existing is not null)
             {
-                buffer.AppendLine(line);
+                existing.Description = description;
+                continue;
             }
-        }
 
-        if (currentTag is not null && buffer.Length > 0)
-        {
-            result[currentTag] = buffer.ToString().Trim();
+            document.Tags.Add(new OpenApiTag
+            {
+                Name = name,
+                Description = description
+            });
         }
-
-        return result;
     }
 }

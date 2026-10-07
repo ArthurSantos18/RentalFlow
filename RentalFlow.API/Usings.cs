@@ -78,3 +78,6 @@ global using System.Security.Claims;
 global using System.Threading.RateLimiting;
 global using System.Diagnostics.CodeAnalysis;
 global using System.Text;
+
+global using Markdig;
+global using Markdig.Syntax;
