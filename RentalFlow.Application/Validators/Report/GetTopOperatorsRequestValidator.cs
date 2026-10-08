@@ -1,8 +1,8 @@
 ﻿namespace RentalFlow.Application.Validators.Report;
 
-public sealed class GetTopPropertiesRequestValidator : AbstractValidator<GetTopPropertiesRequest>
+public sealed class GetTopOperatorsRequestValidator : AbstractValidator<GetTopOperatorsRequest>
 {
-    public GetTopPropertiesRequestValidator()
+    public GetTopOperatorsRequestValidator()
     {
         RuleFor(x => x.Limit)
             .InclusiveBetween(1, 50)

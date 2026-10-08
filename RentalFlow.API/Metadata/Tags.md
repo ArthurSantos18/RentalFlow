@@ -170,9 +170,9 @@ Fornece **relatórios agregados** sobre os dados do sistema. Endpoints de leitur
 |-----------|-----------|
 | **Dashboard** | Visão geral do sistema com totais de inquilinos, imóveis, propostas, operadores e times, além de taxa de conversão e ticket médio |
 | **Top Imóveis** | Ranking dos imóveis mais procurados com base no volume de propostas recebidas |
-| **Top Operadores** *(planejado)* | Ranking de produtividade por operador (propostas criadas e aprovadas) |
-| **Propostas por Período** *(planejado)* | Agrupamento de propostas por dia, semana ou mês |
-| **Taxa de Conversão Detalhada** *(planejado)* | Análise da taxa de conversão por status, período ou operador |
+| **Top Operadores** | Ranking de produtividade por operador (propostas criadas e aprovadas) |
+| **Propostas por Período** | Agrupamento de propostas por dia, semana ou mês |
+| **Taxa de Conversão Detalhada** | Análise da taxa de conversão por status, período ou operador |
 
 ### Regras de Negócio
 

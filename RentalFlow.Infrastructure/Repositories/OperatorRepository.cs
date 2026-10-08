@@ -17,6 +17,22 @@ public sealed class OperatorRepository(AppDbContext context) : BaseRepository<Op
         return await _dbSet.Include(o => o.Team).Include(o => o.User).FirstOrDefaultAsync(o => o.Id == id, cancellationToken);
     }
 
+    public async Task<IReadOnlyList<OperatorEntity>> GetByIdsWithTeamAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken)
+    {
+        var idList = ids.ToList();
+
+        if (idList.Count == 0)
+        {
+            return [];
+        }
+
+        return await _dbSet
+            .AsNoTracking()
+            .Include(o => o.Team)
+            .Where(o => idList.Contains(o.Id))
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<PagedResult<OperatorEntity>> GetOperatorsAsync(GetOperatorRequest request, DataScope scope, CancellationToken cancellationToken)
     {
         var query = _context.Operators

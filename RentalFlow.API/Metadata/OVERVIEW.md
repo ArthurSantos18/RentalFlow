@@ -68,7 +68,7 @@ Quando o access token expirar, renove com `POST /api/auth/refresh`.
 | `GET` | `/api/applicants` | Lista |
 | `POST` | `/api/applicants` | Cria |
 | `PATCH` | `/api/applicants/{id}` | Atualiza |
-| `DELETE` | `/api/applicants/{id}` | Remove (admin/manager) |
+| `DELETE` | `/api/applicants/{id}` | Remove |
 
 ### Operators
 | Método | Rota | Descrição |
@@ -101,14 +101,18 @@ Quando o access token expirar, renove com `POST /api/auth/refresh`.
 | Método | Rota | Descrição |
 |--------|------|-----------|
 | `GET` | `/api/reports/dashboard` | Dashboard |
+| `GET` | `/api/reports/top-properties` | Top propriedades |
+| `GET` | `/api/reports/top-operators` | Top operadores |
+| `GET` | `/api/reports/applications-by-period` | Aplicações por período |
+| `GET` | `/api/reports/conversion-rate` | Taxa de conversão das aplicações |
 
 ### Teams
 | Método | Rota | Descrição |
 |--------|------|-----------|
 | `GET` | `/api/teams` | Lista |
-| `POST` | `/api/teams` | Cria (admin) |
+| `POST` | `/api/teams` | Cria |
 | `PATCH` | `/api/teams/{id}` | Atualiza |
-| `DELETE` | `/api/teams/{id}` | Remove (admin) |
+| `DELETE` | `/api/teams/{id}` | Remove |
 
 ### Users
 | Método | Rota | Descrição |

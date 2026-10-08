@@ -25,8 +25,11 @@ global using RentalFlow.Application.Requests.Report;
 global using RentalFlow.Application.Requests.Team;
 
 global using RentalFlow.Application.Responses;
-global using RentalFlow.Application.Responses.Report.TopProperty;
+global using RentalFlow.Application.Responses.Report.ApplicationByPeriod;
+global using RentalFlow.Application.Responses.Report.ConversionRate;
 global using RentalFlow.Application.Responses.Report.Dashboard;
+global using RentalFlow.Application.Responses.Report.TopProperty;
+global using RentalFlow.Application.Responses.Report.TopOperator;
 
 global using RentalFlow.Application.Services;
 
@@ -41,5 +44,7 @@ global using RentalFlow.Domain.ValueObject;
 global using System.Linq.Expressions;
 
 global using System.ComponentModel;
+
+global using System.Globalization;
 
 global using System.Text.Json.Serialization;

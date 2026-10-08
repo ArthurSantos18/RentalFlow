@@ -1,6 +1,4 @@
-﻿using RentalFlow.Application.Requests.Report;
-
-namespace RentalFlow.Infrastructure.Repositories;
+﻿namespace RentalFlow.Infrastructure.Repositories;
 
 public sealed class ReportRepository(AppDbContext _context) : IReportRepository
 {
@@ -39,11 +37,8 @@ public sealed class ReportRepository(AppDbContext _context) : IReportRepository
             .Select(g => new { Status = g.Key, Count = g.Count() })
             .ToDictionaryAsync(x => x.Status, x => x.Count, cancellationToken);
 
-        var totalFinancedAmount = await _context.RentalApplications
-            .SumAsync(r => (decimal?)r.FinancedAmount, cancellationToken) ?? 0;
-
-        var totalAmount = await _context.RentalApplications
-            .SumAsync(r => (decimal?)r.TotalAmount, cancellationToken) ?? 0;
+        var totalFinancedAmount = await _context.RentalApplications.SumAsync(r => (decimal?)r.FinancedAmount, cancellationToken) ?? 0;
+        var totalAmount = await _context.RentalApplications.SumAsync(r => (decimal?)r.TotalAmount, cancellationToken) ?? 0;
 
         return new RentalApplicationAggregate
         {
@@ -95,15 +90,7 @@ public sealed class ReportRepository(AppDbContext _context) : IReportRepository
             .AsNoTracking()
             .AsQueryable();
 
-        if (request.From.HasValue)
-        {
-            query = query.Where(r => r.CreatedAt >= request.From.Value);
-        }
-
-        if (request.To.HasValue)
-        {
-            query = query.Where(r => r.CreatedAt <= request.To.Value);
-        }
+        query = ApplyDateFilter(query, request.From, request.To);
 
         return await query
             .GroupBy(r => r.PropertyId)
@@ -118,5 +105,105 @@ public sealed class ReportRepository(AppDbContext _context) : IReportRepository
             .OrderByDescending(x => x.Total)
             .Take(request.Limit)
             .ToListAsync(cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<TopOperatorAggregate>> GetTopOperatorAggregateAsync(GetTopOperatorsRequest request, CancellationToken cancellationToken)
+    {
+        var query = _context.RentalApplications
+            .AsNoTracking()
+            .AsQueryable();
+
+        query = ApplyDateFilter(query, request.From, request.To);
+
+        return await query
+            .GroupBy(r => r.OperatorId)
+            .Select(g => new TopOperatorAggregate
+            {
+                OperatorId = g.Key,
+                Total = g.Count(),
+                Approved = g.Count(x => x.Status == RentalStatus.Approved),
+                Pending = g.Count(x => x.Status == RentalStatus.Pending),
+                Rejected = g.Count(x => x.Status == RentalStatus.Rejected),
+                TotalAmount = g.Sum(x => x.TotalAmount)
+            })
+            .OrderByDescending(x => x.Total)
+            .Take(request.Limit)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<ApplicationsByPeriodAggregate>> GetApplicationsByPeriodAsync(GetApplicationsByPeriodRequest request, CancellationToken cancellationToken)
+    {
+        var referenceDate = Helpers.PeriodHelper.NormalizeReferenceDate(request.From, request.GroupBy);
+
+        var query = _context.RentalApplications
+            .AsNoTracking()
+            .Where(r => r.CreatedAt >= request.From && r.CreatedAt <= request.To);
+
+        var periodKey = Helpers.PeriodHelper.GetGroupKey(referenceDate, request.GroupBy);
+
+        var grouped = await query
+            .GroupBy(periodKey)
+            .Select(g => new
+            {
+                PeriodIndex = g.Key,
+                Total = g.Count(),
+                Approved = g.Count(x => x.Status == RentalStatus.Approved),
+                Pending = g.Count(x => x.Status == RentalStatus.Pending),
+                Rejected = g.Count(x => x.Status == RentalStatus.Rejected),
+                TotalAmount = g.Sum(x => x.TotalAmount),
+                TotalFinanced = g.Sum(x => x.FinancedAmount)
+            })
+            .OrderBy(x => x.PeriodIndex)
+            .ToListAsync(cancellationToken);
+
+        return [.. grouped
+            .Select(g => new ApplicationsByPeriodAggregate
+            {
+                PeriodStart = Helpers.PeriodHelper.GetPeriodStart(referenceDate, request.GroupBy, g.PeriodIndex),
+                Total = g.Total,
+                Approved = g.Approved,
+                Pending = g.Pending,
+                Rejected = g.Rejected,
+                TotalAmount = g.TotalAmount,
+                TotalFinancedAmount = g.TotalFinanced
+            })];
+    }
+
+    public async Task<ConversionRateAggregate> GetConversionRateAggregateAsync(DateTime from, DateTime to, CancellationToken cancellationToken)
+    {
+        var query = _context.RentalApplications
+            .AsNoTracking()
+            .Where(r => r.CreatedAt >= from && r.CreatedAt <= to);
+
+        var byStatus = await query
+            .GroupBy(r => r.Status)
+            .Select(g => new { Status = g.Key, Count = g.Count() })
+            .ToDictionaryAsync(x => x.Status, x => x.Count, cancellationToken);
+
+        var total = byStatus.Values.Sum();
+
+        return new ConversionRateAggregate
+        {
+            Total = total,
+            Draft = byStatus.GetValueOrDefault(RentalStatus.Draft),
+            Pending = byStatus.GetValueOrDefault(RentalStatus.Pending),
+            Approved = byStatus.GetValueOrDefault(RentalStatus.Approved),
+            Rejected = byStatus.GetValueOrDefault(RentalStatus.Rejected)
+        };
+    }
+
+    private static IQueryable<RentalApplicationEntity> ApplyDateFilter(IQueryable<RentalApplicationEntity> query, DateTime? from, DateTime? to)
+    {
+        if (from.HasValue)
+        {
+            query = query.Where(r => r.CreatedAt >= from.Value);
+        }
+
+        if (to.HasValue)
+        {
+            query = query.Where(r => r.CreatedAt <= to.Value);
+        }
+
+        return query;
     }
 }

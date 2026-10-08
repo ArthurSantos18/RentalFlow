@@ -32,8 +32,8 @@ public sealed class GetTopPropertiesQueryHandlerTests
 
         var aggregates = properties
             .Select(property => _fixture.Build<TopPropertyAggregate>()
-                .With(a => a.PropertyId, property.Id)
-                .Create())
+            .With(a => a.PropertyId, property.Id)
+            .Create())
             .ToList();
 
         _reportRepositoryMock

@@ -13,4 +13,9 @@ public interface IReportRepository
     Task<TeamAggregate> GetTeamAggregateAsync(CancellationToken cancellationToken);
 
     Task<IReadOnlyList<TopPropertyAggregate>> GetTopPropertyAggregateAsync(GetTopPropertiesRequest request, CancellationToken cancellationToken);
+
+    Task<IReadOnlyList<TopOperatorAggregate>> GetTopOperatorAggregateAsync(GetTopOperatorsRequest request, CancellationToken cancellationToken);
+
+    Task<IReadOnlyList<ApplicationsByPeriodAggregate>> GetApplicationsByPeriodAsync(GetApplicationsByPeriodRequest request, CancellationToken cancellationToken);
+    Task<ConversionRateAggregate> GetConversionRateAggregateAsync(DateTime from, DateTime to, CancellationToken cancellationToken);
 }

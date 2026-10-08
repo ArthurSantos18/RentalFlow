@@ -1,9 +1,9 @@
 ﻿namespace RentalFlow.Tests.Application.Validators.Report;
 
-public sealed class GetTopPropertiesRequestValidatorTests
+public sealed class GetTopOperatorsRequestValidatorTests
 {
     private readonly Fixture _fixture = new();
-    private readonly GetTopPropertiesRequestValidator _validator = new();
+    private readonly GetTopOperatorsRequestValidator _validator = new();
 
     [Theory]
     [InlineData(0)]
@@ -13,7 +13,7 @@ public sealed class GetTopPropertiesRequestValidatorTests
     public void Validate_Limit_ShouldHaveError_WhenOutsideAllowedRange(int limit)
     {
         // Arrange
-        var request = _fixture.Build<GetTopPropertiesRequest>()
+        var request = _fixture.Build<GetTopOperatorsRequest>()
             .With(r => r.Limit, limit)
             .Create();
 
@@ -32,7 +32,7 @@ public sealed class GetTopPropertiesRequestValidatorTests
     public void Validate_Limit_ShouldNotHaveError_WhenWithinAllowedRange(int limit)
     {
         // Arrange
-        var request = _fixture.Build<GetTopPropertiesRequest>()
+        var request = _fixture.Build<GetTopOperatorsRequest>()
             .With(r => r.Limit, limit)
             .Create();
 
@@ -50,7 +50,7 @@ public sealed class GetTopPropertiesRequestValidatorTests
         var from = DateTime.UtcNow;
         var to = from.AddDays(-1);
 
-        var request = _fixture.Build<GetTopPropertiesRequest>()
+        var request = _fixture.Build<GetTopOperatorsRequest>()
             .With(r => r.From, from)
             .With(r => r.To, to)
             .Create();
@@ -70,7 +70,7 @@ public sealed class GetTopPropertiesRequestValidatorTests
         var from = DateTime.UtcNow;
         var to = from.AddDays(1);
 
-        var request = _fixture.Build<GetTopPropertiesRequest>()
+        var request = _fixture.Build<GetTopOperatorsRequest>()
             .With(r => r.From, from)
             .With(r => r.To, to)
             .Create();
@@ -88,7 +88,7 @@ public sealed class GetTopPropertiesRequestValidatorTests
         // Arrange
         var date = DateTime.UtcNow;
 
-        var request = _fixture.Build<GetTopPropertiesRequest>()
+        var request = _fixture.Build<GetTopOperatorsRequest>()
             .With(r => r.From, date)
             .With(r => r.To, date)
             .Create();
@@ -104,7 +104,7 @@ public sealed class GetTopPropertiesRequestValidatorTests
     public void Validate_To_ShouldNotHaveError_WhenFromIsNull()
     {
         // Arrange
-        var request = _fixture.Build<GetTopPropertiesRequest>()
+        var request = _fixture.Build<GetTopOperatorsRequest>()
             .With(r => r.From, (DateTime?)null)
             .With(r => r.To, DateTime.UtcNow)
             .Create();
@@ -120,7 +120,7 @@ public sealed class GetTopPropertiesRequestValidatorTests
     public void Validate_To_ShouldNotHaveError_WhenToIsNull()
     {
         // Arrange
-        var request = _fixture.Build<GetTopPropertiesRequest>()
+        var request = _fixture.Build<GetTopOperatorsRequest>()
             .With(r => r.From, DateTime.UtcNow)
             .With(r => r.To, (DateTime?)null)
             .Create();
@@ -136,7 +136,7 @@ public sealed class GetTopPropertiesRequestValidatorTests
     public void Validate_ShouldNotHaveErrors_WhenFieldsAreNull()
     {
         // Arrange
-        var request = new GetTopPropertiesRequest();
+        var request = new GetTopOperatorsRequest();
 
         // Act
         var result = _validator.TestValidate(request);
@@ -152,7 +152,7 @@ public sealed class GetTopPropertiesRequestValidatorTests
         var from = DateTime.UtcNow;
         var to = from.AddDays(1);
 
-        var request = _fixture.Build<GetTopPropertiesRequest>()
+        var request = _fixture.Build<GetTopOperatorsRequest>()
             .With(r => r.Limit, 10)
             .With(r => r.From, from)
             .With(r => r.To, to)
@@ -172,7 +172,7 @@ public sealed class GetTopPropertiesRequestValidatorTests
         var from = DateTime.UtcNow;
         var to = from.AddDays(-1);
 
-        var request = _fixture.Build<GetTopPropertiesRequest>()
+        var request = _fixture.Build<GetTopOperatorsRequest>()
             .With(r => r.Limit, 0)
             .With(r => r.From, from)
             .With(r => r.To, to)

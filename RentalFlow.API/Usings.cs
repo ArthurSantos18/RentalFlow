@@ -57,8 +57,12 @@ global using RentalFlow.Application.UseCases.Queries.Report;
 global using RentalFlow.Application.UseCases.Queries.Team;
 
 global using RentalFlow.Application.Responses;
-global using RentalFlow.Application.Responses.Report.TopProperty;
+
+global using RentalFlow.Application.Responses.Report.ApplicationByPeriod;
+global using RentalFlow.Application.Responses.Report.ConversionRate;
 global using RentalFlow.Application.Responses.Report.Dashboard;
+global using RentalFlow.Application.Responses.Report.TopProperty;
+global using RentalFlow.Application.Responses.Report.TopOperator;
 
 global using RentalFlow.Crosscutting.Extensions;
 
