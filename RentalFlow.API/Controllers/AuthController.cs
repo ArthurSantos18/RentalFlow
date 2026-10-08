@@ -57,9 +57,7 @@ public class AuthController(ICommandMediator _commandMediator) : ControllerBase
     [EndpointDescription("Altera a senha do usuário autenticado.")]
     public async Task<IActionResult> ChangePasswordAsync([FromBody] ChangePasswordRequest request, CancellationToken cancellationToken)
     {
-        var userId = ClaimsPrincipalHelper.GetUserId(User);
-
-        var command = new ChangePasswordCommand(userId, request);
+        var command = new ChangePasswordCommand(request);
         var result = await _commandMediator.SendAsync(command, cancellationToken);
 
         return result.IsSuccess

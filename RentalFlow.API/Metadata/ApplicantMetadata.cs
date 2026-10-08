@@ -10,6 +10,7 @@ public static class ApplicantMetadata
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public static void GetApplicantsAsync(GetApplicantRequest request, CancellationToken cancellationToken) { }
 
     [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
@@ -18,6 +19,7 @@ public static class ApplicantMetadata
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public static void AddApplicantAsync(AddApplicantRequest request, CancellationToken cancellationToken) { }
 
     [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
@@ -27,6 +29,7 @@ public static class ApplicantMetadata
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public static void DeleteApplicantAsync(Guid id, CancellationToken cancellationToken) { }
 
     [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
@@ -35,5 +38,6 @@ public static class ApplicantMetadata
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public static void UpdateApplicantAsync(Guid id, UpdateApplicantRequest request, CancellationToken cancellationToken) { }
 }

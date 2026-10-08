@@ -10,6 +10,7 @@ public static class PropertyMetadata
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public static void GetPropertiesAsync(GetPropertyRequest request, CancellationToken cancellationToken) { }
 
     [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
@@ -17,6 +18,7 @@ public static class PropertyMetadata
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public static void AddPropertyAsync(AddPropertyRequest request, CancellationToken cancellationToken) { }
 
     [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
@@ -26,6 +28,7 @@ public static class PropertyMetadata
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public static void DeletePropertyAsync(Guid id, CancellationToken cancellationToken) { }
 
     [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
@@ -34,5 +37,6 @@ public static class PropertyMetadata
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public static void UpdatePropertyAsync(Guid id, UpdatePropertyRequest request, CancellationToken cancellationToken) { }
 }

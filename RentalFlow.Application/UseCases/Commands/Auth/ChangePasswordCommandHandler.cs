@@ -3,22 +3,25 @@
 public sealed class ChangePasswordCommandHandler(
     IUserRepository _userRepository,
     IPasswordService _passwordService,
+    ICurrentUserService _currentUserService,
     ILogger<ChangePasswordCommandHandler> _logger
     ) : ICommandHandler<ChangePasswordCommand, Result>
 {
     public async Task<Result> HandleAsync(ChangePasswordCommand command, CancellationToken cancellationToken)
     {
+        var userId = _currentUserService.UserId;
+
         _logger.LogInformation(
             "Password change requested for user {UserId}",
-            command.UserId);
+            userId);
 
-        var user = await _userRepository.GetByIdAsync(command.UserId, cancellationToken);
+        var user = await _userRepository.GetByIdAsync(userId, cancellationToken);
 
         if (user is null)
         {
             _logger.LogWarning(
                 "Password change failed because user {UserId} was not found: {ErrorCode} {ErrorMessage}",
-                command.UserId,
+                userId,
                 UserErrors.UserNotFound.Code,
                 UserErrors.UserNotFound.Message);
 

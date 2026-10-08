@@ -12,7 +12,7 @@ public sealed class AuditLogController(IQueryMediator _queryMediator) : Controll
     [EndpointDescription("Retorna uma lista de logs de auditoria com base nos critérios fornecidos.")]
     public async Task<IActionResult> GetAuditLogAsync([FromQuery] GetAuditLogRequest request, CancellationToken cancellationToken)
     {
-        var query = new GetAuditsQuery(request);
+        var query = new GetAuditLogsQuery(request);
         var result = await _queryMediator.QueryAsync(query, cancellationToken);
 
         return result.IsSuccess

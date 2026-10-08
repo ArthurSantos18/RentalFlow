@@ -10,5 +10,6 @@ public static class UserMetadata
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status429TooManyRequests)]
-    public static void GetCurrentUser(CancellationToken cancellationToken) { }
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public static void GetCurrentUserAsync(CancellationToken cancellationToken) { }
 }

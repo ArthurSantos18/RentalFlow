@@ -1,15 +1,15 @@
 ﻿namespace RentalFlow.Tests.Application.UseCases.Queries;
 
-public sealed class GetAuditsQueryHandlerTests
+public sealed class GetAuditLogsQueryHandlerTests
 {
     private readonly Fixture _fixture = new();
     private readonly TestsFixtures _testsFixtures = new(new Fixture());
     private readonly Mock<IAuditLogRepository> _repositoryMock = new();
-    private readonly GetAuditsQueryHandler _handler;
+    private readonly GetAuditLogsQueryHandler _handler;
 
-    public GetAuditsQueryHandlerTests()
+    public GetAuditLogsQueryHandlerTests()
     {
-        _handler = new GetAuditsQueryHandler(_repositoryMock.Object);
+        _handler = new GetAuditLogsQueryHandler(_repositoryMock.Object);
     }
 
     [Fact]
@@ -17,7 +17,7 @@ public sealed class GetAuditsQueryHandlerTests
     {
         // Arrange
         var request = _fixture.Create<GetAuditLogRequest>();
-        var query = _fixture.Build<GetAuditsQuery>()
+        var query = _fixture.Build<GetAuditLogsQuery>()
             .With(q => q.Request, request)
             .Create();
 

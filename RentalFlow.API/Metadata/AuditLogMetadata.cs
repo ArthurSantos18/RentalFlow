@@ -8,5 +8,6 @@ public static class AuditLogMetadata
     [ProducesResponseType(typeof(PagedResult<GetAuditLogResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public static void GetAuditLogAsync(GetAuditLogRequest request, CancellationToken cancellationToken) { }
 }

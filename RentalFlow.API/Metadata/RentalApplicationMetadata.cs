@@ -10,6 +10,7 @@ public static class RentalApplicationMetadata
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public static void GetRentalApplicationsAsync(GetRentalApplicationRequest request, CancellationToken cancellationToken) { }
 
     [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
@@ -20,6 +21,7 @@ public static class RentalApplicationMetadata
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public static void AddRentalApplicationAsync(AddRentalApplicationRequest request, CancellationToken cancellationToken) { }
 
     [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
@@ -28,6 +30,7 @@ public static class RentalApplicationMetadata
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public static void DeleteRentalApplicationAsync(Guid id, CancellationToken cancellationToken) { }
 
     [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
@@ -38,6 +41,7 @@ public static class RentalApplicationMetadata
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public static void UpdateRentalApplicationAsync(Guid id, UpdateRentalApplicationRequest request, CancellationToken cancellationToken) { }
 
     [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
@@ -48,5 +52,6 @@ public static class RentalApplicationMetadata
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public static void UpdateRentalApplicationStatusAsync(Guid id, UpdateRentalApplicationStatusRequest request, CancellationToken cancellationToken) { }
 }

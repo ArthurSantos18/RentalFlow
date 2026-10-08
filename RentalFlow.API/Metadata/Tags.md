@@ -153,6 +153,36 @@ Gerencia as **propostas de locação** — o coração do fluxo de negócio. Cad
 
 ---
 
+## Report
+
+Fornece **relatórios agregados** sobre os dados do sistema. Endpoints de leitura com totais, agrupamentos e métricas de negócio, projetados para alimentar dashboards e análises gerenciais.
+
+### Responsabilidades
+
+- Fornecimento de métricas consolidadas do sistema (totais, agrupamentos e médias)
+- Cálculo de taxas e indicadores de negócio (conversão, ticket médio, etc.)
+- Agregação de dados por período, status, time ou operador
+- Leitura otimizada com queries de agregação direto no banco
+
+### Tipos de Relatório
+
+| Relatório | Descrição |
+|-----------|-----------|
+| **Dashboard** | Visão geral do sistema com totais de inquilinos, imóveis, propostas, operadores e times, além de taxa de conversão e ticket médio |
+| **Top Imóveis** | Ranking dos imóveis mais procurados com base no volume de propostas recebidas |
+| **Top Operadores** *(planejado)* | Ranking de produtividade por operador (propostas criadas e aprovadas) |
+| **Propostas por Período** *(planejado)* | Agrupamento de propostas por dia, semana ou mês |
+| **Taxa de Conversão Detalhada** *(planejado)* | Análise da taxa de conversão por status, período ou operador |
+
+### Regras de Negócio
+
+- **Acesso restrito**: apenas usuários com papel `Administrator` podem consultar relatórios globais
+- **Relatórios por escopo**: versões futuras permitirão que `Manager` e `Broker` visualizem métricas filtradas ao próprio time ou perfil
+- **Somente leitura**: todos os endpoints são `GET` — não há alteração de estado
+- **Dados agregados**: os relatórios não retornam registros individuais, apenas métricas consolidadas
+- **Cálculos no banco**: as agregações são executadas via `COUNT`, `SUM`, `AVG` e `GROUP BY` diretamente no SQL Server
+
+---
 ## Team
 
 Gerencia as **equipes** de operadores.

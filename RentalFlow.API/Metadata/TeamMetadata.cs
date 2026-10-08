@@ -9,6 +9,7 @@ public static class TeamMetadata
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public static void GetTeamsAsync(GetTeamRequest request, CancellationToken cancellationToken) { }
 
     [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
@@ -16,6 +17,7 @@ public static class TeamMetadata
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public static void GetTeamOperators(Guid id, CancellationToken cancellationToken) { }
 
     [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
@@ -25,6 +27,7 @@ public static class TeamMetadata
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public static void AddTeamAsync(AddTeamRequest request, CancellationToken cancellationToken) { }
 
     [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
@@ -34,6 +37,7 @@ public static class TeamMetadata
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public static void DeleteTeamAsync(Guid id, CancellationToken cancellationToken) { }
 
     [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
@@ -44,5 +48,6 @@ public static class TeamMetadata
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public static void UpdateTeamAsync(Guid id, UpdateTeamRequest request, CancellationToken cancellationToken) { }
 }

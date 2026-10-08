@@ -18,6 +18,7 @@ global using RentalFlow.Application.Interfaces.Repositories;
 global using RentalFlow.Application.Interfaces.Services;
 
 global using RentalFlow.Application.Models;
+global using RentalFlow.Application.Models.Aggregates;
 
 global using RentalFlow.Application.Requests.Applicant;
 global using RentalFlow.Application.Requests.AuditLog;
@@ -25,6 +26,8 @@ global using RentalFlow.Application.Requests.Operator;
 global using RentalFlow.Application.Requests.Property;
 global using RentalFlow.Application.Requests.RentalApplication;
 global using RentalFlow.Application.Requests.Team;
+
+global using RentalFlow.Application.Responses.Report.Dashboard;
 
 global using RentalFlow.Domain.Attributes;
 global using RentalFlow.Domain.Entities;

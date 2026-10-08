@@ -11,6 +11,7 @@ public static class OperatorMetadata
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public static void GetOperatorsAsync(GetOperatorRequest request, CancellationToken cancellationToken) { }
 
     [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
@@ -19,6 +20,7 @@ public static class OperatorMetadata
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public static void GetOperatorByIdAsync(Guid id, CancellationToken cancellationToken) { }
 
     [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
@@ -29,6 +31,7 @@ public static class OperatorMetadata
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public static void AddOperatorAsync(AddOperatorRequest request, CancellationToken cancellationToken) { }
 
     [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
@@ -38,6 +41,7 @@ public static class OperatorMetadata
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public static void DeleteOperatorAsync(Guid id, CancellationToken cancellationToken) { }
 
     [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
@@ -48,6 +52,7 @@ public static class OperatorMetadata
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public static void UpdateOperatorAsync(Guid id, UpdateOperatorRequest request, CancellationToken cancellationToken) { }
 
     [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
@@ -56,5 +61,6 @@ public static class OperatorMetadata
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public static void AssignOperatorAsync(Guid operatorId, Guid teamId, CancellationToken cancellationToken) { }
 }

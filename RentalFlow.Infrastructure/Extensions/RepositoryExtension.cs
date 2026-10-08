@@ -11,6 +11,7 @@ public static class RepositoryExtension
         services.AddScoped<IOperatorRepository, OperatorRepository>();
         services.AddScoped<IPropertyRepository, PropertyRepository>();
         services.AddScoped<IRentalApplicationRepository, RentalApplicationRepository>();
+        services.AddScoped<IReportRepository, ReportRepository>();
         services.AddScoped<ITeamRepository, TeamRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUserTokenRepository, UserTokenRepository>();

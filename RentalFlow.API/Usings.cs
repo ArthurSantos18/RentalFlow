@@ -38,6 +38,7 @@ global using RentalFlow.Application.Requests.Auth;
 global using RentalFlow.Application.Requests.Operator;
 global using RentalFlow.Application.Requests.Property;
 global using RentalFlow.Application.Requests.RentalApplication;
+global using RentalFlow.Application.Requests.Report;
 global using RentalFlow.Application.Requests.Team;
 
 global using RentalFlow.Application.UseCases.Commands.Applicant;
@@ -52,9 +53,12 @@ global using RentalFlow.Application.UseCases.Queries.AuditLog;
 global using RentalFlow.Application.UseCases.Queries.Operator;
 global using RentalFlow.Application.UseCases.Queries.Property;
 global using RentalFlow.Application.UseCases.Queries.RentalApplication;
+global using RentalFlow.Application.UseCases.Queries.Report;
 global using RentalFlow.Application.UseCases.Queries.Team;
 
 global using RentalFlow.Application.Responses;
+global using RentalFlow.Application.Responses.Report.TopProperty;
+global using RentalFlow.Application.Responses.Report.Dashboard;
 
 global using RentalFlow.Crosscutting.Extensions;
 

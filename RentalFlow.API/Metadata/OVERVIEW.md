@@ -97,6 +97,11 @@ Quando o access token expirar, renove com `POST /api/auth/refresh`.
 | `PATCH` | `/api/rental-applications/{id}/status` | Muda status |
 | `DELETE` | `/api/rental-applications/{id}` | Remove |
 
+### Reports
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| `GET` | `/api/reports/dashboard` | Dashboard |
+
 ### Teams
 | Método | Rota | Descrição |
 |--------|------|-----------|

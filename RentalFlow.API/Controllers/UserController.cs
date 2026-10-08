@@ -14,9 +14,7 @@ public class UserController(IQueryMediator _queryMediator) : ControllerBase
     [EndpointDescription("Obtém as informações do usuário atualmente autenticado.")]
     public async Task<IActionResult> GetCurrentUserAsync(CancellationToken cancellationToken)
     {
-        var userId = ClaimsPrincipalHelper.GetUserId(User);
-
-        var query = new GetCurrentUserQuery(userId);
+        var query = new GetCurrentUserQuery();
         var result = await _queryMediator.QueryAsync(query, cancellationToken);
 
         return result.IsSuccess

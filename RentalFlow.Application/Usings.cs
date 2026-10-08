@@ -9,8 +9,11 @@ global using Microsoft.Extensions.Logging;
 global using RentalFlow.Application.Interfaces.Repositories;
 global using RentalFlow.Application.Interfaces.Services;
 
+global using RentalFlow.Application.Helpers;
+
 global using RentalFlow.Application.Mappers;
 global using RentalFlow.Application.Models;
+global using RentalFlow.Application.Models.Aggregates;
 
 global using RentalFlow.Application.Requests.Applicant;
 global using RentalFlow.Application.Requests.AuditLog;
@@ -18,9 +21,13 @@ global using RentalFlow.Application.Requests.Auth;
 global using RentalFlow.Application.Requests.Operator;
 global using RentalFlow.Application.Requests.Property;
 global using RentalFlow.Application.Requests.RentalApplication;
+global using RentalFlow.Application.Requests.Report;
 global using RentalFlow.Application.Requests.Team;
 
 global using RentalFlow.Application.Responses;
+global using RentalFlow.Application.Responses.Report.TopProperty;
+global using RentalFlow.Application.Responses.Report.Dashboard;
+
 global using RentalFlow.Application.Services;
 
 global using RentalFlow.Domain.Entities;

@@ -5,6 +5,7 @@ public sealed class ChangePasswordCommandHandlerTests
     private readonly Fixture _fixture = new();
     private readonly Mock<IUserRepository> _userRepoMock = new();
     private readonly Mock<IPasswordService> _passwordServiceMock = new();
+    private readonly Mock<ICurrentUserService> _currentUserServiceMock = new();
     private readonly Mock<ILogger<ChangePasswordCommandHandler>> _loggerMock = new();
     private readonly ChangePasswordCommandHandler _handler;
 
@@ -13,6 +14,7 @@ public sealed class ChangePasswordCommandHandlerTests
         _handler = new ChangePasswordCommandHandler(
             _userRepoMock.Object,
             _passwordServiceMock.Object,
+            _currentUserServiceMock.Object,
             _loggerMock.Object);
     }
 
@@ -22,18 +24,18 @@ public sealed class ChangePasswordCommandHandlerTests
         // Arrange
         var userId = Guid.NewGuid();
 
-        var command = _fixture.Build<ChangePasswordCommand>()
-            .With(c => c.UserId, userId)
-            .Create();
+        var command = _fixture.Create<ChangePasswordCommand>();
+
+        _currentUserServiceMock
+            .Setup(c => c.UserId)
+            .Returns(userId);
 
         _userRepoMock
             .Setup(r => r.GetByIdAsync(userId, It.IsAny<CancellationToken>()))
             .ReturnsAsync((UserEntity?)null);
 
         // Act
-        var result = await _handler.HandleAsync(
-            command,
-            CancellationToken.None);
+        var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -43,9 +45,11 @@ public sealed class ChangePasswordCommandHandlerTests
         _passwordServiceMock.Verify(s => s.Verify(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         _passwordServiceMock.Verify(s => s.Hash(It.IsAny<string>()), Times.Never);
         _userRepoMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        _currentUserServiceMock.Verify(c => c.UserId, Times.Once);
 
         _userRepoMock.VerifyNoOtherCalls();
         _passwordServiceMock.VerifyNoOtherCalls();
+        _currentUserServiceMock.VerifyNoOtherCalls();
     }
 
     [Fact]
@@ -61,7 +65,6 @@ public sealed class ChangePasswordCommandHandlerTests
             .Create();
 
         var command = _fixture.Build<ChangePasswordCommand>()
-            .With(c => c.UserId, userId)
             .With(c => c.Request, request)
             .Create();
 
@@ -72,14 +75,16 @@ public sealed class ChangePasswordCommandHandlerTests
             .Setup(r => r.GetByIdAsync(userId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(user);
 
+        _currentUserServiceMock
+            .Setup(c => c.UserId)
+            .Returns(userId);
+
         _passwordServiceMock
             .Setup(s => s.Verify(currentPassword, currentPasswordHash))
             .Returns(false);
 
         // Act
-        var result = await _handler.HandleAsync(
-            command,
-            CancellationToken.None);
+        var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -90,8 +95,10 @@ public sealed class ChangePasswordCommandHandlerTests
         _passwordServiceMock.Verify(s => s.Verify(It.IsAny<string>(), currentPasswordHash), Times.Once);
         _passwordServiceMock.Verify(s => s.Hash(It.IsAny<string>()), Times.Never);
         _userRepoMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        _currentUserServiceMock.Verify(c => c.UserId, Times.Once);
 
         _userRepoMock.VerifyNoOtherCalls();
         _passwordServiceMock.VerifyNoOtherCalls();
+        _currentUserServiceMock.VerifyNoOtherCalls();
     }
 }

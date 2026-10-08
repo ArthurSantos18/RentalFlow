@@ -2,6 +2,18 @@
 
 public sealed class PropertyRepository(AppDbContext context) : BaseRepository<PropertyEntity>(context), IPropertyRepository
 {
+    public async Task<IReadOnlyList<PropertyEntity>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken)
+    {
+        var idList = ids.ToList();
+
+        if (idList.Count == 0)
+        {
+            return [];
+        }
+
+        return await _dbSet.AsNoTracking().Where(p => idList.Contains(p.Id)).ToListAsync(cancellationToken);
+    }
+
     public async Task<PagedResult<PropertyEntity>> GetPropertiesAsync(GetPropertyRequest request, CancellationToken cancellationToken)
     {
         var query = _context.Properties
