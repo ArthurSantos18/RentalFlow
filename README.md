@@ -1,5 +1,7 @@
 # 🏠 RentalFlow - Sistema de Gestão de Locações
 
+[![CI](https://github.com/ArthurSantos18/RentalFlow/actions/workflows/ci.yml/badge.svg)](https://github.com/ArthurSantos18/RentalFlow/actions/workflows/ci.yml)
+
 ## 📋 Sobre o Projeto
 
 🚧 **Projeto em desenvolvimento**
