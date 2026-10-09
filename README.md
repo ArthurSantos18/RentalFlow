@@ -233,6 +233,29 @@ Os limites utilizam diferentes estratégias de particionamento:
 
 ---
 
+## 📈 Relatórios
+
+A API oferece **relatórios agregados** para análise gerencial, com cálculos executados diretamente no banco de dados para máxima performance.
+
+### Endpoints Disponíveis
+
+| Endpoint | Descrição |
+|----------|-----------|
+| `GET /api/reports/dashboard` | Visão geral do sistema com totais de inquilinos, imóveis, propostas, operadores e times |
+| `GET /api/reports/top-properties` | Ranking dos imóveis mais procurados com base no volume de propostas recebidas |
+| `GET /api/reports/top-operators` | Ranking de produtividade por operador (propostas criadas e aprovadas) |
+| `GET /api/reports/applications-by-period` | Agrupamento de propostas por dia, semana, mês ou ano |
+| `GET /api/reports/conversion-rate` | Taxa de conversão com comparativo opcional entre períodos |
+
+### Recursos
+
+- **Filtro por período** (`from` e `to`) em todos os relatórios temporais
+- **Limite configurável** (`limit`) nos rankings, com validação entre 1 e 50
+- **Agrupamento flexível** (`groupBy`) por `Day`, `Week`, `Month` ou `Year`
+- **Comparativo opcional** entre períodos na taxa de conversão
+- **Acesso restrito** a administradores
+
+---
 ## 🧪 Testes
 
 Execute os testes unitários com:
