@@ -408,6 +408,12 @@ Abra o navegador em `https://localhost:<porta>/scalar` (a porta é definida em `
 
 ---
 
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE.txt) para mais detalhes.
+
+---
+
 ## ✒️ Autor
 
 **Arthur Santos Azevedo**
