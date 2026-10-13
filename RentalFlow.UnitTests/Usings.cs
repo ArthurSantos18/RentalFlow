@@ -58,6 +58,6 @@ global using RentalFlow.Domain.Helpers;
 global using RentalFlow.Domain.Patterns.PagedResult;
 global using RentalFlow.Domain.ValueObject;
 
-global using RentalFlow.UnitTests.Fixtures;
+global using RentalFlow.UnitTests.Helpers;
 
 global using System.Net.Mail;

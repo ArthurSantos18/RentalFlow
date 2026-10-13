@@ -1,4 +1,4 @@
-﻿namespace RentalFlow.UnitTests.Fixtures;
+﻿namespace RentalFlow.UnitTests.Helpers;
 
 public sealed class TestsFixtures(Fixture fixture)
 {

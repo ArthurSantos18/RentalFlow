@@ -1,31 +1,40 @@
-var builder = WebApplication.CreateBuilder(args);
+namespace RentalFlow.API;
 
-builder.AddRentalFlowLogging();
+public partial class Program
+{
+    private static async Task Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+        var configuration = builder.Configuration;
 
-builder.Services.AddRentalFlowOpenApi();
-builder.Services.AddMediator();
-builder.Services.AddValidators();
-builder.Services.AddJwtAuthentication(builder.Configuration);
-builder.Services.AddApiServices();
-builder.Services.AddApplication();
-builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddExceptionHandling();
-builder.Services.AddRentalFlowHealthChecks(builder.Configuration);
-builder.Services.AddRentalFlowRateLimiting();
+        builder.AddRentalFlowLogging();
 
-var app = builder.Build();
+        builder.Services.AddRentalFlowOpenApi();
+        builder.Services.AddMediator();
+        builder.Services.AddValidators();
+        builder.Services.AddJwtAuthentication(configuration);
+        builder.Services.AddApiServices();
+        builder.Services.AddApplication();
+        builder.Services.AddInfrastructure(configuration);
+        builder.Services.AddExceptionHandling();
+        builder.Services.AddRentalFlowHealthChecks(configuration);
+        builder.Services.AddRentalFlowRateLimiting();
 
-await app.SeedDatabaseAsync();
+        var app = builder.Build();
 
-app.UseCorrelationIdMiddleware();
-app.UseExceptionHandler();
-app.UseHttpsRedirection();
-app.UseRentalFlowOpenApi();
-app.UseRentalFlowHealthChecks();
-app.UseAuthentication();
-app.UseRequestLogContext();
-app.UseAuthorization();
-app.UseRentalFlowRateLimiting();
-app.MapControllers();
+        await app.SeedDatabaseAsync();
 
-app.RunWithLogging();
+        app.UseCorrelationIdMiddleware();
+        app.UseExceptionHandler();
+        app.UseHttpsRedirection();
+        app.UseRentalFlowOpenApi();
+        app.UseRentalFlowHealthChecks();
+        app.UseAuthentication();
+        app.UseRequestLogContext();
+        app.UseAuthorization();
+        app.UseRentalFlowRateLimiting();
+        app.MapControllers();
+
+        app.RunWithLogging();
+    }
+}

@@ -85,7 +85,7 @@ public sealed class OperatorMapperTests
 
         entity.AddApplication(_fixture.Create<RentalApplicationEntity>());
 
-        var response = entity.ToDetailedResponse(entity.Applications.Count());
+        var response = entity.ToDetailedResponse(entity.Applications.Count);
 
         response.Should().NotBeNull();
         response.Id.Should().Be(entity.Id);
@@ -99,7 +99,7 @@ public sealed class OperatorMapperTests
         response.Email.Should().Be(entity.User.Email);
         response.MustChangePassword.Should().Be(entity.User.MustChangePassword);
         response.UserId.Should().Be(entity.User.Id);
-        response.ApplicationsCount.Should().Be(entity.Applications.Count());
+        response.ApplicationsCount.Should().Be(entity.Applications.Count);
     }
 
     [Fact]
