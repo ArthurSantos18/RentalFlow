@@ -4,8 +4,6 @@
 
 ## 📋 Sobre o Projeto
 
-🚧 **Projeto em desenvolvimento**
-
 RentalFlow é um sistema backend desenvolvido para gerenciar o fluxo completo de locação de imóveis, desde o cadastro de inquilinos, imóveis e operadores até a formalização de propostas e aprovações.
 
 O projeto está sendo desenvolvido com foco em boas práticas de desenvolvimento backend, organização de código, separação de responsabilidades, testes automatizados e aplicação de padrões arquiteturais.
@@ -26,7 +24,8 @@ O projeto está sendo desenvolvido com foco em boas práticas de desenvolvimento
 | JSON Web Token (JWT) | Autenticação e autorização |
 | BCrypt | Criptografia de senhas |
 | Scalar | Documentação interativa da API |
-| xUnit / Moq / AutoFixture | Testes unitários |
+| Testcontainers | Containers SQL Server nos testes de integração |
+| xUnit v3 | Framework de testes (unitários e integração) |
 | FluentAssertions | Asserções legíveis nos testes |
 | Health Checks | Monitoramento de saúde da API |
 | Docker | Containerização da API e do banco |
@@ -52,6 +51,7 @@ RentalFlow/
 │   └── Usings.cs
 ├── RentalFlow.Application/         # Camada de Aplicação (Handlers, Commands, Queries)
 │   ├── Extensions/
+│   ├── Helpers/
 │   ├── Interfaces/
 │   ├── Mappers/
 │   ├── Models/
@@ -76,18 +76,27 @@ RentalFlow/
 │   ├── Auditing/
 │   ├── Data/
 │   ├── Extensions/
+│   ├── Factories/
 │   ├── Helpers/
+│   ├── Interfaces/
 │   ├── Migrations/
 │   ├── Repositories/
 │   ├── Services/
 │   ├── Settings/
 │   └── Usings.cs
 ├── RentalFlow.Crosscutting/        # Preocupações Transversais (Validações, Configurações)
-│   └── Extensions/
+│   ├── Extensions/
 │   └── Usings.cs
-└── RentalFlow.Tests/               # Testes Unitários
+├── RentalFlow.IntegrationTests/   # Testes de Integração
+│   ├── Base/
+│   ├── Controllers/
+│   ├── Fixtures/
+│   ├── Helpers/
+│   ├── Extensions/
+│   └── Usings.cs
+└── RentalFlow.UnitTests/            # Testes Unitários
     ├── Application/
-    ├── Fixtures/
+    ├── Helpers/
     └── Usings.cs
 ```
 
@@ -258,15 +267,48 @@ A API oferece **relatórios agregados** para análise gerencial, com cálculos e
 - **Acesso restrito** a administradores
 
 ---
+
 ## 🧪 Testes
 
-Execute os testes unitários com:
+O projeto possui **duas categorias de testes**, com foco em cobertura completa e fidelidade ao ambiente de produção.
+
+### 📋 Unit Tests
+
+Testam **handlers**, **validators**, **mappers** e **helpers** de forma isolada, com mocks das dependências.
 
 ```bash
-dotnet test RentalFlow.Tests/RentalFlow.Tests.csproj
+dotnet test RentalFlow.UnitTests/RentalFlow.UnitTests.csproj
 ```
 
----
+**Cobertura:**
+- Command handlers (Auth, Applicant, Operator, Property, RentalApplication, Team)
+- Query handlers (Applicants, Operators, Properties, RentalApplications, Teams, AuditLog, Report, User)
+- Validators (FluentValidation)
+- Mappers e helpers (ReportCalculator, PeriodHelper)
+
+### 🔗 Integration Tests
+
+Testam os **endpoints HTTP de ponta a ponta**, com **banco SQL Server real** em container Docker (via Testcontainers).
+
+```bash
+dotnet test RentalFlow.IntegrationTests/RentalFlow.IntegrationTests.csproj
+```
+
+**O que cobrem:**
+- Todos os **9 controllers** e seus **~30 endpoints**
+- Autenticação e autorização (401, 403)
+- Validação de requests (400)
+- Regras de negócio (404, 409)
+- Transições de status de propostas
+- Data scope por role
+
+**Pré-requisito:** Docker rodando (para o container SQL Server).
+
+### 🚀 Rodar tudo
+
+```bash
+dotnet test RentalFlow.slnx
+```
 
 ## 🐳 Executando com Docker
 
@@ -410,7 +452,7 @@ Abra o navegador em `https://localhost:<porta>/scalar` (a porta é definida em `
 
 ## 📄 Licença
 
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE.txt) para mais detalhes.
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE.txt](LICENSE.txt) para mais detalhes.
 
 ---
 
