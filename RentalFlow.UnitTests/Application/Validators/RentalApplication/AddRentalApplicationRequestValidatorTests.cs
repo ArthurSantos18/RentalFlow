@@ -171,11 +171,11 @@ public sealed class AddRentalApplicationRequestValidatorTests
     }
 
     [Fact]
-    public void Validate_ShouldHaveError_WhenContractDateInFuture()
+    public void Validate_ShouldHaveError_WhenContractDateInPast()
     {
         // Arrange
         var request = _fixture.Build<AddRentalApplicationRequest>()
-            .With(r => r.ContractDate, DateTime.UtcNow.AddDays(1))
+            .With(r => r.ContractDate, DateTime.UtcNow.AddDays(-1))
             .Create();
 
         // Act
@@ -183,7 +183,7 @@ public sealed class AddRentalApplicationRequestValidatorTests
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.ContractDate)
-            .WithErrorMessage("Contract date cannot be in the future.");
+            .WithErrorMessage("Contract date cannot be in the past.");
     }
 
     [Fact]
@@ -191,7 +191,7 @@ public sealed class AddRentalApplicationRequestValidatorTests
     {
         // Arrange
         var request = _fixture.Build<AddRentalApplicationRequest>()
-            .With(r => r.ContractDate, DateTime.UtcNow.AddDays(-1))
+            .With(r => r.ContractDate, DateTime.UtcNow.AddDays(1))
             .Create();
 
         // Act
@@ -228,7 +228,7 @@ public sealed class AddRentalApplicationRequestValidatorTests
             FinancedAmount = 1000m,
             TotalAmount = 1500m,
             Installments = 12,
-            ContractDate = DateTime.UtcNow.AddDays(-1)
+            ContractDate = DateTime.UtcNow.AddDays(1)
         };
 
         // Act
@@ -250,7 +250,7 @@ public sealed class AddRentalApplicationRequestValidatorTests
             FinancedAmount = 0m,
             TotalAmount = 0m,
             Installments = 0,
-            ContractDate = DateTime.UtcNow.AddDays(1)
+            ContractDate = DateTime.UtcNow.AddDays(-1)
         };
 
         // Act

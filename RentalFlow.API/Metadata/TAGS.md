@@ -183,6 +183,7 @@ Fornece **relatórios agregados** sobre os dados do sistema. Endpoints de leitur
 - **Cálculos no banco**: as agregações são executadas via `COUNT`, `SUM`, `AVG` e `GROUP BY` diretamente no SQL Server
 
 ---
+
 ## Team
 
 Gerencia as **equipes** de operadores.
@@ -203,6 +204,8 @@ Gerencia as **equipes** de operadores.
 - **Edição**: `Manager` só pode editar o próprio time
 - **Soft delete**: times removidos não aparecem em consultas
 
+---
+
 ## User
 
 Gerencia os **dados do usuário autenticado**. Cada usuário está vinculado a um **operador** (corretor, gerente ou administrador) e possui credenciais próprias para autenticação no sistema.
@@ -218,3 +221,5 @@ Gerencia os **dados do usuário autenticado**. Cada usuário está vinculado a u
 - **Vínculo obrigatório**: todo usuário pertence a um operador — não existem usuários "soltos"
 - **Email único**: não é possível cadastrar dois usuários com o mesmo e-mail
 - **Acesso restrito**: apenas o próprio usuário pode consultar seu perfil
+
+---

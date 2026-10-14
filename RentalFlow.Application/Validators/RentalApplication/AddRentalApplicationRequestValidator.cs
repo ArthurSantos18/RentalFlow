@@ -29,8 +29,8 @@ public sealed class AddRentalApplicationRequestValidator : AbstractValidator<Add
             .WithMessage("Financed amount must be less than or equal to total amount.");
 
         RuleFor(x => x.ContractDate)
-            .LessThanOrEqualTo(DateTime.UtcNow)
-            .WithMessage("Contract date cannot be in the future.")
+            .GreaterThan(DateTime.UtcNow)
+            .WithMessage("Contract date cannot be in the past.")
             .When(x => x.ContractDate.HasValue);
     }
 }

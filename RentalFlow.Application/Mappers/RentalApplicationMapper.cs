@@ -56,7 +56,7 @@ public static class RentalApplicationMapper
             ApplicantName = entity.Applicant.FullName,
             ApplicantCpf = entity.Applicant.Cpf,
             PropertyId = entity.PropertyId,
-            PropertyAddress = entity.Property.Address.Street,
+            PropertyAddress = entity.Property.Address.GetFullAddress(),
             PropertyRentPrice = entity.Property.RentPrice,
             OperatorId = entity.OperatorId,
             OperatorName = entity.Operator.Name,

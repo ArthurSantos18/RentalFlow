@@ -17,10 +17,5 @@ public sealed class UpdateOperatorRequestValidator : AbstractValidator<UpdateOpe
             .MaximumLength(100)
             .WithMessage("Email must not exceed 100 characters.")
             .When(x => x.Email is not null);
-
-        RuleFor(x => x.Role)
-            .NotEqual(OperatorRole.None)
-            .WithMessage("Role is required.")
-            .When(x => x.Role.HasValue);
     }
 }

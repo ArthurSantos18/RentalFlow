@@ -129,22 +129,6 @@ public sealed class UpdateOperatorRequestValidatorTests
         result.ShouldNotHaveValidationErrorFor(x => x.Email);
     }
 
-    [Fact]
-    public void Validate_Role_ShouldHaveError_WhenNone()
-    {
-        // Arrange
-        var request = _fixture.Build<UpdateOperatorRequest>()
-            .With(r => r.Role, OperatorRole.None)
-            .Create();
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Role)
-            .WithErrorMessage("Role is required.");
-    }
-
     [Theory]
     [InlineData(OperatorRole.Broker)]
     [InlineData(OperatorRole.Manager)]
