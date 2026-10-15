@@ -380,9 +380,9 @@ docker-compose down -v
 
 ### Pré-requisitos
 
-- [.NET 10.0 SDK]
-- [SQL Server]
-- [Git]
+- .NET 10.0 SDK
+- SQL Server
+- Git
 
 ### Passo a Passo
 
