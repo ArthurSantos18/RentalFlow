@@ -434,6 +434,11 @@ dotnet build
 
 5. **Execute as migrações (criação do banco)**
 
+> Instale a ferramenta dotnet-ef caso ainda não esteja instalada:
+```bash
+dotnet tool install --global dotnet-ef # caso não tenha a ferramenta
+```
+> Em seguida, aplique as migrações para criar ou atualizar o banco de dados:
 ```bash
 dotnet ef database update --project RentalFlow.Infrastructure --startup-project RentalFlow.API
 ```
