@@ -1,13 +1,12 @@
-﻿namespace RentalFlow.Application.Models
+﻿namespace RentalFlow.Application.Models;
+
+public abstract record DataScope()
 {
-    public sealed record DataScope(IEnumerable<Guid>? OperatorIds = null, IEnumerable<Guid>? TeamIds = null, bool IsGlobal = false)
-    {
-        public static DataScope Global() => new(IsGlobal: true);
+    public sealed record Global() : DataScope;
 
-        public static DataScope ForOperator(Guid operatorId) => new(OperatorIds: [operatorId]);
+    public sealed record ForOperator(Guid OperatorId) : DataScope;
 
-        public static DataScope ForTeam(Guid teamId) => new(TeamIds: [teamId]);
+    public sealed record ForTeam(Guid TeamId) : DataScope;
 
-        public static DataScope Deny() => new(OperatorIds: [Guid.Empty], TeamIds: [Guid.Empty]);
-    }
+    public sealed record Deny() : DataScope;
 }

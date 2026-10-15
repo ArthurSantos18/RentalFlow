@@ -196,26 +196,17 @@ public sealed class RentalApplicationRepository(AppDbContext context) : BaseRepo
 
     private static IQueryable<RentalApplicationEntity> ApplyDataScope(IQueryable<RentalApplicationEntity> query, DataScope scope)
     {
-        if (scope.IsGlobal)
+        return scope switch
         {
-            return query;
-        }
+            DataScope.Global => query,
 
-        if (scope.OperatorIds?.Any() == true)
-        {
-            query = query.Where(ra => scope.OperatorIds.Contains(ra.OperatorId));
-        }
+            DataScope.Deny => query.Where(_ => false),
 
-        if (scope.TeamIds?.Any() == true)
-        {
-            query = query.Where(ra => ra.Operator != null && scope.TeamIds.Contains(ra.Operator.TeamId));
-        }
+            DataScope.ForOperator sc => query.Where(ra => ra.OperatorId == sc.OperatorId),
 
-        if (scope.OperatorIds is null && scope.TeamIds is null)
-        {
-            query = query.Where(_ => false);
-        }
+            DataScope.ForTeam sc => query.Where(ra => ra.Operator.TeamId == sc.TeamId),
 
-        return query;
+            _ => query.Where(_ => false)
+        };
     }
 }

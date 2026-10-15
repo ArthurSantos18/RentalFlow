@@ -23,7 +23,7 @@ public sealed class GetOperatorsQueryHandlerTests
             .With(q => q.Request, request)
             .Create();
 
-        var scope = _fixture.Create<DataScope>();
+        var scope = new DataScope.Global();
         var operators = new List<OperatorEntity>
         {
             _testsFixtures.MakeOperator(),

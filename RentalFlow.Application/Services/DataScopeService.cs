@@ -7,15 +7,15 @@ public sealed class DataScopeService(ICurrentUserService _currentUserService) : 
         return _currentUserService.Role switch
         {
             nameof(OperatorRole.Broker) =>
-                DataScope.ForOperator(_currentUserService.OperatorId),
+                new DataScope.ForOperator(_currentUserService.OperatorId),
 
             nameof(OperatorRole.Manager) =>
-                _currentUserService.TeamId.HasValue ? DataScope.ForTeam(_currentUserService.TeamId.Value) : DataScope.Deny(),
+                new DataScope.ForTeam(_currentUserService.TeamId),
 
             nameof(OperatorRole.Administrator) =>
-                DataScope.Global(),
+                new DataScope.Global(),
 
-            _ => DataScope.Deny()
+            _ => new DataScope.Deny()
         };
     }
 }

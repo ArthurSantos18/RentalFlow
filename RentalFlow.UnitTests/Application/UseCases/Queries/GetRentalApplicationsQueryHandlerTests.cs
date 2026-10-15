@@ -20,7 +20,7 @@ public sealed class GetRentalApplicationsQueryHandlerTests
         var query = _fixture.Build<GetRentalApplicationsQuery>()
             .With(q => q.Request, request)
             .Create();
-        var scope = _fixture.Create<DataScope>();
+        var scope = new DataScope.Global();
 
         var applications = new List<RentalApplicationEntity>
         {

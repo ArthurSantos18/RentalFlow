@@ -137,21 +137,17 @@ public sealed class OperatorRepository(AppDbContext context) : BaseRepository<Op
 
     private static IQueryable<OperatorEntity> ApplyDataScope(IQueryable<OperatorEntity> query, DataScope scope)
     {
-        if (scope.IsGlobal)
+        return scope switch
         {
-            return query;
-        }
+            DataScope.Global => query,
 
-        if (scope.OperatorIds is null && scope.TeamIds is null)
-        {
-            return query.Where(_ => false);
-        }
+            DataScope.Deny => query.Where(_ => false),
 
-        if (scope.TeamIds?.Any() == true)
-        {
-            query = query.Where(o => scope.TeamIds.Contains(o.TeamId));
-        }
+            DataScope.ForOperator sc => query.Where(o => o.Id == sc.OperatorId),
 
-        return query;
+            DataScope.ForTeam sc => query.Where(o => o.TeamId == sc.TeamId),
+
+            _ => query.Where(_ => false)
+        };
     }
 }
