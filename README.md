@@ -380,9 +380,9 @@ docker-compose down -v
 
 ### Pré-requisitos
 
-- [.NET 10.0 SDK](https://dotnet.microsoft.com/download)
-- [SQL Server 2022](https://www.microsoft.com/pt-br/sql-server/sql-server-downloads) (ou SQL Server Express/LocalDB)
-- [Git](https://git-scm.com/)
+- .NET 10.0 SDK
+- SQL Server
+- Git
 
 ### Passo a Passo
 
@@ -434,6 +434,11 @@ dotnet build
 
 5. **Execute as migrações (criação do banco)**
 
+> Instale a ferramenta dotnet-ef caso ainda não esteja instalada:
+```bash
+dotnet tool install --global dotnet-ef # caso não tenha a ferramenta
+```
+> Em seguida, aplique as migrações para criar ou atualizar o banco de dados:
 ```bash
 dotnet ef database update --project RentalFlow.Infrastructure --startup-project RentalFlow.API
 ```
