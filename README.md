@@ -380,9 +380,9 @@ docker-compose down -v
 
 ### Pré-requisitos
 
-- [.NET 10.0 SDK](https://dotnet.microsoft.com/download)
-- [SQL Server 2022](https://www.microsoft.com/pt-br/sql-server/sql-server-downloads) (ou SQL Server Express/LocalDB)
-- [Git](https://git-scm.com/)
+- [.NET 10.0 SDK]
+- [SQL Server]
+- [Git]
 
 ### Passo a Passo
 
