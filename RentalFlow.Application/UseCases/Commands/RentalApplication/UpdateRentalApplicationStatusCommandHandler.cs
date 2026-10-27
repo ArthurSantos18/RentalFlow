@@ -39,19 +39,17 @@ public sealed class UpdateRentalApplicationStatusCommandHandler(
 
         var previousStatus = rentalApplication.Status;
 
-        var statusResult = rentalApplication.ChangeStatus(command.Request.RentalStatus);
-
-        if (statusResult.IsFailure)
+        if (!rentalApplication.TryChangeStatus(command.Request.RentalStatus))
         {
             _logger.LogWarning(
                 "Cannot change status of rental application {RentalApplicationId} from {PreviousStatus} to {NewStatus}: {ErrorCode} {ErrorMessage}",
                 rentalApplication.Id,
                 previousStatus,
                 command.Request.RentalStatus,
-                statusResult.Error.Code,
-                statusResult.Error.Message);
+                RentalApplicationErrors.InvalidStatusTransition.Code,
+                RentalApplicationErrors.InvalidStatusTransition.Message);
 
-            return statusResult;
+            return Result.Failure(RentalApplicationErrors.InvalidStatusTransition);
         }
 
         await _rentalApplicationRepository.SaveChangesAsync(cancellationToken);

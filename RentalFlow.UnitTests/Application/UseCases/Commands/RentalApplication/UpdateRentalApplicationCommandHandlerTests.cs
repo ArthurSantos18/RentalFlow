@@ -501,17 +501,13 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
             .Setup(s => s.Role)
             .Returns(nameof(OperatorRole.Administrator));
 
-        _applicantRepositoryMock
-            .Setup(r => r.GetByIdAsync(applicant.Id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(applicant);
-
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be(RentalApplicationErrors.ApplicantAlreadyAssigned);
 
         _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
-        _applicantRepositoryMock.Verify(r => r.GetByIdAsync(applicant.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _applicantRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         _operatorRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         _propertyRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
@@ -815,10 +811,6 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
             .Setup(s => s.Role)
             .Returns(nameof(OperatorRole.Administrator));
 
-        _operatorRepositoryMock
-            .Setup(r => r.GetByIdAsync(@operator.Id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(@operator);
-
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
@@ -826,10 +818,10 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
 
         _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
         _applicantRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
-        _operatorRepositoryMock.Verify(r => r.GetByIdAsync(@operator.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _operatorRepositoryMock.Verify(r => r.GetByIdAsync(@operator.Id, It.IsAny<CancellationToken>()), Times.Never);
         _propertyRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
-        _currentUserServiceMock.Verify(c => c.Role, Times.Exactly(4));
+        _currentUserServiceMock.Verify(c => c.Role, Times.Exactly(3));
         _currentUserServiceMock.Verify(c => c.TeamId, Times.Never);
         _currentUserServiceMock.Verify(c => c.OperatorId, Times.Never);
 
@@ -1071,10 +1063,6 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
             .Setup(s => s.Role)
             .Returns(nameof(OperatorRole.Administrator));
 
-        _propertyRepositoryMock
-            .Setup(r => r.GetByIdAsync(property.Id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(property);
-
         var result = await _handler.HandleAsync(command, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
@@ -1083,7 +1071,7 @@ public sealed class UpdateRentalApplicationCommandHandlerTests
         _rentalApplicationRepositoryMock.Verify(r => r.GetByIdAsync(command.Id, It.IsAny<CancellationToken>()), Times.Once);
         _applicantRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         _operatorRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
-        _propertyRepositoryMock.Verify(r => r.GetByIdAsync(property.Id, It.IsAny<CancellationToken>()), Times.Once);
+        _propertyRepositoryMock.Verify(r => r.GetByIdAsync(property.Id, It.IsAny<CancellationToken>()), Times.Never);
         _rentalApplicationRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
         _currentUserServiceMock.Verify(c => c.Role, Times.Exactly(2));
         _currentUserServiceMock.Verify(c => c.TeamId, Times.Never);

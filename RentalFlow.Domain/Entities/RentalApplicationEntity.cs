@@ -87,58 +87,16 @@ public sealed class RentalApplicationEntity : BaseEntity<RentalApplicationEntity
         return this;
     }
 
-    public Result ValidateCanBeEdited()
-    {
-        return Status switch
-        {
-            RentalStatus.Draft => Result.Success(),
-            RentalStatus.Pending => Result.Success(),
-            _ => Result.Failure(RentalApplicationErrors.RentalApplicationCannotBeEdited)
-        };
-    }
+    public bool CanBeEdited() => Status is RentalStatus.Draft or RentalStatus.Pending;
 
-    public Result ChangeApplicant(ApplicantEntity applicant)
-    {
-        if (ApplicantId == applicant.Id)
-        {
-            return Result.Failure(RentalApplicationErrors.ApplicantAlreadyAssigned);
-        }
+    public bool IsApplicantAssigned(Guid applicantId) => ApplicantId == applicantId;
 
-        Applicant = applicant;
-        ApplicantId = applicant.Id;
+    public bool IsOperatorAssigned(Guid operatorId) => OperatorId == operatorId;
 
-        return Result.Success();
-    }
+    public bool IsPropertyAssigned(Guid propertyId) => PropertyId == propertyId;
 
-    public Result ChangeOperator(OperatorEntity @operator)
-    {
-        if (OperatorId == @operator.Id)
-        {
-            return Result.Failure(RentalApplicationErrors.OperatorAlreadyAssigned);
-        }
-
-        Operator = @operator;
-        OperatorId = @operator.Id;
-
-        return Result.Success();
-    }
-
-    public Result ChangeProperty(PropertyEntity property)
-    {
-        if (PropertyId == property.Id)
-        {
-            return Result.Failure(RentalApplicationErrors.PropertyAlreadyAssigned);
-        }
-
-        Property = property;
-        PropertyId = property.Id;
-
-        return Result.Success();
-    }
-
-    public Result ChangeStatus(RentalStatus newStatus)
-    {
-        var isValidTransition = (Status, newStatus) switch
+    public bool CanTransitionTo(RentalStatus newStatus) =>
+        (Status, newStatus) switch
         {
             (RentalStatus.Draft, RentalStatus.Pending) => true,
             (RentalStatus.Pending, RentalStatus.Draft) => true,
@@ -147,14 +105,33 @@ public sealed class RentalApplicationEntity : BaseEntity<RentalApplicationEntity
             _ => false
         };
 
-        if (!isValidTransition)
+    public void ChangeApplicant(ApplicantEntity applicant)
+    {
+        Applicant = applicant;
+        ApplicantId = applicant.Id;
+    }
+
+    public void ChangeOperator(OperatorEntity @operator)
+    {
+        Operator = @operator;
+        OperatorId = @operator.Id;
+    }
+
+    public void ChangeProperty(PropertyEntity property)
+    {
+        Property = property;
+        PropertyId = property.Id;
+    }
+
+    public bool TryChangeStatus(RentalStatus newStatus)
+    {
+        if (!CanTransitionTo(newStatus))
         {
-            return Result.Failure(RentalApplicationErrors.InvalidStatusTransition);
+            return false;
         }
 
         Status = newStatus;
-
-        return Result.Success();
+        return true;
     }
 
     internal static string GenerateProposalNumber() => $"PRO-{DateTime.UtcNow:yyyyMMdd}-{Guid.NewGuid().ToString()[..6].ToUpper()}";

@@ -123,7 +123,7 @@ public sealed class UpdateRentalApplicationCommandHandler(
             return rentalApplication.Status == RentalStatus.Draft ? Result.Success() : Result.Failure(RentalApplicationErrors.RentalApplicationCannotBeEdited);
         }
 
-        return rentalApplication.ValidateCanBeEdited();
+        return rentalApplication.CanBeEdited() ? Result.Success() : Result.Failure(RentalApplicationErrors.RentalApplicationCannotBeEdited);
     }
 
     private async Task<Result> UpdateApplicantAsync(RentalApplicationEntity rentalApplication, Guid? applicantId, CancellationToken cancellationToken)
@@ -131,6 +131,11 @@ public sealed class UpdateRentalApplicationCommandHandler(
         if (applicantId is null)
         {
             return Result.Success();
+        }
+
+        if (rentalApplication.IsApplicantAssigned(applicantId.Value))
+        {
+            return Result.Failure(RentalApplicationErrors.ApplicantAlreadyAssigned);
         }
 
         var applicant = await _applicantRepository.GetByIdAsync(applicantId.Value, cancellationToken);
@@ -145,7 +150,9 @@ public sealed class UpdateRentalApplicationCommandHandler(
             return Result.Failure(ApplicantErrors.ApplicantInactive);
         }
 
-        return rentalApplication.ChangeApplicant(applicant);
+        rentalApplication.ChangeApplicant(applicant);
+
+        return Result.Success();
     }
 
     private async Task<Result> UpdateOperatorAsync(RentalApplicationEntity rentalApplication, Guid? operatorId, CancellationToken cancellationToken)
@@ -158,6 +165,11 @@ public sealed class UpdateRentalApplicationCommandHandler(
         if (_currentUserService.Role == nameof(OperatorRole.Broker))
         {
             return Result.Failure(UserErrors.InvalidRole);
+        }
+
+        if (rentalApplication.IsOperatorAssigned(operatorId.Value))
+        {
+            return Result.Failure(RentalApplicationErrors.OperatorAlreadyAssigned);
         }
 
         var @operator = await _operatorRepository.GetByIdAsync(operatorId.Value, cancellationToken);
@@ -177,7 +189,9 @@ public sealed class UpdateRentalApplicationCommandHandler(
             return Result.Failure(UserErrors.InvalidRole);
         }
 
-        return rentalApplication.ChangeOperator(@operator);
+        rentalApplication.ChangeOperator(@operator);
+
+        return Result.Success();
     }
 
     private async Task<Result> UpdatePropertyAsync(RentalApplicationEntity rentalApplication, Guid? propertyId, CancellationToken cancellationToken)
@@ -185,6 +199,11 @@ public sealed class UpdateRentalApplicationCommandHandler(
         if (propertyId is null)
         {
             return Result.Success();
+        }
+
+        if (rentalApplication.IsPropertyAssigned(propertyId.Value))
+        {
+            return Result.Failure(RentalApplicationErrors.PropertyAlreadyAssigned);
         }
 
         var property = await _propertyRepository.GetByIdAsync(propertyId.Value, cancellationToken);
@@ -204,6 +223,8 @@ public sealed class UpdateRentalApplicationCommandHandler(
             return Result.Failure(PropertyErrors.PropertyNotAvailable);
         }
 
-        return rentalApplication.ChangeProperty(property);
+        rentalApplication.ChangeProperty(property);
+
+        return Result.Success();
     }
 }
