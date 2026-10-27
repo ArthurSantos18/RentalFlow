@@ -73,6 +73,8 @@ namespace RentalFlow.Infrastructure.Migrations
                     b.HasIndex("IsDeleted", "CreatedAt")
                         .IsDescending(false, true);
 
+                    b.HasIndex("IsDeleted", "IsActive");
+
                     b.ToTable("Applicants", (string)null);
                 });
 
@@ -163,6 +165,8 @@ namespace RentalFlow.Infrastructure.Migrations
                     b.HasIndex("IsDeleted", "CreatedAt")
                         .IsDescending(false, true);
 
+                    b.HasIndex("IsDeleted", "IsActive");
+
                     b.HasIndex("Role", "IsActive", "IsDeleted");
 
                     b.ToTable("Operators", (string)null);
@@ -244,6 +248,8 @@ namespace RentalFlow.Infrastructure.Migrations
                     b.HasIndex("IsDeleted", "CreatedAt")
                         .IsDescending(false, true);
 
+                    b.HasIndex("IsDeleted", "IsActive");
+
                     b.ToTable("Properties", (string)null);
                 });
 
@@ -310,6 +316,8 @@ namespace RentalFlow.Infrastructure.Migrations
                     b.HasIndex("IsDeleted", "CreatedAt")
                         .IsDescending(false, true);
 
+                    b.HasIndex("IsDeleted", "IsActive");
+
                     b.HasIndex("Status", "IsDeleted");
 
                     b.ToTable("RentalApplications", (string)null);
@@ -353,6 +361,8 @@ namespace RentalFlow.Infrastructure.Migrations
 
                     b.HasIndex("IsDeleted", "CreatedAt")
                         .IsDescending(false, true);
+
+                    b.HasIndex("IsDeleted", "IsActive");
 
                     b.ToTable("Teams", (string)null);
                 });
@@ -407,6 +417,8 @@ namespace RentalFlow.Infrastructure.Migrations
 
                     b.HasIndex("IsDeleted", "CreatedAt")
                         .IsDescending(false, true);
+
+                    b.HasIndex("IsDeleted", "IsActive");
 
                     b.ToTable("Users", (string)null);
                 });

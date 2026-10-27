@@ -28,6 +28,8 @@ public abstract class BaseConfiguration<TEntity> : IEntityTypeConfiguration<TEnt
         builder.HasIndex(e => new { e.IsDeleted, e.CreatedAt })
             .IsDescending(false, true);
 
+        builder.HasIndex(a => new { a.IsDeleted, a.IsActive });
+
         builder.HasQueryFilter(e => !e.IsDeleted);
 
         ConfigureEntity(builder);
