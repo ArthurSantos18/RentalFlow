@@ -1,12 +1,37 @@
 # 🏠 RentalFlow - Sistema de Gestão de Locações
 
 [![CI](https://github.com/ArthurSantos18/RentalFlow/actions/workflows/ci.yml/badge.svg)](https://github.com/ArthurSantos18/RentalFlow/actions/workflows/ci.yml)
+[![Deploy](https://img.shields.io/badge/deploy-live-brightgreen)](https://rentalflow.runasp.net/scalar)
+[![.NET](https://img.shields.io/badge/.NET-10-purple)](https://dotnet.microsoft.com/)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE.txt)
 
 ## 📋 Sobre o Projeto
 
 RentalFlow é um sistema backend desenvolvido para gerenciar o fluxo completo de locação de imóveis, desde o cadastro de inquilinos, imóveis e operadores até a formalização de propostas e aprovações.
 
-O projeto está sendo desenvolvido com foco em boas práticas de desenvolvimento backend, organização de código, separação de responsabilidades, testes automatizados e aplicação de padrões arquiteturais.
+Projeto desenvolvido com foco em boas práticas de engenharia backend, arquitetura limpa, testes automatizados e padrões consolidados de mercado. **Deployado e disponível para demonstração.**
+
+---
+
+## 🚀 Demo
+
+**API viva**: https://rentalflow.runasp.net/scalar  
+**Health Check**: https://rentalflow.runasp.net/health/ready
+
+### Credenciais de demonstração
+
+- **Email**: `admin@rentalflow.com`
+- **Senha**: `admin1`
+
+> Ambiente de demonstração gratuito (MonsterASP.NET free tier). A primeira requisição pode levar **10–30 segundos** para "acordar" a aplicação.
+
+### Como testar
+
+1. Abra o [Scalar](https://rentalflow.runasp.net/scalar)
+2. Execute `POST /api/auth/login` com as credenciais acima
+3. Copie o `accessToken` retornado
+4. Cole no Bearer Token
+5. Teste qualquer endpoint autenticado
 
 ---
 
@@ -29,17 +54,6 @@ O projeto está sendo desenvolvido com foco em boas práticas de desenvolvimento
 | FluentAssertions | Asserções legíveis nos testes |
 | Health Checks | Monitoramento de saúde da API |
 | Docker | Containerização da API e do banco |
-
----
-
-## 🧠 Decisões Técnicas
-
-**Stack baseado em experiência de produção**  
-As escolhas de bibliotecas (LiteBus, FluentValidation, Serilog) refletem o stack 
-que uso no dia a dia profissional. Familiaridade operacional reduz risco de adoção 
-e acelera manutenção
-
----
 
 ## 📁 Estrutura do Projeto
 
@@ -119,8 +133,8 @@ RentalFlow/
 | **Property** | Imóvel disponível para locação |
 | **Operator** | Operador (corretor/gerente/admin) |
 | **RentalApplication** | Proposta de locação (une Applicant, Property e Operator) |
-| **Team** | Times ao qual os operadores pertencem |
-| **User** | Usuário ao qual possuem as credenciais para login |
+| **Team** | Times aos quais os operadores pertencem |
+| **User** | Usuário que possui as credenciais para login |
 | **UserToken** | Entidade que guarda os tokens e informações adicionais da autenticação do usuário |
 | **AuditLog** | Registro das alterações realizadas nas entidades do sistema |
 
@@ -277,48 +291,6 @@ A API oferece **relatórios agregados** para análise gerencial, com cálculos e
 
 ---
 
-## 🧪 Testes
-
-O projeto possui **duas categorias de testes**, com foco em cobertura completa e fidelidade ao ambiente de produção.
-
-### 📋 Unit Tests
-
-Testam **handlers**, **validators**, **mappers** e **helpers** de forma isolada, com mocks das dependências.
-
-```bash
-dotnet test RentalFlow.UnitTests/RentalFlow.UnitTests.csproj
-```
-
-**Cobertura:**
-- Command handlers (Auth, Applicant, Operator, Property, RentalApplication, Team)
-- Query handlers (Applicants, Operators, Properties, RentalApplications, Teams, AuditLog, Report, User)
-- Validators (FluentValidation)
-- Mappers e helpers (ReportCalculator, PeriodHelper)
-
-### 🔗 Integration Tests
-
-Testam os **endpoints HTTP de ponta a ponta**, com **banco SQL Server real** em container Docker (via Testcontainers).
-
-```bash
-dotnet test RentalFlow.IntegrationTests/RentalFlow.IntegrationTests.csproj
-```
-
-**O que cobrem:**
-- Todos os **9 controllers** e seus **~30 endpoints**
-- Autenticação e autorização (401, 403)
-- Validação de requests (400)
-- Regras de negócio (404, 409)
-- Transições de status de propostas
-- Data scope por role
-
-**Pré-requisito:** Docker rodando (para o container SQL Server).
-
-### 🚀 Rodar tudo
-
-```bash
-dotnet test RentalFlow.slnx
-```
-
 ## 🐳 Executando com Docker
 
 A forma mais simples de rodar o projeto é via **Docker Compose**, que sobe a API + SQL Server automaticamente.
@@ -463,6 +435,75 @@ dotnet run --project RentalFlow.API
 Abra o navegador em `https://localhost:<porta>/scalar` (a porta é definida em `Properties/launchSettings.json`).
 
 ---
+
+## 🧪 Testes
+
+O projeto possui **duas categorias de testes**, com foco em cobertura completa e fidelidade ao ambiente de produção.
+
+### 📋 Unit Tests
+
+Testam **handlers**, **validators**, **mappers** e **helpers** de forma isolada, com mocks das dependências.
+
+```bash
+dotnet test RentalFlow.UnitTests/RentalFlow.UnitTests.csproj
+```
+
+**Cobertura:**
+- Command handlers (Auth, Applicant, Operator, Property, RentalApplication, Team)
+- Query handlers (Applicants, Operators, Properties, RentalApplications, Teams, AuditLog, Report, User)
+- Validators (FluentValidation)
+- Mappers e helpers (ReportCalculator, PeriodHelper)
+
+### 🔗 Integration Tests
+
+Testam os **endpoints HTTP de ponta a ponta**, com **banco SQL Server real** em container Docker (via Testcontainers).
+
+```bash
+dotnet test RentalFlow.IntegrationTests/RentalFlow.IntegrationTests.csproj
+```
+
+**O que cobrem:**
+- Todos os **9 controllers** e seus **~30 endpoints**
+- Autenticação e autorização (401, 403)
+- Validação de requests (400)
+- Regras de negócio (404, 409)
+- Transições de status de propostas
+- Data scope por role
+
+**Pré-requisito:** Docker rodando (para o container SQL Server).
+
+### 🚀 Rodar tudo
+
+```bash
+dotnet test RentalFlow.slnx
+```
+
+---
+
+## 🌍 Deploy
+
+O projeto está deployado no **MonsterASP.NET** (plano gratuito):
+
+| Recurso | Provedor | Plano |
+|---------|----------|-------|
+| API | MonsterASP.NET | Free (.NET 10) |
+| Database | MonsterASP.NET MSSQL | 1 GB |
+
+**Configuração de produção:**
+- Variáveis de ambiente configuradas via painel (nunca commitadas)
+- Migrations aplicadas automaticamente no startup (`MigrateAsync`)
+- Seed idempotente (admin + team padrão)
+- Logs apenas em console (sem persistência em disco — free tier tem storage limitado)
+
+
+---
+
+## 🧠 Decisões Técnicas
+
+**Stack baseado em experiência de produção**  
+As escolhas de bibliotecas (LiteBus, FluentValidation, Serilog) refletem o stack 
+que uso no dia a dia profissional. Familiaridade operacional reduz risco de adoção 
+e acelera manutenção.
 
 ## 📄 Licença
 
