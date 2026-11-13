@@ -12,21 +12,27 @@ public partial class Program
         builder.Services.AddRentalFlowOpenApi();
         builder.Services.AddMediator();
         builder.Services.AddValidators();
+        builder.Services.AddRentalFlowRateLimiting();
         builder.Services.AddJwtAuthentication(configuration);
         builder.Services.AddApiServices();
         builder.Services.AddApplication();
         builder.Services.AddInfrastructure(configuration);
         builder.Services.AddExceptionHandling();
         builder.Services.AddRentalFlowHealthChecks(configuration);
-        builder.Services.AddRentalFlowRateLimiting();
 
         var app = builder.Build();
 
         await app.SeedDatabaseAsync();
 
+        app.UseRentalFlowForwardedHeaders();
         app.UseCorrelationIdMiddleware();
         app.UseExceptionHandler();
-        app.UseHttpsRedirection();
+
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseHttpsRedirection();
+        }
+
         app.UseRentalFlowOpenApi();
         app.UseRentalFlowHealthChecks();
         app.UseAuthentication();

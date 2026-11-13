@@ -32,6 +32,15 @@ O projeto está sendo desenvolvido com foco em boas práticas de desenvolvimento
 
 ---
 
+## 🧠 Decisões Técnicas
+
+**Stack baseado em experiência de produção**  
+As escolhas de bibliotecas (LiteBus, FluentValidation, Serilog) refletem o stack 
+que uso no dia a dia profissional. Familiaridade operacional reduz risco de adoção 
+e acelera manutenção
+
+---
+
 ## 📁 Estrutura do Projeto
 
 ```
