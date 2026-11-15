@@ -1,4 +1,4 @@
-﻿namespace RentalFlow.API.Handlers;
+﻿namespace RentalFlow.API.Middlewares;
 
 public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> _logger, IHostEnvironment _environment) : IExceptionHandler
 {
