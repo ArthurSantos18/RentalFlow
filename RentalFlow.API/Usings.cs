@@ -22,7 +22,6 @@ global using Microsoft.OpenApi;
 global using RentalFlow.API.Constants;
 global using RentalFlow.API.Extensions;
 global using RentalFlow.API.Filters;
-global using RentalFlow.API.Handlers;
 global using RentalFlow.API.Helpers;
 global using RentalFlow.API.Metadata;
 global using RentalFlow.API.Middlewares;

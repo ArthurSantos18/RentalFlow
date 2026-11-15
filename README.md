@@ -64,7 +64,6 @@ RentalFlow/
 │   ├── Controllers/
 │   ├── Extensions/
 │   ├── Filters/
-│   ├── Handlers/
 │   ├── Helpers/
 │   ├── Metadata/
 │   ├── Middlewares/
